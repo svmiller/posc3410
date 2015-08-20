@@ -1,0 +1,197 @@
+---
+title: Introduction
+subtitle: POSC 3410 -- Quantitative Methods in Political Science
+author: Steven V. Miller
+date: 
+fontsize: 10pt
+output:
+  beamer_presentation:
+#    keep_tex: true
+#    toc: true
+    slide_level: 3
+    fig_caption: yes
+    includes:
+      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
+      after_body: ~/Dropbox/teaching/table-of-contents.txt
+---
+
+# Introduction
+### Goal for Today
+
+Familiarize students with the topic of the course and the instructor's expectations.
+
+### Evaluating Arguments in Political Science
+
+![](cnncrossfire.jpg "Logo Title Text 1")
+
+How should we evaluate competing arguments in political science?
+
+### Arguments in Political Science
+
+Our discipline is ever in pursuit of an "answer", but we have only *answers*.
+
+ - Why are Americans intolerant of political difference?
+ - Why do court justices vote the predictable way they do?
+ - Why do states fight wars?
+ - Are democracies really conducive to peace?
+ - Is a bourgeoisie necessary for democracy?
+
+\bigskip All these questions and more have competing answers.
+
+- How do we evaluate them?
+
+### Quantifying Political Science
+
+The most common method is through the use of inferential statistics.
+
+ - Inference about a population can be obtained from a sample of the population.
+ - Phenomena of interest can be quantified into variables of interest.
+ - Approriate statistical tools exist that can inform us of general tendency and cause-and-effect.
+
+\bigskip In short: knowledge is better obtained through quantification and inferential statistics, not hollow rhetoric.
+
+# POSC 3410 Syllabus
+### Course Objectives
+
+ - Understand concepts and how we operationalize abstract concepts for the sake of testing.
+ -  Delineate variables among various types, like nominal, ordinal and interval.
+ -  Put together a formal research design to address questions of interest in the study of politics.
+ -  Express why the logic of control is vital to any good research design.
+ - Understand important elements of data, like central tendency and spread.
+ -  Become familiar with advanced topics like non-normal responses, Bayesian thinking, and post-estimation simulation.
+
+### Books
+
+ -  Pollock III, Phillip H. 2012. *The Essentials of Political Analysis*. Washington DC: CQ Press, 4th edition
+ - Lynch, Scott M. 2013. *Using Statistics in Social Research: A Concise Approach*. New York, NY: Springer
+
+
+
+### Grading Policy and Important Dates
+
+- Midterm: (September 24) [**20%**]
+- Three problem sets: (due periodically through semester) [**20%**]
+	- You also have a prospectus (October 8), which will be graded as a problem set.
+- Research design paper: (due *before* December 4, 9 a.m.) [**20%**]
+    - See syllabus for pertinent information.
+- Final: (December 11, 11:30 a.m.) [**30%**]
+
+Attendance and participation will be the final 10% of your grade.
+
+## Course Policies
+### Lab Policy
+
+When you enroll in POSC 3410, you also have to enroll in POSC 3411 (the lab).
+
+\bigskip However, there is no "lab" portion of this class.
+
+- There is homework, but this can be done on your laptop in your dorm/apartment.
+- These are part of the 3410 grade, not 3411.
+
+
+\bigskip However, I welcome students who want free statistical consulting!
+
+- If you're serious about applied statistics, let me know.
+- Preference will be given to instruction in the R language.
+
+### The R Programming Language
+
+Your homework will be done in the R programming
+language.
+
+-   It’s a *free* and open source programming language preferred
+    by statisticians.
+-   Download it from cran.r-project.org.
+-   **Recommended:** download and install Rstudio afterward, available for free at rstudio.com.
+
+\bigskip R scripts designed me should work with minimal
+maintenance.
+
+-   I’ll make directions clear in the homework.
+
+I will assume that not meeting with me means the student is
+fluent with the software.
+
+-   I put together a beginner’s guide on the course website.
+
+
+
+
+### Course Policies
+
+*Read the syllabus*. I'll reiterate the following:
+
+- **Attendance**: Effectively mandatory. You get five unexcused absences.
+- **Participation**: I may "cold-call" you to answer a question. 
+    - You should *at least* give a convincing partial answer.
+    - If you don't (or are absent), you'll get a point deduction from your overall grade.
+- **Make-up Exams**: Don't bother asking. The answer is no.
+- **Cell phones, laptops, etc.**: Put them away.
+- **Academic dishonesty**: Don't be that guy...
+- **Disabilities**: let me know ASAP (privately) if you need accommodations
+    - Student must initiate the process *each semester*.
+    - Student must schedule room at testing center (if necessary).
+
+# Etiquette and Expectations
+### My Contact Information
+
+- *Name*: Steve Miller (as in the band)
+- *E-mail*: \textcolor{clemsonorange}{svmille@clemson.edu}
+- *Office Hours*: Wednesday: 9-11:30 a.m.
+- *Office*: 230A Brackett Hall
+- *Website*: \textcolor{clemsonorange}{svmiller.com/teaching}
+
+### Additional Course Materials
+
+I don't like Blackboard. I only intend to use it for:
+
+- Turnitin (and grading the Turnitin assignments)
+- Classwide e-mails
+
+\bigskip I do like making lectures publicly available, though.
+
+- Check course website at \textcolor{clemsonorange}{svmiller.com}
+- Check my Github repository (just in case): \textcolor{clemsonorange}{github.com/svmiller/posc3410}
+
+### My Expectations
+
+I come off as a bit cruel in my expectations.
+
+- I expect a lot, and I expect a commitment from you.
+- Otherwise, why bother? Your job is to become "pro-ready".
+
+\bigskip I also expect it to be a bit difficult for you.
+
+- My philosophy: if you 100% understand something the first time you read it, you didn't learn anything.
+- Read and re-read if necessary.
+- Lectures should help, but they're not sufficient. You need to read.
+
+\bigskip I take seriously the "science" of political science.
+
+- This may not be intuitive, but I'm also eager to help in-class or office hours.
+
+\bigskip I don't care for whom you'll vote or what you saw on TV. *Don't bring it up*.
+
+
+### Etiquette Concerns
+
+In-class:
+
+- Raise your hand and ask a question the *moment* something doesn't make sense.
+    - I do have a bad habit of talking a bit fast.
+- *Do the reading before class*. Seriously.
+- Resist the urge to write down every word on a slide.
+    - Listening is more important than reading in this context.
+
+### Etiquette Concerns
+
+Outside class: 
+
+- **Resist the urge** to e-mail me if you missed a class (for which there wasn't an exam).
+    - Short answer: you missed what was on the syllabus.
+- Please use conventional e-mail etiquette.
+    - This is a good professional exercise for you.
+- I'm usually in my office Tuesday and Thursday mornings before class.
+- Knock first, even when the door is open.
+- You may not use my office supplies.
+- I am not a study session. Come prepared with something specific to ask or discuss.
