@@ -21,6 +21,8 @@
 *.ps
 *.dvi
 *.fdb_latexmk
+*.Rmd
+*.R
 
 
 # ignore my old files and other irrelevant directories
