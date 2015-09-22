@@ -1,0 +1,147 @@
+---
+title: Making Comparisons
+subtitle: POSC 3410 -- Quantitative Methods in Political Science
+author: Steven V. Miller
+date: 
+fontsize: 10pt
+output:
+  beamer_presentation:
+#    keep_tex: true
+#    toc: true
+    slide_level: 3
+    fig_caption: yes
+    includes:
+      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
+      after_body: ~/Dropbox/teaching/table-of-contents.txt
+---
+
+# Introduction
+### Goal for Today
+
+*Introduce students to basic making of comparisons between an independent variable and dependent variable.*
+
+### Theories and Hypotheses
+
+We previously discussed the importance of theory-writing.
+
+- Theories are conceptual, representing your ideas and arguments.
+	- It’s the hardest part of political science, but the most important.
+
+Some general things to consider:
+
+- "Keep it Kosher"
+- Speak conceptually. Test operationally.
+- Don't fit theory to data.
+
+We also discussed proper construction of hypotheses (i.e. testable statements).
+
+# Making Comparisons
+### Making Comparisons
+
+This lecture will instruct on how to make comparisons among your independent variable and dependent variable.
+
+- Consider this a kind of "first cut" of inferential statistics.
+- A lot of peer-reviewed scholarship begins with the following tools.
+
+We will begin to see if there is a preliminary association between our independent variable and dependent variable.
+
+## Cross-tabulation
+### Cross-tabulation
+
+A **cross-tabulation** has three rules in its presentation.
+
+1. Independent variable is the column. Dependent variable is the row.
+2. *Always* calculate percentages for the *independent* variable.
+3. Interpret a cross-tab by comparing columns across the *same* value of the dependent variable.
+
+### Gun Control Opinions, by Partisanship
+
+![](tab31.pdf)
+
+### Support for Gay Marriage, by Age.
+
+![](tab32.pdf)
+
+## Mean Comparisons
+### Mean Comparisons
+
+When our dependent variable is interval, we can use a **mean comparison table**.
+
+- It shows the mean of a dependent variable for different values of the independent variable.
+
+### Political Rights and Freedoms, by Country per Capita GDP
+
+![](tab33.pdf)
+
+## Graphing Relationships
+### Bar Charts and Line Charts
+
+Graphically displaying data will help us make comparisons.
+
+- Both communicate percentages or means of a dependent variable, for each value of an independent variable.
+- Differ in representation (bars or markers connected by lines).
+
+In each case, the independent variable is the *x*-axis. Dependent variable is the *y*-axis.
+
+### Types of Relationships
+
+There are four types of relationships
+
+1. Positive
+2. Negative
+3. Curvilinear
+4. Zero
+
+### Types of Relationships
+
+Note: curvilinear may also be a "normal-U"
+
+![](examples.jpg)
+
+### Support for Gay Marriage, by Age
+
+![](fig31.pdf)
+
+### Political Rights and Freedoms, by Country per Capita GDP
+
+
+![](fig32.pdf)
+
+
+### Exam Score and Hours Spent Studying
+
+![](fig33.pdf)
+
+### Social Disconnectedness and Age
+
+![](fig34.pdf)
+
+### Turnout and Partisanship
+
+![](fig35.pdf)
+
+### Age and Life Satisfaction
+
+![](ushaped.png)
+
+### Union Membership and Income
+
+![](tab34.pdf)
+
+### Union Membership and Income
+
+![](fig36.pdf)
+
+# Conclusion
+### Conclusion
+
+We have several tools to make a preliminary association between dependent variable and independent variable.
+
+- e.g. cross-tabs, mean comparison table, bar chart, line chart.
+
+**Use them!**
+
+- Our inferential statistical tools tend to assume linearity.
+- Look carefully if there is a non-linear trend between your variables.
+
+

@@ -21,7 +21,6 @@
 *.ps
 *.dvi
 *.fdb_latexmk
-*.Rmd
 *.R
 
 
@@ -29,6 +28,7 @@
 1-old-material*
 attendance*
 gradesheets*
+midterm*
 
 # don't ignore the .gitignore file
 !.gitignore

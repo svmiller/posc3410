@@ -1,0 +1,155 @@
+---
+title: Central Tendency and Dispersion
+subtitle: POSC 3410 -- Quantitative Methods in Political Science
+author: Steven V. Miller
+date: 
+fontsize: 10pt
+output:
+  beamer_presentation:
+#    keep_tex: true
+#    toc: true
+    slide_level: 3
+#    fig_caption: yes
+    includes:
+      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
+      after_body: ~/Dropbox/teaching/table-of-contents.txt
+---
+
+# Introduction
+### Goal for Today
+
+*Describe variables by reference to central tendency and dispersion.*
+
+### Defining and Measuring Variables
+
+Last lecture focused on a typology of variables.
+
+1. Nominal
+2. Ordinal
+3. Interval
+
+Correct classification will condition how we can *describe* variables.
+
+# Central Tendency
+### Central Tendency
+
+The most common description of interest is the **central tendency**.
+
+- This is the variables "typical", or "average" value.
+- This takes on different forms contingent on variable type.
+
+Think of what follows as a "tool kit" for researchers.
+
+- More precise variables allow for more precise measures.
+- Use the right tool for the job, if you will.
+
+### Mode
+
+The **mode** is the most basic central tendency statistic.
+
+- It identifies the most frequently occurring value.
+
+Suppose I have a random sample of 50 students and measured party affiliation.
+
+- Democrats: 26; Republicans: 20; Others: 4
+
+What's the modal category?
+
+### Mode
+
+If I randomly grabbed a student from that sample and guessed "Democrat", I would be right 26 times of 50 (on average).
+
+- No other guess, on average, would be as good.
+
+This is the only central tendency statistic for nominal variables.
+
+### Median
+
+The **median** is the middlemost value.
+
+- It's the most precise statistic for ordinal variables.
+- It's a useful robustness check for interval variables too.
+
+Formally, a median *m* exists when the following equalities are satisfied.
+
+\begin{equation}
+	P(X \le m) \ge \frac{1}{2} \; \textrm{and} \;  P(X \ge m) \ge \frac{1}{2}
+\end{equation}
+
+### Finding the Median
+
+Order the observations from lowest to highest and find what value lies in the exact middle.
+
+- The median is the point where half the values lie below and half are above.
+- We can do this when our variables have some kind of "order".
+- Medians of nominal variables are nonsensical.
+
+### Mean
+
+The arithmetic **mean** is used only for interval variables.
+
+- This is to what we refer when we say "average".
+
+Formally, *i* through *n*:
+
+\begin{equation}
+	\frac{1}{n}\Sigma x_i
+\end{equation}
+
+We can always describe interval variables with mode and median.
+
+- We cannot do the same for ordinal or nominal with the mean.
+
+# Dispersion
+### Dispersion
+
+We also need to know variables by reference to its **dispersion**.
+
+- i.e. "how average is 'average'?"
+- How far do variables deviate from the typical value?
+- If they do, measures of central tendency can be misleading.
+
+The interval variable with no dispersion problem is one in which the mode, median, and mean are the same value.
+
+- This will not happen when there is a significant **skew**, or a **bimodal** distribution.
+
+### Frequency Distribution
+
+A **frequency distribution** is a summary of a variable's values.
+
+![](tab22.pdf)
+
+### Cumulative Percentage
+
+A **cumulative percentage** is the percentage of cases at or below a given value.
+
+![](tab23.pdf)
+
+### Bar Chart
+
+![](fig22.pdf)
+
+### Bar Chart
+
+![](fig23.pdf)
+
+
+### Issues of Skew
+
+![](fig24.pdf)
+
+### Issues of Skew
+
+![](fig25.pdf)
+
+# Conclusion
+### Conclusion
+
+Here are some final thoughts.
+
+- There is a reason we discuss "median income" and not the "average income".
+- The mean of a dummy variable communicates the percentage of 1s, divided by 100.
+- Skew is mostly a problem of mean variables, and a problem of degree.
+
+Always look carefully at your data!
+

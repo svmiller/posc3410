@@ -1,0 +1,159 @@
+---
+title: Statistics and Personal Experience
+subtitle: POSC 3410 -- Quantitative Methods in Political Science
+author: Steven V. Miller
+date: 
+fontsize: 10pt
+output:
+  beamer_presentation:
+#    keep_tex: true
+#    toc: true
+    slide_level: 3
+#    fig_caption: yes
+    includes:
+      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
+      after_body: ~/Dropbox/teaching/table-of-contents.txt
+---
+
+# Introduction
+### Goal for Today
+
+*Discuss aims and uses of statistics.*
+
+# Statistics in Daily Life
+### Statistics in Daily Life
+
+The world is moving toward statistics and quantification.
+
+- Macroeconomic indicators
+- Polling information
+- "Big Data"
+
+All these and more inform politics and policy.
+
+- Understanding statistics may be necessary to being a good democratic citizen.
+
+### Statistics in Daily Life
+
+Still, statistics are maligned in education and society.
+
+- Lies, damned lies, etc.
+- AP Stats is optional in high school.
+	- Some states (Texas, prominently) are eliminating math requirements like Algebra II.
+- Many statistics departments don't offer undergrad majors.
+- Stats (i.e. math) anxiety
+
+Statistics pervade society but are simultaneously treated with dread and suspicion.
+
+## The Use of Statistics
+### What Do Statistics Do?
+
+Statistics hold no intrinsic fact.
+
+- They're contingent on a good interpretation.
+
+For example, what would a 10% unemployment rate mean?
+
+- Lazy people not looking for work.
+- Recession (i.e. cutting payroll to maintain a profit).
+- Younger working-age population (i.e. supply > demand).
+
+Absent any other information, this statistic means little.
+
+- But, it can easily sway opinion, absent a solid foundation for inference.
+
+### What Do Statistics Do?
+
+There are three main purposes of statistics.
+
+1. Summarizing data (i.e. central tendency and spread)
+2. Inferring from sample data to population
+3. Forecasting the future from data
+
+This class will focus on all three purposes (the first two more than the third).
+
+## Squaring Statistics with Personal Experience
+### Personal Experience
+
+Drawing conclusions about a population from a sample is called "inferential statistics"
+
+- A random sample statistic conforms to a known population statistic given a decent-sized *random* (or small, but repeated) sample.
+
+This is often the hardest thing for the uninformed to accept about statistical practice.
+
+- "How can this be accurate if I've never been polled and no one I know was polled?"
+
+### Personal Experience
+
+There are many intuitive responses to this.
+
+- There are 300-million-plus Americans. The odds of appearing in a random sample are quite small.
+	- About 500,000 to 1.
+- Your experience may not be typical. Don't assume it is absent other information.
+	- You're also likely to surround yourself with people in similar circumstances.
+
+### An Application: The Wage Gap
+
+Students should be familiar with the wage gap between men and women.
+
+- i.e. Women make about 77 cents of the man's dollar for equal work and credentials.
+- Given this, we should expect a future random sample of the population will yield the same results.
+
+Possible objection: "How can that possibly be true? I know plenty of women who make more than men."
+
+### An Application: The Wage Gap
+
+Well, both are true. Just be mindful what you're saying. Using 2011 GSS data:
+
+- Average income for men: about $48,000
+- Average income for women: about $32,000
+- 20% of women earned more than the average man.
+- 36% of men earned less than the average women.
+
+In short, men make more than women and many women earn more than the average man.
+
+### Cautious Inference
+
+Your individual experience does not invalidate a general pattern.
+
+- No number of anecdotes can invalidate a properly established general pattern.
+- This is akin to the problem of induction.
+
+How is this not a logically valid means to inference?
+
+- "Black swan events"
+- Need infinite confirming events.
+- Ultimately, the premises may be true but the conclusion could be false.
+
+Related, group statistics may not be good for constituent group members.
+
+- This is an "ecological fallacy", akin to a form of stereotyping.
+
+### Hasty Generalizations and "the Food Stamp Surfer"
+
+![Jason Greenslate, aka "The Food Stamp Surfer"](jason-greenslate.jpg)
+
+### Hasty Generalizations and "the Food Stamp Surfer"
+
+Induction and personal experience invite "hasty generalizations".
+
+- i.e. "all X are Y"
+- We see this in the case of Fox News' infatuation with "the Food Stamp Surfer".
+
+Accepting the conclusions of his peculiar case requires all the following:
+
+- Leveraging just one case over a population of cases.
+- Excluding other potential antecedent conditions.
+- Infinite cases like him among the food-stamp-recipient population.
+
+Conversely, the opposite generalization is also hasty and equally fallacious.
+
+# Conclusion
+### Conclusion
+
+Your personal experience makes you who you are, but it's a poor guide to inference.
+
+- You cannot generalize (in any direction) from your personal experience.
+- This is tough for beginners to grasp, but it's one of the most important lessons.
+
+Proper use of statistics allows for generalizable claims, albeit with specified limits and qualifiers.
