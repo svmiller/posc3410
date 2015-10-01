@@ -106,7 +106,7 @@ Beyond the pyramidal symmetry, Pascal's triangle has a lot other cool features.
 
 - Any value in the table is the sum of the two values diagonally above it.
 - The sum of the *k*th row (counting the first row as zero row) can be calculated as $\sum\limits_{j=0}^k {k \choose j} = 2^k$
-- If you lest-justify the triangle, the sum of the diagonals form a Fibonacci sequence.
+- If you left-justify the triangle, the sum of the diagonals form a Fibonacci sequence.
 - If a row is treated as consecutive digits, each row is a power of 11 (i.e. magic 11s).
 
 \bigskip There are many more mathematical properties in Pascal's triangle. These are just the cooler/more famous ones.
