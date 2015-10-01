@@ -1,0 +1,383 @@
+---
+title: Probability Distributions and Functions
+subtitle: POSC 3410 - Quantitative Methods in Political Science
+author: Steven V. Miller
+date: 
+fontsize: 10pt
+output:
+  beamer_presentation:
+#    keep_tex: true
+#    toc: true
+    slide_level: 3
+    includes:
+      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
+      after_body: ~/Dropbox/teaching/table-of-contents.txt
+---
+
+# Introduction
+### Goal for Today
+
+*Discuss probability distributions*.
+
+### Introduction
+
+Last lecture discussed probability and counting.
+
+- While abstract, these are important foundation concepts for what we're doing in applied statistics.
+
+\bigskip Today, we're going to talk about probability distributions.
+
+- Our most prominent tool for statistical inference makes assumptions about parameters given a known (i.e. normal) distribution.
+
+### Refresher
+
+Recall the choose notation (aka **combination**):
+
+\begin{equation}
+  {n \choose k} = \frac{n!}{(n-k)!k!}
+\end{equation}
+
+\bigskip The exclamation marks indicate a factorial.
+
+- e.g. 5! = 5 * 4 * 3 * 2 * 1.
+
+# Binomial Functions
+## Binomial Theorem
+### Binomial Theorem
+
+The most common use of a choose notation is the **binomial theorem**.
+
+- Given any real numbers *X* and *Y* and a nonnegative integer *n*,
+
+\begin{equation}
+  (X + Y)^n = \sum \limits_{k=0}^n {n \choose k} x^k y^{n-k}
+\end{equation}
+
+\bigskip
+
+A special case occurs when *X* = 1 and *Y* = 1.
+
+\begin{equation}
+  2^n = \sum \limits_{k=0}^n {n \choose k}
+\end{equation}
+
+### Binomial Theorem
+
+This is another theorem with an interesting history.
+
+- Euclid knew of it in a simple form.
+- The Chinese may have discovered it first (Chu Shi-Kié, 1303)
+- General form presented here owes to Pascal in 1654.
+
+### Binomial Theorem
+
+The binomial expansion increases in polynomial terms at an interesting rate.
+
+\begin{eqnarray}
+(X + Y)^0 &=& 1 \nonumber \\
+(X + Y)^1 &=& X + Y \nonumber \\
+(X + Y)^2 &=& X^2 + 2XY + Y^2 \nonumber \\
+(X + Y)^3 &=& X^3 + 3X^2Y + 3XY^2 + Y^3 \nonumber \\
+(X + Y)^4 &=& X^4 + 4X^3Y + 6X^2Y^2 + 4XY^3 + Y^4 \nonumber \\
+(X + Y)^5 &=& X^5 + 5X^4Y + 10X^3Y^2 + 10X^2Y^3 + 5XY^4 + Y^5 
+\end{eqnarray}
+
+Notice the symmetry?
+
+## Pascal's Triangle
+### Pascal's Triangle
+
+The coefficients form **Pascal's triangle**, which summarizes the coefficients in a binomial expansion.
+
+\bigskip
+
+\begin{tabular}{cccccccccccccc}
+$n=0$:& & & &    &    &    &    &  1\\\noalign{\smallskip\smallskip}
+$n=1$:& & & &   &    &    &  1 &    &  1\\\noalign{\smallskip\smallskip}
+$n=2$:& & & &   &    &  1 &    &  2 &    &  1\\\noalign{\smallskip\smallskip}
+$n=3$:& & & &   &  1 &    &  3 &    &  3 &    &  1\\\noalign{\smallskip\smallskip}
+$n=4$:& & & & 1 &    &  4 &    &  6 &    &  4 &    &  1\\\noalign{\smallskip\smallskip}
+$n=5$: & & & 1 &   &  5  &   &  10  &   &  10  &   &  5  &  & 1\\\noalign{\smallskip\smallskip}
+\end{tabular}
+
+### Pascal's Triangle
+
+Beyond the pyramidal symmetry, Pascal's triangle has a lot other cool features.
+
+- Any value in the table is the sum of the two values diagonally above it.
+- The sum of the *k*th row (counting the first row as zero row) can be calculated as $\sum\limits_{j=0}^k {k \choose j} = 2^k$
+- If you lest-justify the triangle, the sum of the diagonals form a Fibonacci sequence.
+- If a row is treated as consecutive digits, each row is a power of 11 (i.e. magic 11s).
+
+\bigskip There are many more mathematical properties in Pascal's triangle. These are just the cooler/more famous ones.
+
+## Binomial Mass Function
+### Binomial Mass Function
+
+Beyond cool math stuff, these have a purpose for statistics.
+
+\bigskip Let's start basic: how many times could we get heads in 10 coin flips?
+
+- The sample space *S* = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+- We expect 10 heads (or no heads) to be unlikely, assuming the coin is fair.
+
+\bigskip 
+
+*This is a combination issue*.
+
+- For no heads, *every* flip must be a tail.
+- For just one head, we have more combinations.
+
+\bigskip What's the probability of a series of coin flips with just one head?
+
+- For a small number of trials, look at Pascal's triangle.
+- For 5 trials, there is 1 way to obtain 0 heads, 5 ways to obtain 1 head, 10 ways to obtain 2 and 3 heads, 5 ways to obtain 4 heads, and 1 way to obtain 5 heads.
+
+### Binomial Mass Function
+
+This is also answerable by reference to the **binomial mass function**, itself derivative of the **binomial theorem**.
+
+\begin{equation}
+  p(x) = {n \choose x} p^x(1-p)^{n - x}, 
+\end{equation}
+
+where:
+
+- *x* = the count of "successes" (e.g. number of heads in a sequence of coin flips)
+- *n* = the number of trials.
+- *p* = probability of success in any given trial.
+
+### Binomial Mass Function
+
+What's the probability of getting five heads on ten fair coin flips.
+
+\begin{eqnarray}
+p(x = 5 \thinspace | \thinspace n = 10, p = .5) &=& {10 \choose 5 } (.5)^5(1-.5)^{10-5} \nonumber \\
+&=& (252)*(.03125)*(.03125) \nonumber \\
+ &=& 0.2460938
+\end{eqnarray}
+
+\bigskip In R:
+
+```
+> dbinom (5,10,.5)
+[1] 0.2460938
+```
+
+### An Application: Everyone Hates Congress
+
+Congress is doing nothing at a historic rate. This much we know.
+
+- About 5\% of bills that receive "some action" are ultimately passed.
+    - Recall: many bills introduced die a quick death from inactivity.
+    - This estimate says nothing about substantive importance of the bill.
+  
+\bigskip 
+
+Assume *p* = .05. What's the probability that Congresses passes three (*x*) of the next 20 (*n*) bills it gets?
+
+### An Application: Everyone Hates Congress
+
+
+
+\begin{eqnarray}
+p(x = 3 \thinspace | \thinspace n = 20, p = .05) &=& {20 \choose 3 } (.05)^3(1-.05)^{20-3} \nonumber \\
+&=& (1140)*(.000125)*(0.4181203) \nonumber \\
+ &=& 0.05958215
+\end{eqnarray}
+
+\bigskip
+
+In R:
+
+```
+> dbinom(3,20,.05)
+[1] 0.05958215
+```
+
+
+# Normal Functions
+## Normal Density Function
+### Normal Functions
+
+The binomial (and related: Bernoulli) are common density functions for modeling social/political phenomena.
+
+\bigskip A "normal" function is also quite common.
+
+- Data are distributed such that the majority cluster around some central tendency.
+- More extreme cases occur less frequently.
+
+### Normal Density Function
+
+We can model this with a **normal density function**.
+
+- Sometimes called a Gaussian distribution in honor of Carl Friedrich Gauss, who discovered it.
+
+\begin{equation}
+    f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e \thinspace \{ -\frac{(x -\mu)^2}{2\sigma^2} \},
+\end{equation}
+
+where: $\mu$ = the mean, $\sigma^2$ = the variance.
+
+### Normal Density Function
+
+Properties of the normal density function.
+
+- The tails are asymptote to 0.
+- The kernel (inside the exponent) is a basic parabola.
+    - The negative component flips the parabola downward.
+- Denoted as a function in lieu of a probability because it is a continuous distribution.
+- The distribution is perfectly symmetrical.
+    - The mode/median/mean are the same values.
+    - *-x* is as far from $\mu$ as *x*.
+    
+\bigskip
+
+*x* is unrestricted. It can be any value you want in the distribution.
+
+- $\mu$ and $\sigma^2$ are parameters that define the shape of the distribution.
+    - $\mu$ defines the central tendency. 
+    - $\sigma^2$ defines how short/wide the distribution is.
+    
+
+## Demystifying the Normal Distribution    
+### Demystifying the Normal Density Function
+
+Let's unpack this normal density function further (and use some R code).
+
+\bigskip Here is our normal density function.
+
+\begin{equation}
+    f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e \thinspace \{ -\frac{(x -\mu)^2}{2\sigma^2} \}
+\end{equation}
+
+\bigskip
+
+Assume, for simplicity, $\mu$ = 0 and $\sigma^2$ = 1.
+
+### Demystifying the Normal Density Function
+
+When $\mu$ = 0 and $\sigma^2$ = 1, the normal density function is a bit simpler.
+
+\begin{equation}
+    f(x) = \frac{1}{\sqrt{2\pi}}e \thinspace \{ -\frac{x^2}{2} \}
+\end{equation}
+
+Let's plot it next in R.
+
+```
+> x=seq(-4,4,length=200)
+> y=1/sqrt(2*pi)*exp(-x^2/2)
+> plot(x,y,type="l",lwd=2,col="red")
+```
+
+### The Normal Distribution
+
+\begin{center}
+  \includegraphics[width=1.00\textwidth]{normal-distribution}
+\end{center}
+
+### Demystifying the Normal Distribution
+
+Let's look inside the exponent.
+
+- The term inside the brackets (-$x^2$/2) is a parabola.
+- Exponentiating it makes it asymptote to 0.
+
+```
+> x=seq(-4,4,length=200)
+> plot(-x^2/2, lwd=6, col="red")
+> plot(exp(-x^2/2),lwd=6, col="red")
+```
+
+\begin{figure}
+   \includegraphics[width=0.475\textwidth]{parabola}
+   \hfill
+   \includegraphics[width=0.475\textwidth]{exponent}
+\end{figure}
+
+### Demystifying the Normal Distribution
+
+When the numerator in the brackets is zero (i.e. $x = \mu$, here: 0), this devolves to an exponent of 0.
+
+- *exp*(0) = 1 (and, inversely, *log*(1) = 0).
+- A logarithm of *x* for some base *b* is the value of the exponent that gets *b* to *x*.
+    - $log_b(x) = a \quad =\Rightarrow \quad b^a = x$
+- Notice how the top of the curve was at 1 in the exponentiated parabola.
+
+### Demystifying the Normal Density Function
+
+With that in mind, it should be clear that $\frac{1}{\sqrt{2\pi\sigma^2}}$ (recall: $\sigma^2 = 1$ in our simple case) determines the height of the distribution.
+
+\bigskip
+
+Observe: 
+
+```
+> 1/sqrt(2*pi)
+[1] 0.3989423
+> dnorm(0,0,1)
+[1] 0.3989423
+```
+
+The height of the probability distribution for $x = 0$ when $\mu = 0$ and $\sigma^2 = 1$ is .3989423.
+
+### Demystifying the Normal Distribution
+
+Notice: we talked about the height and shape of the probability distribution as a $function$. It does not communicate probabilities.
+
+- The normal distribution is continuous. Thus, probability for any one value is basically 0.
+
+\bigskip That said, the area *under* the curve is the full domain and equals 1.
+
+- The probability of selecting a number between two points on the x-axis equals the area under the curve *between* those two points.
+
+\bigskip Observe:
+
+```
+> pnorm(0, mean=0, sd=1)
+[1] 0.5
+```
+
+### Demystifying the Normal Distribution
+
+```
+x=seq(-4,4,length=200)
+y=dnorm(x, 0, 1)
+plot(x,y,type="l", lwd=2, col="purple")
+x=seq(-4,0,length=200)
+y=dnorm(x, 0, 1)
+polygon(c(-4,x,0),c(0,y,0),col="orange")
+> pnorm(0, mean=0, sd=1)
+[1] 0.5
+```
+
+\begin{center}
+  \includegraphics[width=.50\textwidth]{halfcurve}
+\end{center}
+
+### 68-90-95-99
+
+```
+> pnorm(1,mean=0,sd=1)-pnorm(-1,mean=0,sd=1)
+[1] 0.6826895
+> pnorm(1.645,mean=0,sd=1)-pnorm(-1.645,mean=0,sd=1)
+[1] 0.9000302
+> pnorm(1.96,mean=0,sd=1)-pnorm(-1.96,mean=0,sd=1)
+[1] 0.9500042
+> pnorm(2.58,mean=0,sd=1)-pnorm(-2.58,mean=0,sd=1)
+[1] 0.99012
+```
+
+### Areas under a Normal Curve
+
+\begin{center}
+  \includegraphics[width=.80\textwidth]{z-table.png}
+\end{center}
+
+# Conclusion
+### Conclusion
+
+There are a lot of topics to digest in this lecture, all worth knowing.
+
+- Probability and probability distributions are core components of the inferential statistics we'll be doing next.
