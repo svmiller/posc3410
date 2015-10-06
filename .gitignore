@@ -22,6 +22,8 @@
 *.dvi
 *.fdb_latexmk
 *.R
+*.nav
+*.snm
 
 
 # ignore my old files and other irrelevant directories

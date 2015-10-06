@@ -9,7 +9,7 @@ output:
 #    keep_tex: true
 #    toc: true
     slide_level: 3
-    fig_caption: yes
+    fig_caption: no
     includes:
       in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
       after_body: ~/Dropbox/teaching/table-of-contents.txt
@@ -212,7 +212,7 @@ Important heuristic: Greek letters refer to properties of the population, not th
 
 1. Subtract \(\mu\) from every value in the population.
 2. Square that deviation for every observation.
-	- Example of Student 1 in Table 6-1: (-38)*(-38) - 1,444.
+	- Example of Student 1 in Table 6-1: (-38)*(-38) = 1,444.
 3. Add those squared deviations together.
 	- This is the sum of squared deviations.
 4. Calculate arithmetic mean for sum of squared deviations.
@@ -232,7 +232,7 @@ Important heuristic: Greek letters refer to properties of the population, not th
 ## Standard Error of a Sample Mean
 ### Standard Error of a Sample Mean
 
-Random sampling eliminates error, but invites random error.
+Random sampling eliminates bias, but invites random error.
 
 - We want to eliminate random error if we can.
 - It's not as perilous as systematic error, but it's still unwanted noise.
