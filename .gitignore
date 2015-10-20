@@ -31,6 +31,7 @@
 attendance*
 gradesheets*
 midterm*
+prospectus-comments*
 
 # don't ignore the .gitignore file
 !.gitignore
