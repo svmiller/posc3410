@@ -212,7 +212,7 @@ Figure 8-3 offers a representation of this for our state education and turnout e
 This would be our regression line:
 
 $$
-hat{y} = -14.53 + 1.02(x)
+\hat{y} = -14.53 + 1.02(x)
 $$
 
 How to interpret this:
