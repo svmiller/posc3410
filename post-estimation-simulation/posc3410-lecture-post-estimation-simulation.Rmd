@@ -123,7 +123,7 @@ We have two types of uncertainty.
 We want a **simulated parameter vector**, denoted as:
 
 $$
-hat{\gamma} \sim vec( \hat{\beta}, \hat{\alpha})
+\hat{\gamma} \sim vec( \hat{\beta}, \hat{\alpha})
 $$
 
 Central limit theorem says with a large enough sample and bounded variance:
