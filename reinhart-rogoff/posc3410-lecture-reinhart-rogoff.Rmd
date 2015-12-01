@@ -271,7 +271,7 @@ summary(M2 <- lm(dRGDP ~ factor(dgcat2), data=Data))
 
 \normalsize
 
-### Be Mindful What You're Regression is Saying
+### Be Mindful What Your Regression is Saying
 
 Did anyone see something amiss?
 
