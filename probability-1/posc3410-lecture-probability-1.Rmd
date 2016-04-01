@@ -2,17 +2,19 @@
 title: Probability and Counting for Political Science
 subtitle: POSC 3410 - Quantitative Methods in Political Science
 author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
 date: 
 fontsize: 10pt
 output:
-  beamer_presentation:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
 #    keep_tex: true
-#    toc: true
+# toc: true
     slide_level: 3
-    includes:
-      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
-      after_body: ~/Dropbox/teaching/table-of-contents.txt
+    fig_caption: no
 ---
+
 
 # Introduction
 ### Goal for Today

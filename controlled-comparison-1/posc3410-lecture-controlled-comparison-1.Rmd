@@ -1,0 +1,314 @@
+---
+title: Controlled Comparisons and Controlled Relationships
+subtitle: POSC 3410 - Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+#    keep_tex: true
+# toc: true
+    slide_level: 3
+#    fig_caption: yes
+---
+
+
+# Introduction
+### Goal for Today
+
+*Introduce students to making controlled comparisons and understanding controlled relationships.*
+
+### A Brief Review
+
+What we have done to this point:
+
+- We have an interest in a relationship between an independent variable and a dependent variable.
+- We already know our types of relationships.
+
+### A Brief Review
+
+**Experimental design** with **random assignment** can lead to proper inference about relationship between *x* and *y*.
+
+- However, we often deal with observational or event data.
+- We must deal with the problem of **selection** all the same.
+
+It could be some third process (*z*) that is responsible for the relationship between *x* and *y*.
+
+- We account for this by making **controlled comparisons**.
+
+# Types of Controlled Relationships
+### Types of Controlled Relationships
+
+There are three types of controlled relationships among *x*, *y*, and *z*.
+
+1. Spurious relationship
+2. Additive relationship
+3. Interactive relationship
+
+## Spurious Relaionship
+### Partisanship, Gender, and Gun Control
+
+We will use the partisanship, gender, gun control example from your book.
+
+- We already discussed the theory linking partisanship and gun control.
+- However, Democrats tend to have more women than men.
+	- This is an essential **compositional difference**.
+
+There is good reason to expect gender confounds our partisanship-gun control inference.
+
+### Partisanship and Gun Control
+
+![](fig41.pdf)
+
+### Partisanship, Gender, and Gun Control
+
+What if we believe gender is responsible for this relationship?
+
+- Figure 4.1 would not let us know.
+- Figure 4.2 would let us know in an obvious way.
+
+### Partisanship, Gender, and Gun Control
+
+![](fig42.pdf)
+
+### Partisanship, Gender, and Gun Control
+
+What is the effect of partisanship on gun control opinions, *controlling* for gender?
+
+- Nine of 12 women favored gun control.
+- Six of eight female Dems favored gun control (i.e. 75%)
+- Three of four female Republicans favored gun control (i.e. 75%).
+
+Of the men:
+
+- One male Dem favored while three opposed (i.e. 25%).
+- Two GOP men favored while six opposed (25%).
+
+### Partisanship, Gender, and Gun Control
+
+Gender explains everything in this example.
+
+- Formally: the effect of *x* on *y* is **spurious** to *z*.
+
+### Partisanship, Gender, and Gun Control
+
+![](fig43.pdf)
+
+## Additive Relationship
+### Partisanship, Gender, and Gun Control
+
+Consider this arrangement.
+
+![](fig44.pdf)
+
+### Partisanship, Gender, and Gun Control
+
+Among the women:
+
+- Four of six Democrats favor gun control (66.6%).
+- Three of six Republicans favor gun control (50%).
+
+Among the men:
+
+- Two of six Democrats favor gun control (33.3%)
+- One in six GOP men favor gun control (16.6%).
+
+This is an **additive relationship**.
+
+- *x* and *z* affect *y* independently.
+
+### Partisanship, Gender, and Gun Control
+
+![](fig45.pdf)
+
+## Interactive Relationships
+### Interactive Relationships
+
+**Interactive relationships** are more difficult to fully describe.
+
+- Simply: *x* and *z* act in concert to affect *y*
+- Put another way: the effect of *x* on *y* depends on the value of *z*.
+
+### Partisanship, Gender, and Gun Control
+
+Consider this arrangement.
+
+![](fig47.pdf)
+
+### Partisanship, Gender, and Gun Control
+
+Among the women:
+
+- Four of seven Democrats favor gun control (57.1%)
+- Two of four Republicans favor gun control (50%).
+
+Among the men:
+
+- Three of five Democrats favor gun control (60%).
+- Three of eight Republicans favor gun control (37.8%).
+
+Put another way: the effect of partisanship is strong for men, less for women.
+
+### Partisanship, Gender, and Gun Control
+
+![](fig48.pdf)
+
+# Applied Controlled Comparisons
+### Applied Controlled Comparisons
+
+We can summarize these controlled relationships with:
+
+1. Cross-tabulation
+2. Mean comparison analysis
+
+We will also use actual data.
+
+### Partisanship and Gun Control
+
+![](tab51.pdf)
+
+### Zero-order Relationship
+
+Table 5.1 illustrates a **zero-order relationship**.
+
+- This is the effect of *x* on *y* **not** contorlling for *z*.
+
+The zero-order effect of partisanship on attitudes toward gun control is 18.
+
+### Partisanship, Gender, and Gun Control
+
+Consider this arrangement.
+
+![](tab52.pdf)
+
+## Controlled and Partial Effects
+### Controlled Comparison Table
+
+Table 5.2 is a **controlled comparison table**.
+
+- It shows the relationship between *x* and *y* for each value of *z*.
+
+These tables reveal two types of relationships.
+
+1. Controlled effect
+2. Partial effect
+
+### Controlled Effect
+
+A **controlled effect** is a relationship between *x* and *y* within one value of *z*.
+
+- It could also be between *z* and *y* within one value of *x*.
+
+We obtain the controlled effect of partisanship for both women and men.
+
+- 91.5% of female Dems favor permits to 74.9% of female Republicans.
+	- The controlled effect is 16.6 percentage points.
+- 80.8% of male Dems favor permits to 61.1% of male Republicans.
+	- The controlled effect is 19.7 percentage points.
+
+### Partial Effect
+
+We summarize controlled effects as **partial effect**.
+
+- Summarizes a relationship between two variables taking into account rival variables.
+
+It's tempting, but *don't average the two controlled effects*.
+
+- Doing so assumes the samples are equal.
+
+Instead: weight the controlled effect by percentage of the sample.
+
+- In our case: 16.6 * (.562) + 19.7 * (.438) = 17.96
+
+The partial effect of partisanship on gun control opinions is 17.96.
+
+### Partial Effect
+
+What is the partial effect of *gender* on gun control attitudes?
+
+- Sounds weird to ask. No one "increases" in gender.
+
+Follow the **rule of direction for nominal relationships**.
+
+- Treat the left-most column as the base category (here: women).
+
+### Partial Effect of Gender on Gun Control
+
+Controlled effects:
+
+- 91.5% of female Dems favor permits to 80.8% of male Dems (10.7%).
+- 74.9% of female Republicans favor permits to 61.1% of male Republicans (13.8).
+
+Weight the controlled effects to get a partial effect.
+
+- 10.7*(.570) + 13.8*(.430) = 12.03
+
+The partial effect of gender on gun control opinions is 12.03.
+
+## Identifying the Pattern
+### Identifying the Pattern
+
+Ask the following three questions for relationships among *x*, *y*, and *z*.
+
+1. Does a relationship exist between *x* and *y* in at least one value of *z*?
+2. Is the tendency (i.e. positive or negative) the same at all values of *z*?
+3. Is the magnitude effect the same or close to it in all values of *z*?
+
+### Identifying the Pattern
+
+If the answer to the first question is no, you can stop there.
+
+- It's a spurious relationship.
+
+If the answer to the second question is no, you can stop there.
+
+- There's an interaction effect.
+
+If the answer to the third question is no, there's an interaction.
+
+- If "yes", it's an additive relationship.
+
+### Partisanship, Gender, and Gun Control
+
+![](fig51.pdf)
+
+
+## A Clear Example of an Interaction
+### Abortion Opinions, Salience, and Vote Choice
+
+Consider the following controlled comparison table.
+
+![](tab53.pdf)
+
+### Abortion Opinions, Salience, and Vote Choice
+
+The controlled effect of abortion opinion:
+
+- 63.2 - 45.9 for "low" = 17.3
+- 82 - 34.9 for "high" = 47.1
+- Partial effect: 17.3 * (.495) + 47.1 * (.505) = 32.3
+
+Controlled effect of salience:
+
+- 63.2 - 82 for "always permit" = -18.8
+- 45.9 - 34.9 for "not always permit" = 11
+- Partial effect: -18.8 * (.416) + 11 * (.584) = -1.39
+
+Something already looks a lot different here.
+
+### Abortion Opinions, Salience, and Vote Choice
+
+![](fig52.pdf)
+
+# Conclusion
+### Conclusion
+
+No causal statement can be made as a zero-order relationship
+
+- This will get more complicated in multiple regression
+- Fortunately, computers do the heavy lifting for us.
+
+Get comfortable making these types of controlled comparisons within a simple three-variable context.
