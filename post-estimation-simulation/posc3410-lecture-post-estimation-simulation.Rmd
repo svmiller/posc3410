@@ -8,44 +8,48 @@ date:
 fontsize: 10pt
 output:
  beamer_presentation:
-    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm.latex.beamer.template
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
 #    keep_tex: true
 # toc: true
  slide_level: 3
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(cache=FALSE)
+knitr::opts_chunk$set(cache=TRUE)
 library(car)
 library(arm)
-Data <- read.csv("~/Dropbox/teaching/posc3410/post-estimation-simulation/gss14vote.csv", na.strings=c(".a",".d",".i",".n"))
-Data$voteobama <- with(Data, recode(pres12, "1=1; 2:4=0"))
-Data$voteromney <- with(Data, recode(pres12, "1=0; 2=1; 3:4=0"))
-Data$white <- with(Data, recode(race, "1=1; 2:3=0"))
-Data$black <- with(Data, recode(race, "1=0; 2=1; 3=0"))
-Data$otherrace <- with(Data, recode(race, "1:2=0; 3=1"))
-Data$collegeed <- with(Data, recode(degree, "0:2=0; 3:4=1"))
-Data$partyid <- with(Data, recode(partyid, "7=NA"))
-Data$female <- with(Data, recode(sex, "1=0; 2=1"))
-Data$z.age <- arm::rescale(Data$age)
-Data$z.partyid <- arm::rescale(Data$partyid)
-Data$z.rincom06 <- arm::rescale(Data$rincom06)
 library(Zelig)
-Data2 <- with(Data, data.frame(voteromney, age, white, black, otherrace, collegeed, partyid, female, rincom06))
-Data2 <- na.omit(Data2)
+library(stargazer)
+Data <- read.csv("~/Dropbox/teaching/posc3410/post-estimation-simulation/2014gss-prochoice.csv")
+Data$rincom06 <- Data$rincom06 - 1
 
-M3 <- zelig(voteromney ~ age + female + collegeed + white + 
-              black + partyid + rincom06, 
-model = "logit", data = Data2)
+M1 <- lm(prochoice ~ z.age +  female  + black + otherrace + hispanic + collegeed + 
+             atheist + z.partyid + z.relactiv + z.rincom06, data=Data)
 
-M3.bsdem <- setx(M3, black = 1, white = 0, partyid = 0)
-M3.bsrep <- setx(M3, black = 1, white = 0, partyid = 6)
+M2 <- glm(abany ~ z.age +  female  + black + otherrace + hispanic + 
+            collegeed + atheist + z.partyid + z.relactiv + z.rincom06,
+          data=Data, family=binomial(link="logit"))
 
-M3.sim <- sim(M3, x = M3.bsdem, x1 = M3.bsrep)
+M3 <- zelig(abany ~ age + female + black + otherrace + hispanic +
+              collegeed + atheist + partyid + relactiv + rincom06,
+            model="logit", data= Data)
 
-M3.bsdemtosrep <- setx(M3, black = 1, white = 0, partyid = 0:6)
+M3.athsdem <- setx(M3, atheist = 1, partyid = 0)
+M3.athsrep <- setx(M3, atheist = 1, partyid = 6)
 
-M3.sim2 <- sim(M3, x = M3.bsdemtosrep)
+M3.sim <- sim(M3, x = M3.athsdem, x1 = M3.athsrep)
+
+M3.athsdemtosrep <- setx(M3, atheist=1, partyid = 0:6)
+
+M3.sim2 <- sim(M3, x = M3.athsdemtosrep)
+
+ci.plot(M3.sim2, xlab = "Party Identification (D to R)",
+        ylab = "E(Vote for Romney)",
+        main = "The Effect of Republican Party Identification 
+        on \n a Black Person's Vote for Romney",
+        ci=c(90,95)
+)
+
 ```
 
 # Introduction
@@ -145,9 +149,9 @@ This is a mouthful! Let's break the process down step-by-step.
 
 Do this *m* times (typically *m* = 1000) to estimate full probability distribution of $Y_c$.
 
-- Expected value $E(Y_c)$ = predicted value for linear models. It just averages over the fundamental uncertainty.
+<!-- - Expected value $E(Y_c)$ = predicted value for linear models. It just averages over the fundamental uncertainty. -->
 
-# An Application with Vote Choice in 2012 (2014 GSS)
+# An Application with Abortion Attitudes (2014 GSS)
 ### An Application with Zelig
 
 Don't worry! We have software to make this easier.
@@ -156,65 +160,158 @@ Don't worry! We have software to make this easier.
 
 I'll also be using sample data from my Github page.
 
-- Question: What explains who voted for Romney or Obama in the 2012 presidential election?
+- Question: What explains a pro-choice attitude in an American citizen?
 
 ### Understanding our Sample Data
 
 I took the 2014 wave of GSS data on American public opinion.
 
-- **voteromney**: 1 if respondent (*r*) voted for Romney; 0 if *r* voted for someone else.
-	- I also have an Obama version of this variable.
-- **age**: age of respondent in years (18:89).
-	- Note: Regrettably, GSS stops coding year after 89+.
-- **race**: three category nominal variable (white, black, other).
-- **collegeed**: 1 if *r* has at least a bachelors; 0 if otherwise.
-- **partyid**: strength of affiliation with Republican party (0:6).
-	- 0 = strong Democrat; 6 = strong Republican
-- **female**: 1 if *r* is a woman; 0 if *r* is a man.
-- **rincom06**: Income categories (1:25).
-	- 1 = under $1,000 earned in 2013; 25 = $150k or over.
+- **prochoice**: normally distributed "latent pro-choice sentiment"
+
+Estimated from Y/N questions about whether abortion should be allowed...
+
+1. For any reason (**abany**)
+2. Possible defect in the child (**abdefect**)
+3. Woman is married, but wants no more children (**abnomore**)
+4. Health risk to the mother (**abhlth**)
+5. Woman is poor, can't afford children (**abpoor**)
+6. Woman is pregnant as result of rape (**abrape**)
+7. Woman is not married; doesn't want to marry the man (**absingle**)
+
+### Understanding our Sample Data
+
+Here are our predictor variables:
+
+- Age (in years)
+- Female
+- Black 
+- Other race, not white 
+- Hispanic ethnicity
+- College education
+- Respondent is an atheist
+- Religious activity [never:once a day, 0:9]
+- Party ID [strong Dem:strong GOP, 0:6]
+- Income [under $1k:over $150k, 0:24]
 
 ### A Sample Regression
 
 \footnotesize
-```{r}
-M1 <- glm(voteromney ~ age + female + collegeed + white + black + partyid + rincom06, 
+```{r, eval=FALSE}
+M1 <- lm(prochoice ~ age +  female  + black + otherrace + hispanic + 
+           collegeed + atheist +  relactiv + partyid +rincom06,
+         data=Data)
+
+M2 <- glm(abany ~ age +  female  + black + otherrace + hispanic + 
+            collegeed + atheist + relactiv + partyid + rincom06,
           data=Data, family=binomial(link="logit"))
-summary(M1)
+
+stargazer(M1, M2, header=FALSE, font.size="footnotesize", style="ajps",
+          title="Explaining Pro-Choice Attitudes (GSS, 2014)",
+          omit.stat=c("ll","aic", "rsq", "adj.rsq", "f", "ser"),
+          model.names= FALSE, dep.var.labels.include = FALSE,
+          covariate.labels=c("Age", "Female", "Race=Black", "Race=Other",
+                             "Hispanic", "College Educated", 
+                             "Atheist", "Religious Activity",
+                             "Party ID (D to R)", "Income", "Constant"),
+          single.row=TRUE
+          )
 
 ```
 
 \normalsize
+
+### A Sample Regression
+
+```{r, echo=FALSE, results="asis"}
+M1 <- lm(prochoice ~ age +  female  + black + otherrace + hispanic + 
+           collegeed + atheist +  relactiv + partyid +rincom06, data=Data)
+
+M2 <- glm(abany ~ age +  female  + black + otherrace + hispanic + 
+            collegeed + atheist + relactiv + partyid + rincom06,
+          data=Data, family=binomial(link="logit"))
+
+stargazer(M1, M2, header=FALSE, font.size="footnotesize", style="ajps",
+          title="Explaining Pro-Choice Attitudes (GSS, 2014)",
+          omit.stat=c("ll","aic", "rsq", "adj.rsq", "f", "ser"),
+          model.names= FALSE, dep.var.labels.include = FALSE,
+          covariate.labels=c("Age", "Female", "Race=Black", "Race=Other",
+                             "Hispanic", "College Educated", 
+                             "Atheist", "Religious Activity",
+                             "Party ID (D to R)", "Income", "Constant"),
+          single.row=TRUE
+          )
+
+```
 
 ### Standardizing the Variables
 
 \footnotesize
-```{r}
-M2 <- glm(voteromney ~ z.age + female + collegeed + white + black + 
-            z.partyid + z.rincom06, data=Data, family=binomial(link="logit"))
-summary(M2)
+```{r, eval=FALSE}
+M1 <- lm(prochoice ~ z.age +  female  + black + otherrace + hispanic + 
+           collegeed + atheist +  z.relactiv + z.partyid + z.rincom06, 
+         data=Data)
+
+M2 <- glm(abany ~ z.age +  female  + black + otherrace + hispanic + 
+            collegeed + atheist + z.relactiv + z.partyid + z.rincom06,
+          data=Data, family=binomial(link="logit"))
+
+stargazer(M1, M2, header=FALSE, font.size="footnotesize", style="ajps",
+          title="Explaining Pro-Choice Attitudes (GSS, 2014)",
+          omit.stat=c("ll","aic", "rsq", "adj.rsq", "f", "ser"),
+          model.names= FALSE, dep.var.labels.include = FALSE,
+          covariate.labels=c("Age (Standardized)", "Female", "Race=Black", 
+                             "Race=Other", "Hispanic", 
+                             "College Educated", "Atheist", 
+                             "Religious Activity (Standardized)",
+                             "Party ID (D to R, Standardized)", 
+                             "Income (Standardized)", "Constant"),
+          single.row=TRUE
+          )
 
 ```
 
 \normalsize
 
+
+### Comparing the Results
+
+```{r, echo=FALSE, results="asis"}
+
+M1 <- lm(prochoice ~ z.age +  female  + black + otherrace + hispanic + collegeed + 
+             atheist + z.relactiv + z.partyid + z.rincom06, data=Data)
+
+M2 <- glm(abany ~ z.age +  female  + black + otherrace + hispanic + 
+            collegeed + atheist + z.relactiv + z.partyid + z.rincom06,
+          data=Data, family=binomial(link="logit"))
+
+stargazer(M1, M2, header=FALSE, font.size="footnotesize", style="ajps",
+          title="Explaining Pro-Choice Attitudes (GSS, 2014)",
+          omit.stat=c("ll","aic", "rsq", "adj.rsq", "f", "ser"),
+          model.names= FALSE, dep.var.labels.include = FALSE,
+          covariate.labels=c("Age (Standardized)", "Female", "Race=Black", "Race=Other",
+                             "Hispanic", "College Educated", 
+                             "Atheist", "Religious Activity (Standardized)",
+                             "Party ID (D to R, Standardized)", "Income (Standardized)", "Constant"),
+          single.row=TRUE
+          )
+
+```
+
 ### Something Nana Might Ask
 
-What's the effect of Republican party ID on black voters?
+What's the effect of Republican party ID on an atheist's pro-choice attitudes?
 
 - Let's see!
 
 First, we re-estimate the model in Zelig.
 
-- We also have to subset for complete cases.
-- Zelig doesn't play nice with missing data.
-
 ### The Model in Zelig
 
 ```{r eval=FALSE}
-M3 <- zelig(voteromney ~ age + female + collegeed + white + 
-              black + partyid + rincom06, 
-model = "logit", data = Data2)
+M3 <- zelig(abany ~ age + female + black + otherrace + 
+              hispanic + collegeed + atheist + 
+              partyid + relactiv + rincom06,
+            model="logit", data= Data)
 ```
 
 Notice Zelig's post-estimation simulation doesn't require intuitive zeroes. 
@@ -224,81 +321,70 @@ Notice Zelig's post-estimation simulation doesn't require intuitive zeroes.
 
 ### Answering Nana's Question
 
-What's the probability of a black vote for Romney among strong Republicans? How about strong Democrats?
+What's the probability of an atheist's pro-choice attitude among strong Republicans? How about strong Democrats?
 
 
 ```{r eval=FALSE}
-M3.bsdem <- setx(M3, black = 1, white = 0, partyid = 0)
-M3.bsrep <- setx(M3, black = 1, white = 0, partyid = 6)
+M3.athsdem <- setx(M3, atheist = 1, partyid = 0)
+M3.athsrep <- setx(M3, atheist = 1, partyid = 6)
 
-M3.sim <- sim(M3, x = M3.bsdem, x1 = M3.bsrep)
-summary(M3.sim)
+M3.sim <- sim(M3, x = M3.athsdem, x1 = M3.athsrep)
 
 ```
-
 
 ### Answering Nana's Question
 
-\tiny
-```{r}
-summary(M3.sim)
+
+|  | **E(Y)** | **SD** | **95% Interval** |
+|--|:---------------:|:--------:|:------------------:|
+| Atheist, Strong Dem | `r round(mean(M3.sim$getqi(qi="ev", xvalue="x")), 3)` | `r round(sd(M3.sim$getqi(qi="ev", xvalue="x")), 3)` | (`r round(mean(M3.sim$getqi(qi="ev", xvalue="x")), 3) - round(sd(M3.sim$getqi(qi="ev", xvalue="x"))*qnorm(.975), 3)`, `r round(mean(M3.sim$getqi(qi="ev", xvalue="x")), 3) + round(sd(M3.sim$getqi(qi="ev", xvalue="x"))*qnorm(.975), 3)`) |
+| Atheist, Strong GOP | `r round(mean(M3.sim$getqi(qi="ev", xvalue="x1")), 3)` | `r round(sd(M3.sim$getqi(qi="ev", xvalue="x1")), 3)` | (`r round(mean(M3.sim$getqi(qi="ev", xvalue="x1")), 3) - round(sd(M3.sim$getqi(qi="ev", xvalue="x1"))*qnorm(.975), 3)`, `r round(mean(M3.sim$getqi(qi="ev", xvalue="x1")), 3) + round(sd(M3.sim$getqi(qi="ev", xvalue="x1"))*qnorm(.975), 3)`) |
+| *First Difference* | `r round(mean(M3.sim$getqi(qi="fd", xvalue="x1")), 3)` | `r round(sd(M3.sim$getqi(qi="fd", xvalue="x1")), 3)` | (`r round(mean(M3.sim$getqi(qi="fd", xvalue="x1")), 3) - round(sd(M3.sim$getqi(qi="fd", xvalue="x1"))*qnorm(.975), 3)`, `r round(mean(M3.sim$getqi(qi="fd", xvalue="x1")), 3) + round(sd(M3.sim$getqi(qi="fd", xvalue="x1"))*qnorm(.975), 3)`) |
+
+### Answering Nana's Question
+
+```{r, echo=FALSE}
+# summary(M3.sim)
+M3.sim$graph()
 ```
 
-\normalsize
+
 
 ### Another Question from Nana
 
-What's the effect of Republican party identification on Black voters?
+What's the effect of Republican party identification on atheists, overall?
 
 ```{r eval=FALSE}
-M3.bsdemtosrep <- setx(M3, black = 1, white = 0, partyid = 0:6)
+M3.athsdemtosrep <- setx(M3, atheist=1, partyid = 0:6)
+M3.nathsdemtosrep <- setx(M3, atheist=0, partyid = 0:6)
 
-M3.sim2 <- sim(M3, x = M3.bsdemtosrep)
+M3.sim2 <- sim(M3, x = M3.athsdemtosrep, x1=M3.nathsdemtosrep)
 
-plot.ci(M3.sim2, xlab = "Party Identification (D to R)",
-        ylab = "E(Vote for Romney)",
+ci.plot(M3.sim2, xlab = "Party Identification (D to R)",
+        ylab = "E(Abortion is OK for any reason)",
         main = "The Effect of Republican Party Identification 
-        on \n a Black Person's Vote for Romney",
+        on a Pro-Choice Attitude \n (Atheists in Blue; Non-Atheists in Gold)",
         ci=c(90,95)
 )
 ```
 
 ### A Pretty Graph
 
+
 ```{r echo=FALSE}
-plot.ci(M3.sim2, xlab = "Party Identification (D to R)",
-        ylab = "E(Vote for Romney)",
-        main = "The Effect of Republican Party Identification on \n a Black Person's Vote for Romney",
+M3.athsdemtosrep <- setx(M3, atheist=1, partyid = 0:6)
+M3.nathsdemtosrep <- setx(M3, atheist=0, partyid = 0:6)
+M3.sim2 <- sim(M3, x = M3.athsdemtosrep, x1=M3.nathsdemtosrep)
+
+ci.plot(M3.sim2, xlab = "Party Identification (D to R)",
+        ylab = "E(Abortion is OK for any reason)",
+        main = "The Effect of Republican Party Identification 
+        on a Pro-Choice Attitude \n (Atheists in Blue; Non-Atheists in Gold)",
         ci=c(90,95)
 )
 ```
 
-### What's Going on With the Black Vote among the Republicans?
 
-Notice the huge confidence intervals for Black Republicans? What do you think is happening there?
-
-### There Aren't Many Black Republicans
-
-```{r}
-table(Data$black, Data$partyid)
-```
-
-Note: Black respondents are the row; partyid is the column
-
--  Also: 4 = "independent, near Republican"; 5 = "not a strong Republican"; 6 = "strong Republican"
-
-### There Weren't Many Black Voters for Romney Either
-
-```{r}
-table(Data$black, Data$voteromney)
-```
-
-Note: Black respondents are the row; Romney votes are the column.
-
-- If you're curious, two of those three black votes for Romney came from self-identified strong Republicans.
-- One actually came from a self-identified strong Democrat!
-
-The relative dearth of black Republicans and black Romney voters adds to the uncertainty in our predictions.
 
 # Conclusion
 ### Conclusion
@@ -311,3 +397,4 @@ Regression provides all-else-equal effect sizes across the range of the data.
 Post-estimation simulation from a multivariate normal distribution does this.
 
 - When you start doing this yourselves, be prepared to provide quantities of interest for your audience.
+

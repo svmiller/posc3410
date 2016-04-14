@@ -2,16 +2,17 @@
 title: Scaling by Two Standard Deviations
 subtitle: POSC 3410  -- Quantitative Methods in Political Science
 author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
 date: 
 fontsize: 10pt
 output:
-  beamer_presentation:
-#   keep_tex: true
-#    toc: true
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+#    keep_tex: true
+# toc: true
+    fig_caption: true
     slide_level: 3
-    includes:
-      in_header: ~/Dropbox/teaching/clemson-beamer-header-simple.txt
-      after_body: ~/Dropbox/teaching/table-of-contents.txt
 ---
 
 # Introduction
@@ -23,16 +24,18 @@ output:
 
 You all should be familiar with regression by now.
 
-\bigskip Regression coefficients communicate:
+### Introduction
 
-- Estimated change in $y$ for one-unit change in $x$.
+Regression coefficients communicate:
+
+- Estimated change in *y* for one-unit change in *x*.
     - This is in linear regression.
-- Estimated change in *logged odds* of $y$ for one-unit change in $x$. 
+- Estimated change in *logged odds* of *y* for one-unit change in *x*. 
     - This is the interpretation for logistic regression.
 
 These communicate some quantities of interest.
 
-- After all, you want to know the effect of $x$ on $y$!
+- After all, you want to know the effect of *x* on *y*!
 
 ### Introduction
 
@@ -41,10 +44,10 @@ However, it's easy (and tempting) to provide misleading quantities of interest.
 - Our variables are seldom (if ever) on the same scale.
     - e.g. age can be anywhere from 18 to 100+, but years of education are typically bound between 0 and 25 (or so).
 - Worse yet, zero may not occur in any variable.
-    - We would have an uninterpretable $y$-intercept.
+    - We would have an uninterpretable *y*-intercept.
   - From my experience, this can lead to false convergence of the model itself.
 	
-\textbf{Your goal:} your regression results should be as easily interpretable as possible.
+**Your goal**: regression results should be as easily interpretable as possible.
 
 # What Standardization Does
 
@@ -79,6 +82,28 @@ This transforms any variable to have a mean of zero and a standard deviation of 
     > sd(s.x)
     [1] 1
 
+
+### Density Plot
+
+```{r, echo=FALSE, eval=TRUE}
+set.seed(8675309)
+x <- rnorm(100, 58, 17.8)
+library(lattice)
+plot(density(x))
+
+```
+
+### Density Plot (Standardized)
+
+```{r, echo=FALSE, eval=TRUE}
+set.seed(8675309)
+x <- rnorm(100, 58, 17.8)
+library(lattice)
+s.x <- (x - mean(x))/(sd(x))
+plot(density(s.x))
+
+```
+
 ### Works with Non-Normally Distributed Data Too
 
     > set.seed(8675309)
@@ -93,21 +118,51 @@ This transforms any variable to have a mean of zero and a standard deviation of 
 	> sd(s.x)
 	[1] 1
 	
+### Density Plot
+
+```{r, echo=FALSE, eval=TRUE}
+set.seed(8675309)
+x <- rpois(100, 1.5)
+library(lattice)
+histogram(x)
+
+```
+	
+	
+### Density Plot (Standardized)
+
+```{r, echo=FALSE, eval=TRUE}
+set.seed(8675309)
+x <- rpois(100, 1.5)
+library(lattice)
+s.x <- (x - mean(x))/(sd(x))
+# plot(density(s.x))
+histogram(s.x)
+
+```
+
+### Don't Let the Scale Fool You
+
+```{r}
+unique(x)
+unique(s.x)
+```
+
 ### What Standardization Does to Regression Coefficients
 
-Recall what standardization does when overlaying standardized $x$-axis with normal $x$-axis.
+Recall what standardization does when overlaying standardized *x*-axis with normal *x*-axis.
 
-- Distance between 0 and 1 = 34\% of data.
+- Distance between 0 and 1 = 34% of data.
 
-Thus, a regression coefficient for standardized variable estimates the effect of $x$ on $y$ for a one-standard deviation change from the mean.
+Thus, a regression coefficient for standardized variable estimates the effect of *x* on *y* for a one-standard deviation change from the mean.
 
-- i.e. effect of a change across 34\% of the data of $x$.
+- i.e. effect of a change across 34% of the data of *x*.
 
 ### Benefits/Limitations of Standardization
 
 Standardizing by one standard deviation is helpful for a couple reasons.
 
-- It creates a meaningful zero (i.e. the mean) for the $y$-intercept.
+- It creates a meaningful zero (i.e. the mean) for the *y*-intercept.
 - Regression coefficient captures a magnitude change.
 
 However, it won't help us make preliminary comparisons with dummy variables.
@@ -130,9 +185,8 @@ It may be misleading to think that binary variables have the largest effect on a
 
 Take a continuous (non-binary) input variable and divide it by two standard deviations instead of one.
 
-\bigskip This will transform the data to have a mean of zero and standard deviation of .5.
-
-- Regression coefficient would communicate estimated change in $y$ for change across 47.7\% of data in $x$.
+- This will transform the data to have a mean of zero and standard deviation of .5.
+- Regression coefficient would communicate estimated change in $y$ for change across 47.7% of data in *x*.
 
 ### Observe with Normally Distributed Data
 
@@ -181,7 +235,7 @@ I revisit the state education-turnout example from the Pollock book.
 
 \bigskip I do use newer data.
 
-- \textbf{state education}: \% of state having HS diploma (2009).
+- \textbf{state education}: % of state having HS diploma (2009).
 - \textbf{turnout}: state-level turnout of VEP in 2012 general election.
 - \textbf{region}: factor/``fixed effects''
     - 0 = West, 1 = Northeast, 2 = Midwest, 3 = South.

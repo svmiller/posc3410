@@ -4,7 +4,7 @@ output:
     keep_tex: true
     fig_caption: true
     latex_engine: pdflatex
-    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm.latex.syllabus.template
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-syllabus.tex
 geometry: margin=1in
 title: "POSC 3410: Quantitative Methods in Political Science"
 author: Steven V. Miller
