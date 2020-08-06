@@ -36,5 +36,10 @@ gradesheets*
 midterm*
 prospectus-comments*
 
+# Oops...
+
+_site
+.sass-cache
+
 # don't ignore the .gitignore file
 !.gitignore
