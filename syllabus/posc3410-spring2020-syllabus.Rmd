@@ -1,0 +1,468 @@
+---
+output: 
+  pdf_document:
+    keep_tex: FALSE
+    fig_caption: TRUE
+    latex_engine: xelatex
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-syllabus.tex
+geometry: margin=1in
+
+title: "POSC 3410: Quantitative Methods in Political Science"
+author: Steven V. Miller
+date: "Fall 2020"
+
+email: "svmille@clemson.edu"
+web: "posc3410.svmiller.com"
+officehours: "\\shrug"
+office: "\\shrug"
+classroom: "209 Daniel (*hybrid*)"
+classhours: "TR 9:30-10:45 a.m."
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage[normalem]{ulem}
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+library(ggpmisc)
+library(anonymizer)
+library(ggcal)
+library(stringr)
+library(kfigr)
+library(broom)
+
+# Calendar dates of importance ----
+
+firstmon <- as.Date("2020-08-17")
+mon <- firstmon
+lastday <- as.Date("2020-12-04")
+
+# fri <- as.Date("2016-01-08")
+
+# * midterm and homework... -----
+
+midterm <- as.Date("2020-10-01")
+homework <- c(as.Date("2020-09-17"),
+              as.Date("2020-09-24"),
+              as.Date("2020-10-08"),
+              as.Date("2020-10-22"),
+              as.Date("2020-11-17"),
+              as.Date("2020-12-01"))
+finalexam <- as.Date("2020-12-09") # 8 am
+
+paper <- as.Date("2020-11-28")
+
+exam_dates <- c(midterm, finalexam)
+
+# * dates to remove... -----
+
+remove_dates <- c(as.Date("2020-11-03"),
+                  seq(as.Date("2020-11-23"), as.Date("2020-11-27"), by = "1 day"))
+
+
+mydate <- seq(firstmon+2, lastday, by="1 day")
+mydate <- c(mydate, finalexam)
+
+# Empty dates in which I won't be here. -----
+# March 12: Alabama
+# March 16-20: Spring Break
+# Final exam: Thurs. 8 a.m. - 10:30 a.m (Apr. 30)
+
+
+mydate <- mydate[! mydate %in% remove_dates]
+
+myfills <- ifelse(format(mydate, "%w") %in% c(0,1, 3, 5,6), "Other Day" ,"Class Day")
+
+# Fill in exams
+
+# exam_dates <- c(as.Date("2020-01-30"), 
+#                 as.Date("2020-02-20"),
+#                 as.Date("2020-04-02"),
+#                 finalexam)
+myfills <- ifelse(mydate %in% exam_dates, "Exams" ,myfills)
+myfills <- ifelse(mydate %in% homework, "Homework Due" ,myfills)
+myfills <- ifelse(mydate %in% paper, "Paper Due" ,myfills)
+
+# Fill in paper due dates
+
+# myfills <- ifelse(mydate %in% c(as.Date("2019-11-23")), "Paper Due (Turnitin)", myfills)
+
+give_me_days <- seq(as.Date("2020-08-01"),
+                    as.Date("2020-12-31"), by="1 day")
+give_me_days <- as.numeric(str_sub(give_me_days, start= -2))
+
+
+
+library(RefManageR)
+# library(knitcitations)
+# library(rcrossref)
+bib <- ReadBib("~/Dropbox/master.bib")
+myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+library(stevemisc)
+
+class_cal <- ggcal(mydate, myfills) +
+  theme(plot.title=element_text(face="bold"),
+        plot.caption=element_text(hjust=1, size=9,
+                                    margin=margin(t=10), face="italic")) +
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Other Day"="lightsteelblue",
+                             "Exams"="indianred4",
+                             "Homework Due" = "lightpink2",
+                             "Paper Due" = "chocolate3"),
+                    breaks=c("Class Day","Exams","Homework Due", "Paper Due")) +
+  theme(legend.position="bottom") +
+#  geom_point(shape=1, size=7) +
+  geom_text(aes(label=give_me_days)) +
+  labs(caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27).")
+
+```
+
+# Course Description
+
+Both students and scholars alike are in political science as a result of their keen interest in politics. However, there is an increasing gap between how political science is applied by scholars and how it is understood by students. This class will aim to bridge that gap by introducing students to the *science* of political science. We will start with the basics, discussing concepts and variables before advancing toward regression. The course will conclude with very basic introductions to some advanced topics like non-normal responses, Bayesian inference, and post-estimation simulation. The overall goal of this class is to prepare students for upper division courses where peer-reviewed journal articles with multiple regressions and/or formal models are prominent.
+
+# Course Objectives
+
+1. Understand concepts and how we operationalize abstract concepts for the sake of testing.
+
+2. Delineate variables among various types, like nominal, ordinal and interval.
+
+3. Put together a formal research design to address questions of interest in the study of politics.
+
+4. Express why the logic of control is vital to any good research design.
+
+5. Understand important elements of data, like central tendency and spread.
+
+6. Become familiar with advanced topics like non-normal responses, Bayesian thinking, and post-estimation simulation.
+
+7. Learn the `R` programming language, which should be a major addition to a résumé for students who want a career in data analysis or are thinking about graduate school in political science.
+
+# Recommended Readings
+
+```{r, echo = FALSE, results="asis"} 
+bib["kellstedtwhitten2013fpsr", "pollockiii2016epa"]
+``` 
+
+<!-- Clemson University's bookstore has these listed as "required readings." That is a category error that is ultimately my fault. They are textbooks that I would otherwise assign as "required", and was nudged to submit to Clemson University's bookstore to purchase early into the pandemic. At the time, we all (naively) believed a few-week quarantine and a full-throated state and national government response would have been sufficient to contain the novel coronavirus (COVID-19). It was mostly sufficient in peer countries to us, ranging from Australia to Italy. However, the quarantine was half-hearted and we abandoned it (in South Carolina) after about three weeks and the state government (and majority leaders in the U.S. Senate) never bothered a follow-up response to the one it gave early into the pandemic when the COVID-19 outbreak also tanked the stock market. Now, we are in a situation where we may or may not ever meet in person after a four-week online start. -->
+
+<!-- Toward that end, I want you to consider these textbooks as "recommended" and not "required." My rationale here is multiple. First, Clemson University is asking a lot of you, the student to pay full-price for a social learning experience at the university that you may or may not receive this semester or academic year. To be clear, most of that increasing expense for a college education that you are paying does not go to me---in fact people like me are [about the same price (inflation-adjusted) we were 40 years ago](https://nces.ed.gov/programs/digest/d10/tables/dt10_267.asp). It instead goes to all the things you do not typically price into your university experience given diminished support from the state government (e.g. administrators and capital projects). No matter, textbooks *are* a price you see and they can be quite exorbitant (especially through the university bookstore). If I can alleviate that cost for you in an extraordinary situation like this, I will. Second, and related to the end of the previous point, university bookstore markup is quite frankly obscene and I would hate to think you might also incur a shipping cost on top of that to have the books sent through a throttled (for other nefarious reasons) postal service. Third, and to be clear, I do intend to teach around these textbooks as I have in previous semesters. I assign these books because I believe they are useful. You should look into them if you'd like! Yet, quantitative methods is a unique subset of political science pedagogy where you could truly teach yourself if you had a working internet connection. Unlike other topics/fields in the discipline, political scientists who teach students about research design and methodology are apt to share their notes, lectures slides, and discuss stuff on Twitter. Coding-related inquiries are even more abundant on a place like [Stack Overflow](https://stackoverflow.com/). You could truly "just Google" your way through the semester if you were diligent. Given the extraordinary situation,  I intend to help you by giving ample clarification of what we will be discussing next week if you wanted to take to Google or Stack Overflow to teach yourself these topics around my online (or in-person?) instruction. My feelings would not be hurt. -->
+
+I assign these books because I believe they are useful. You should look into them if you'd like! Yet, quantitative methods is a unique subset of political science pedagogy where you could truly teach yourself if you had a working internet connection. Unlike other topics/fields in the discipline, political scientists who teach students about research design and methodology are apt to share their notes, lectures slides, and discuss stuff on Twitter. Coding-related inquiries are even more abundant on a place like [Stack Overflow](https://stackoverflow.com/). You could truly "just Google" your way through the semester if you were diligent. Given the extraordinary situation,  I intend to help you by giving ample clarification of what we will be discussing next week if you wanted to take to Google or Stack Overflow to teach yourself these topics around my online (or in-person?) instruction. My feelings would not be hurt.
+
+# Course Policy
+
+This section of the syllabus details multiple policies that will be implemented in this class through the semester. Continued enrollment in this class constitutes acceptance of the terms outlined in this document.
+
+## Grading Policy
+
+- **20%** of your grade will be determined by a midterm to be completed and submitted **before Thursday, Oct. 1, 10:45 a.m**.[^before] The midterm must be submitted via *Turnitin* on the course's Canvas module. I will upload the midterm to Canvas with about 48 hours to spare before it is due.
+
+[^before]: Allow me to reiterate the "before" qualifier. A paper submitted at 10:45:00 a.m. is *late* by this interpretation. I do not accept late work. Do not assume your laptop's clock perfectly coincides with the system's time or atomic time. Resist the urge to punt assignments until the proverbial eleventh hour.
+
+- **30%** of your grade will be determined by five problem sets (i.e. homework) due periodically through the semester. Check the course schedule and class calendar later in the syllabus. The paper prospectus will be graded as an additional problem set as well. These must all be submitted via *Turnitin* on the course's Canvas module.
+
+<!-- - **10%** of your grade will be determined by your attendance and participation in class. -->
+
+- **20%** of your grade will be determined by a research design paper that applies quantitative methodology to a social science question of interest. I provide more information about this paper in a supplemental document on the course website. This research design is due **before Saturday, Nov. 28, 10:00 a.m.** It must be submitted via *Turnitin* on the course's Canvas module.
+
+<!-- Allow me to reiterate the "before" qualifier. A paper submitted at nine hours, zero minutes, and zero seconds is *late* by this interpretation. I do not accept late work. Do not assume your laptop's clock perfectly coincides with the system's time or atomic time. -->
+
+- **30%** of your grade will be determined by a final exam. This will be due **before Wednesday, Dec. 9, 10:30 a.m.** I will upload the final to Canvas with about 48 hours to spare before it is due.
+
+## Homework Policy
+
+I assign problem sets that require a rudimentary knowledge of the `R` programming language. Students should download this free software programming language at [cran.r-project.org](http://cran.r-project.org) and install it on their personal computer. Binaries are available for Windows and Mac (even Linux, if that is the weapon of choice for the student).
+
+- The `R` scripts I provide are designed to work on the student’s computer with minimal maintenance. I will make this clear in each particular script.
+
+- I *strongly* encourage students to contact me to learn about the language. I will assume that not discussing `R` with me means the student is fluent with the software.
+
+- Consider getting a graphical user interface (GUI) front-end for `R` to learn it better. I recommend RStudio, available for free at [www.rstudio.com](http://www.rstudio.com). Do note there is a paid option of Rstudio that you *do not want.* The paid version is for servers. You want the basic open source integrated development environment (IDE). This is free.
+
+- Your homework must be typed in either a Word processor or, preferably, La\TeX.
+
+I published a [beginner's guide to using `R`](http://svmiller.com/blog/2014/08/a-beginners-guide-to-using-r/) in 2014 when I first started to teach this version of the course that forced students to use the `R` programming language. I have since streamlined the `R` requirements for this class, making that guide somewhat dated. You will need to install the following packages, which I illustrate here with the `R` commands to install them. Do note you will need to install these packages just once, but you will need to "load" the package with the `library()` command in every `R` session you start. I will make this clear in each lab script.
+
+```{r usethese, echo=TRUE, eval=FALSE}
+install.packages("devtools")
+install.packages("tidyverse")
+devtools::install_github("svmiller/post8000r")
+devtools::install_github("svmiller/stevemisc")
+```
+
+Students who encounter any difficulty installing these packages should contact me immediately.
+
+## Office Hours
+
+\shrug
+
+This is an unusual semester for us all. We are tentatively scheduled to start the semester online for the first four weeks. At this point, there is no "office" in which we could meet. In fact, I'm barred right now from my office as the university has yet to allow a lot of faculty back to their offices.
+
+I am also building in an assumption that, in the chance event we start meeting in-person after those first four weeks, the novel coronavirus (COVID-19) will not be contained. In all likelihood, the situation will be even worse, both locally and nationally. There is no venue of which I am aware right now where we could host traditional "office hours." In fact, there is not enough space in my tiny corner office in Brackett Hall to keep you (the student) and I six feet apart from each other.
+
+Given this, and given concerns for my own well-being in the chance event we resume in-person instruction at some point this semester: *I am packing my things and leaving the moment our class ends.* It is natural to either want to ask the professor something privately after class, or even just chit-chat with the professor about the lecture after class. This is normal and I would otherwise welcome the interaction. However, this is not a normal time and I need to adapt accordingly. Please do not take this personally.
+
+I am, however, available by any number of means. Students can email me or chat with me over a number of videoconferencing/video chat applications. I have FaceTime, Google Hangout, Skype, and Zoom. I think I even used Microsoft Teams once. It's not hard to get a hold of me, but the nature of this viral pandemic means I intend to make it difficult to get a hold of me in person. Again, please do not take that personally.
+
+
+
+
+## Cell Phones, Pagers, Laptops, PDAs
+
+Unless Student Disabilities Services informs me that such a device is a necessary accommodation for a student with disabilities, all laptops, tablets, cell phones, and PDAs are to be put away during class (both in lecture and during exams). There are two reasons for this. One, you are on Facebook or Instagram anyway when you are using them during class. Both can wait. Two, laptops are---and I must emphasize this---[*terrible* learning devices](http://svmiller.com/blog/2014/09/taking-good-notes/). Likewise, keep your phone or pager (do people still use those?) in your bag or pocket during class. The professor reserves the right to embarrass the student for not having a phone on "vibrate" during class. If not, the ringtone better be something good. *This is a legacy part of the syllabus that is here in the chance event that we meet in-person and is not applicable for the online component of the class.* However, you and your phone should probably be on mute during an online lecture.
+
+<!-- ## Late Arrival of the Professor Policy -->
+
+<!-- If, for some reason, I am more than fifteen minutes late to class, a volunteer student should check in 232 Brackett Hall with Ms. Angela Guido.  If class is cancelled, I will send an email in advance of class. *This is a legacy part of the syllabus that is here in the chance event that we meet in-person and is not applicable for the online component of the class.* -->
+
+## E-mail Policy (or: Why I May Not Respond to Your E-mail)
+
+I am usually quick to respond to student e-mails. However, student e-mails tend to do several things that try my patience. I have a new policy, effective Fall 2016, that outlines why I will not respond to certain e-mails students send. Multiple rationales follow.
+
+1. The student could answer his/her own inquiry by reading the syllabus.
+2. The student missed class for which there was no exam. I do not need to know the exact reason for a missed class. Students with excusable absences are responsible for giving me a note *in hard copy* that documents the reason for the missed class. An e-mail is unnecessary unless the impromptu absence involved missing a midterm or final.
+3. The student wants to know what topics s/he missed during a class s/he skipped. The answer is always "you missed what was on the syllabus."
+4. The student is protesting a grade without reference to specific points of objection. See the policy on protesting a grade in the syllabus. These e-mails tend to be expressive utility on the part of the student and do not require a response from me. Students interested in improving their knowledge of material should see me during office hours.
+5. The students wants to know how many classes s/he missed at some point during the semester. I assume the student has a better answer to that question than me until the end of the semester.
+6. The student is requesting an extension on an assignment for which the syllabus already established the deadline. The answer is always "no."
+7. The student is proposing an excuse for why an assignment that is late on *Turnitin* is "not actually late" by some flimsy pretense. I will ignore these e-mails.
+8. The student is ["grade grubbing"](https://www.math.uh.edu/~tomforde/GradeGrubbing.html) or asking to round up a grade. The answer is always "no." *I round grades down, not up.*
+9. The student is asking for an extra credit opportunity, a request that amounts to more grading for the professor. The answer is "no."
+
+## Make-Up Exam Policy
+
+The nature of this hybrid learning model means all exams will be online. Further, I will give roughly 48 hours (or maybe even a lot more) to complete a midterm or a final exam. Thus, there is no real exam to "make up" like one would during a normal semester. I only caution that the deadlines I communicate are quite rigid and I don't accept late work. This implies students should strongly resist the urge to complete an assignment and upload an assignment to *Turnitin* proximate to the deadline. Give yourself ample time to finish and upload the assignment (you'll have it!). The student bears responsibility for potential ISP issues.
+
+<!-- This section will have two components. The first is the legacy stuff that is here in the chance event we meet in-person -->
+
+<!-- There are **NO** make-ups for missed exams. Professors are forever intolerant of weak excuses. Do not bring them to me. Missed exams in cases of illness or personal emergency can be accommodated only with proper documentation. This *does not* mean a student can punt an exam to the near future because of a headache or the sniffles, for which a medical excuse is sought several hours after missing the exam in question. I will not accept these notes. Exams missed due to a university-sponsored event or religious holiday may also be accommodated, provided that the student informs me of the conflict *at least two weeks in advance*. Students who have valid excuses, with documentation, for missing exam dates have *one week at the most* from the original date of the exam to complete a missed exam. *This is a legacy part of the syllabus that is here in the chance event that we meet in-person.* -->
+
+## Academic Dishonesty Policy
+
+I take academic integrity seriously and will show no tolerance for any instances of academic dishonesty. The logic behind cheating or plagiarism may be self-interest, but this is too myopic. Penalties for being caught are severe and the consequences of being found culpable will extend well beyond the student's time as a college student at Clemson. In the interest of clarification, I provide the definitions of several types of academic dishonesty below, [as understood by Clemson University](http://www.clemson.edu/administration/student-affairs/student-handbook/universitypolicies/academic_integrity.html).  Avoid intentionally or inadvertently committing any of these acts:
+
+- **Cheating**: Giving, receiving, or using unauthorized aid, including the inappropriate use of electronic devices, in any work submitted to fulfill academic requirements. In examination situations all electronic devices must be off and stowed unless otherwise authorized by the instructor.
+
+- **Plagiarism**: The intentional or unintentional copying of language, structure, or ideas of another and attributing the work to one's own efforts.
+
+- **Unlawful Access to Private Material**:  Attempts to copy, edit, or delete computer files that belong to another person or use of computer accounts that belong to another person without the permission of the file owner or account owner.
+
+Clemson University's Academic Integrity Statement broadly defines breaches of academic integrity as "lying, cheating, or stealing in any form." This broad definition of academic integrity that will be enforced in my classroom.
+
+## Disabilities Policy
+
+Federal laws mandate the provision of services at the university level to qualified students with disabilities. If a student requires special provisions, I encourage that student to let me know *privately* as soon as possible (preferably within the first two weeks of the semester). Afterward, I am required to refer the student to the [Student Disabilities Services](https://www.clemson.edu/academics/studentaccess/) (SAS), which will determine the necessary provisions that I must make. SAS will give its recommendations to the student, who must relay their recommendations to me. I, as the instructor, am responsible for providing the necessary accommodations, but only at the behest of SAS The student maintains privacy rights on the matter, which I wholeheartedly will respect. That said, *it is the student's responsibility to initiate the provision process*. This can only be done, privately and securely, through SAS. I am unsure what this might look like in a "hybrid" class like we have, but please let me know if I can expect to hear from SAS on your behalf as it will get my gears spinning earlier about what changes I might need to make to my class in a peculiar semester like this.
+
+<!-- Students who require quiet test rooms or extended time for exams must take the initiative to schedule a room at the [Test Proctoring Center](http://www.clemson.edu/campus-life/campus-services/sds/test-center.html) on campus. These rooms must be scheduled by the student for the day of the exam as listed in the syllabus. Failure by the student to schedule a room at the Test Proctoring Center for the day of the exam will lead to a zero on the assignment. -->
+
+## Disputing an Assignment Grade
+
+I am willing to accommodate students who believe my grading of an assignment was too harsh or misunderstanding. Students who wish to dispute a grade on an assignment must submit a one-page, single-spaced argument for a grade change before I consider the request. From there, I will re-grade the entire assignment. The student should not assume a "ratchet effect" for disputing an assignment as the subsequent reevaluation may result in a lower grade.
+
+
+\newpage
+
+# Class Schedule
+
+Important: class readings are subject to change, contingent on mitigating circumstances and the progress we make as a class. Students should attend lectures, check their e-mail, and follow the course website to keep track of any changes to the schedule. Weeks corresponding with midterms will have the exams on Thursday preceded by an in-class review on Tuesday. The calendar below outlines the plan and highlights important dates for the semester. Dates within the semester that correspond with university holidays or in which the professor will be out of town are whitened out. Do note I have tried to accommodate students who, given the circumstances, wish to preserve money and follow the material through lecture and outside reading. Each week is heavily annotated with the week's topics. Students should search keywords to read more as they like.
+
+
+```{r calendar, echo=F, eval=T, fig.cap="A Calendar for POSC 3410 (Quantitative Methods in Political Science, Fall 2020)", results="hide",  warning=F, fig.width=11, fig.height=6}
+class_cal
+
+
+```
+
+## `r advdate(mon, 1)`: Syllabus Day
+  
+Read *all* associated documents on course website.
+  
+- [A Beginner's Guide to Using `R`](http://svmiller.com/blog/2014/08/a-beginners-guide-to-using-r/)
+- [Reading a Regression Table: A Guide for Students](http://svmiller.com/blog/2014/08/reading-a-regression-table-a-guide-for-students/)
+- [The American Statistical Association's Statement on *p*-values: Context, Process, and Purpose](http://amstat.tandfonline.com/doi/abs/10.1080/00031305.2016.1154108)
+- [Taking Good Notes](http://svmiller.com/blog/2014/09/taking-good-notes/)
+- [Dos and Dont's of Writing for Students](http://svmiller.com/blog/2015/06/dos-and-donts-of-writing-for-students/)
+- [Assorted Tips for Students on Writing Research Papers](http://svmiller.com/blog/2015/12/assorted-tips-students-research-papers/)
+- [Exam Grading Policy](https://www.dropbox.com/s/apihjs7di81aqcv/svm-exam-grading-policy.pdf?dl=0)
+- [Writing a Prospectus](https://www.dropbox.com/s/i2vzzg0vmy6ppw4/posc3410-prospectus-guide.pdf)
+- [Prospectus Example](https://www.dropbox.com/s/swrs77jawpxpec8/posc3410-prospectus-example.pdf?dl=0)
+- [Research Design Paper Instructions](https://www.dropbox.com/s/qhv4d4pjsk2rxgt/posc3410-research-design-paper-instructions.pdf?dl=0)
+- [Fun with Attendance and Grades (i.e. Students Should Attend Class)](http://svmiller.com/blog/2016/05/fun-with-attendance-grades/)
+- [The Educational Power of Discomfort](http://svmiller.com/blog/2016/05/educational-power-discomfort/)
+- [Everybody Writes: A Web Content Approach for Students](http://svmiller.com/blog/2016/05/everybody-writes-academic/)
+- [Put Your Laptops Away, Kids (Vol. 2)](http://svmiller.com/blog/2016/05/put-your-laptops-away-2/)
+
+## `r advdate(mon, 2)`: Scientific Inquiry and Science as "Model" (KW, chp. 1)
+
+This week will discuss (dare I say) a "standard" interpretation of an empirical approach to political science. This (again, dare I say) "standard" approach treats knowledge as the byprodct of accumulated hypothesis rejections. Therein, theoretical arguments set up empirical hypotheses to be either 1) rejected or 2) potentially consistent with a set of empirical data and the model of it. Do note the hypothesis isn't "true"; nothing really is "true." Theoretical arguments just live to proverbially "die another day." Think of the acquired knowledge of gravity as illustrative here. You can draw a line of rejected models and hypotheses from the ancient Greeks (e.g. Heraclitus, Aristotle) to Stephen Hawking. Even after Hawking, there's still more to explain. **Keywords:** theoretical model, empirical implication of theoretical models (EITM), hypothetico-deductivism (H-D).
+
+### Additional (Helpful) Readings
+
+```{r, echo = FALSE, results="asis"} 
+print(bib[c("clarke2007nbc","clarkeprimo2007mps", "granatoscioli2004ppom", "granatoetal2010fufe")])
+``` 
+
+
+##  `r advdate(mon, 3)`: Literature Review and Theory (KW, chp. 2, 3)
+
+Literature reviews are straightforward, but it's easy to overdo them and misdirect energy in them. Think of a literature review in a standard article (i.e. your research design paper) as a roughly eight-paragraph summary of what we know about a research question. At a minimum, they should answer these questions: 1) what do we know about this question, 2) what do we not know, and 3) why should we care? Your treatment of the second will serve as a nice bridge to the theoretical argument. I'm afraid these are trickier, but think of them as extended syllogisms. If I accept the underlying premises of the argument, I have to accept the hypothesis that comes from them (otherwise I've contradicted myself). **Keywords:** how to do a literature review, writing research reports/theses, from research question to theory to hypothesis.
+
+```{r, echo = FALSE, results="asis"} 
+bib["knopf2006dlr"]
+``` 
+
+Read "[How to Do a Literature Review](http://svmiller.com/blog/2014/11/how-to-do-a-literature-review/)" on my website/blog.
+
+
+##  `r advdate(mon, 4)`: Defining and Measuring Concepts (P, chp. 1)
+
+Important point: theoretical arguments are abstract but proxies of the components of these arguments are measured concretely. Think of "democracy" as illustrative here. It, like everything in political science, is a word we use a lot but the concept can be interpreted in any number of ways (see also: "corruption", "power"). Our theoretical discussion that links concepts is ultimately in the abstract, but we devise operationalizations of these concepts as measures that purport to capture the concept in question. Don't ever use a term that you can't define, but build your definitions of these concepts toward something you could actually measure. **Keywords:** conceptual definition, operational definition, unit of analysis, ecological fallacy, (measurement) reliability, (measurement) validity, (systematic, random) measurement error, Hawthorne effect, test-restest method, (face, construct) validity.
+
+### Additional (Helpful) Readings
+
+<!-- *Skim this. I'll make it available on Blackboard*: -->
+
+```{r, echo = FALSE, results="asis"} 
+bib["carmineszaller1979rva"]
+``` 
+
+
+##  `r advdate(mon, 5)`: Measuring and Describing Variables (P, chp. 2; KW, chp. 5)
+
+*Problem set #1 due on Thursday.*
+
+This will delve more into the statistics side of things. Consider, for example, your measure of "democracy" may be 0 (non-democracy [e.g. China]) or 1 (democracy [e.g. Canada]), but only you (the researcher and the reader) will know that. Your computer program won't care. It just sees numerical measurements that vary and that it can do any number of things to summarize them. Beware, though: your computer is deceptively stupid. It will give you a mean of a categorical measurement if you ask for one. Your job is to be smarter than the computer. As daunting as that sounds, it's really more a plea to be careful/mindful of some limitations you have with your data. **Keywords**: constant/variable, nominal/ordinal/interval variable, dummy variable, Likert item, when can you treat an ordinal variable as interval/continuous?, mode/median/mean. 
+
+##  `r advdate(mon, 6)`: Hypotheses and Comparisons (P, chp. 3)
+
+*Prospectus due on Thursday*.
+
+There will be some back-tracking this week in as much we're going to talk about hypothesis crafting in some detail. We'll talk a little bit more about writing theories. More importantly, we're going to talk about making some comparisons with actual data. Everything this will be super basic statements of association the direction of relationships. **Keywords:** (independent, dependent) variable, (positive, negative, zero, curvilinear) relationship, cross-tabulation, mean comparison
+
+##  `r advdate(mon, 7)`: MIDTERM 1
+
+
+##  `r advdate(mon, 8)`: Probability Theory
+
+*Problem set #2 due on Thursday.*
+
+I like to have students look "underneath the hood" of statistical inference, between learning about basic relationships and introducing students to regression, and after the first midterm. This first involves an introduction to basic probability and counting rules. It then pivots to a discussion of some important distributions you will see in the social/political world. "Demystification" is the goal here. A lot of inference happens under the assumptions of a normal distribution and I want students to get comfortable with this (even if they started political science thinking it would be math-free). **Keywords**: (joint, conditional) probability, unions, intersections, Bayes' theorem, prosecutor's fallacy, fundamental theorem of counting, ordering and replacement, combination, binomial theorem, Pascal's triangle, binomial mass function, normal density function (Gaussian distribution).
+
+
+### Additional (Helpful) Reading
+
+Lynch, Scott M. 2013. *Using Statistics in Social Research: A Concise Approach* New York, NY: Springer (pp. 57-82) [available on Canvas]
+
+Read ["The Normal Distribution, Central Limit Theorem, and Inference from a Sample"](http://svmiller.com/blog/2020/03/normal-distribution-central-limit-theorem-inference/) on my blog.
+
+
+##  `r advdate(mon, 9)`: Research Design, Control, and Comparisons (P, chps. 4-5; KW, chp. 4)
+
+Making causal statements (or softer statements of association) requires controlling for what are called "confounders." These are intervening effects that could mitigate the relationship between a predictor and an outcome that a student wants to argue. How much "controlling" you do depend on the nature of the research design. Random assignment creates only random differences between treatment and control, making the treatment the only systematic difference. Research designs where random assignment is not available require more work. **Keywords:** experimental design, random assignment, treatment, control, (lab, field, survey, natural, quasi-) experiment, selection, controlled comparison, (spurious, additive, interactive) relationship.
+
+##  `r advdate(mon, 10)`:  Statistical Inference (P, chp. 6)
+
+*Problem set #3 due on Thursday*.
+
+This is a week on the basics of inferential statistics. In as many words, inferential statistics involves making statements about a population of cases based on a random sample of it. "Classical" inferential statistics then comes in ruling out central tendency values in a population as unlikely given a randomly collected sample. If that sounds familiar, it's because it brings us back to the second week's material: knowledge is accumulated hypothesis rejections. **Keywords:** population, population parameter, (random) sample, census, the 1936 Literary Digest Poll, (response, selection) bias, random sampling error, standard deviation, central limit theorem, standardization, *z*-score, standard normal distribution, (95-percent) confidence interval, Student's t-distribution, degrees of freedom.
+
+
+##  `r advdate(mon, 11)`: Correlation and Linear Regression (P, chp. 8; KW, chps. 8-10)
+
+This week will extend statistical inference into the world of regression. Regression is a tool to model variation in some outcome as a (linear) function of one or more predictors and it's the workhorse of applied inferential statistics. The process of inference is the same, though typically regression modelers reject (or fail to reject) null hypotheses of zero relationship between a predictor and an outcome based on an observed coefficient and standard error. We'll start first with an aside on correlation, which is its own useful tool as well. **Keywords:** correlation, scatterplot, Pearson's *r*, multicollinearity, (multiple) regression, regression coefficient, standard error, prediction error, "ordinary least squares", partial effects, interactive effects.
+
+### Additional (Helpful) Reading
+
+Read ["What Do We Know About British Attitudes Toward Immigration? A Pedagogical Exercise of Sample Inference and Regression"](http://svmiller.com/blog/2020/03/what-explains-british-attitudes-toward-immigration-a-pedagogical-example/) on my blog.
+
+##  `r advdate(mon, 12)`: Regression (Continued) (P, chp. 9; KW, chp. 11)
+
+*No class Tuesday. Please vote.*
+
+Students learn regression around OLS (linear) regression. Don't misunderstand that OLS is the foundation and it has a lot of nice properties. It's just often the wrong model for the data you probably have. In many applications, a researcher may want to explain whether a candidate won or lost, whether someone voted or not, or whether there was a war between two countries in a given year or not. These are binary outcomes in which a phenomenon is either "there" or "not there." This means you'll probably want a logistic model. **Keywords:** heteroskedasticity, logistic regression, odds, odds ratio, percentage change in odds, (natural) logarithm, logit.
+
+## `r advdate(mon, 13)`: Making the Most of Statistical Analysis (KW, chp. 12)
+
+In the real world, regression is a vehicle to storytelling. There's a theoretical argument someone wants to advance with an empirical test to check for whether (a model of) real world phenomena is consistent with the argument (typically through regression). However, the researcher needs to tell this story in a way that is not only accessible to someone like me, but to a lay person as well. From my perspective, this is the most important revolution to come in empirical political science in the 21st century. What I (for lack of better term) call the "quantities of interest" movement, regression modelers use the parameters from their regression model, advances in cheap computing technology, and some various parlor tricks learned along the way to explain complicated model output to intuitive "quantities of interest" that are easily accessible to both the researcher and the lay reader. **Keywords:** standardization by two standard deviations, Andrew Gelman's "divide by 4" rule, multivariate normal distribution, post-estimation simulation.
+
+### Required Reading
+
+```{r, echo = FALSE, results="asis"} 
+bib["gelman2008sri", "kingetal2000mmsa"]
+``` 
+
+
+### Additional (Helpful) Reading
+
+Read ["How to Make the Most of Regression: Standardization and Post-Estimation Simulation"](http://svmiller.com/blog/2020/04/post-estimation-simulation-trump-vote-midwest/) on my blog.
+
+##  `r advdate(mon, 14)`: Bayesian Inference
+
+*Problem set #4 due on Thursday*.
+
+"Classical" statistical inference, at its core, is ruling out counterclaims as unlikely given an observed sample statistic. Stare close enough at this and you'll start asking some critical questions about whether we know about a fixed parameter, whether that fixed parameter against which we test is plausible or interesting, whether we can truly make statements of relative frequencies of extreme results, whether we have a truly random sample of data, and whether we can know the population parameter at all. Plus, don't you want to make probabilistic statements of the hypothesis being true? Recall the prosecutor's fallacy means you can't say that in the "classical" perspective. This is where a Bayesian perspective to interest can be both helpful and more informative. **Keywords**: frequentist/objectivist probability, subjective probability, Bayes' theorem, prior beliefs,  posterior probability, data-generating process (DGP).
+
+### Required Reading
+
+```{r, echo = FALSE, results="asis"} 
+bib["westernjackman1994bicr"]
+``` 
+
+
+### Additional (Helpful) Reading
+
+Read ["What Explains Union Density? A Replication of an Old Article with the brms Package"](http://svmiller.com/blog/2019/08/what-explains-union-density-brms-replication/) on my blog.
+
+
+##  `r advdate(mon, 15)`: THANKSGIVING BREAK
+
+*Research design paper due on Saturday*.
+
+##  `r advdate(mon, 16)`: Replication
+
+*Problem set #5 due on Tuesday*.
+
+Replication is a hobby horse of mine in empirical political science. There is no excuse in the 21st century to not keep track of your work and, like in grade school math, "show your work." Replication is as much a phenomenon as it is a crisis affecting all the social sciences. Therein, replication crises run the gamut from some silly error that can completely undermine an otherwise good-faith analysis to bad-faith analyses and outright data fabrication. This week will focus on just one particular scandal (Reinhart and Rogoff's "Debt in a Time of Crisis") and show how a replication crisis can include some good faith silly errors made possible by a click-based workflow and some questionable coding decisions for which it is important to be transparent. No matter, even accidental evil is still evil and we are still very much living in the afterglow of "Debt in a Time of Crisis." Just ask Greece, or look around you in the  United States.
+
+### Required Reading
+
+```{r, echo = FALSE, results="asis"} 
+bib["reinhartrogoff2010gtd", "herndonetal2014dhpd"]
+``` 
+
+### Additional (Helpful) Reading
+
+Read ["Revisiting Reinhart and Rogoff, Ten Years Later"](http://svmiller.com/blog/2020/04/reinhart-rogoff-ten-years-later-replication/) on my blog.
+
+##  `r advdate(mon, 17)`: FINAL EXAM
+
