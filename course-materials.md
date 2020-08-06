@@ -4,7 +4,7 @@ title: Course Materials
 permalink: /course-materials/
 ---
 
-{% include image.html url="/_images/fabulous-sylvester.jpg" caption="The Textbook for the Semester" width=300 align="right" %}
+{% include image.html url="/_images/kw-p5e.png" caption="Recommended Books for the Semester" width=350 align="right" %}
 
 ## Book
 
