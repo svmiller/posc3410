@@ -12,7 +12,7 @@ Kellstedt, Paul M. and Guy D. Whitten. 2013. *The Fundamentals of Political Scie
 
 Pollock III, Philip H. 2016. *The Essentials of Political Analysis* (5th Edition). Washington DC: CQ Press.
 
-### A Comment on the Required Books
+### A Comment on the Recommended Books
 
 <!-- Clemson University's bookstore has these listed as "required readings." That is a category error that is ultimately my fault. They are textbooks that I would otherwise assign as "required", and was nudged to submit to Clemson University's bookstore to purchase early into the pandemic. At the time, we all (naively) believed a few-week quarantine and a full-throated state and national government response would have been sufficient to contain the novel coronavirus (COVID-19). It was mostly sufficient in peer countries to us, ranging from Australia to Italy. However, the quarantine was half-hearted and we abandoned it (in South Carolina) after about three weeks and the state government (and majority leaders in the U.S. Senate) never bothered a follow-up response to the one it gave early into the pandemic when the COVID-19 outbreak also tanked the stock market. Now, we are in a situation where we may or may not ever meet in person after a four-week online start. -->
 
