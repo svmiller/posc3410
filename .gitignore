@@ -28,6 +28,7 @@
 
 # ignore my old files and other irrelevant directories
 _old*
+_archive*
 1-old-material*
 attendance*
 gradesheets*
