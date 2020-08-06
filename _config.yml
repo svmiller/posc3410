@@ -6,7 +6,7 @@ description: "Both students and scholars alike are in political science as a res
 
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://posc3410.svmiller.com" # the base hostname & protocol for your site
-syllabus: "https://github.com/svmiller/svm-r-markdown-templates/blob/master/syllabus-example/svm-rmarkdown-syllabus-example.pdf"
+syllabus: "http://posc3410.svmiller.com/syllabus/posc3410-spring2020-syllabus.pdf"
 githubdir: "svmiller/posc3410"
 
 # Author/user information
