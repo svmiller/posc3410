@@ -268,6 +268,17 @@ The nature of this hybrid learning model means all exams will be online. Further
 
 <!-- There are **NO** make-ups for missed exams. Professors are forever intolerant of weak excuses. Do not bring them to me. Missed exams in cases of illness or personal emergency can be accommodated only with proper documentation. This *does not* mean a student can punt an exam to the near future because of a headache or the sniffles, for which a medical excuse is sought several hours after missing the exam in question. I will not accept these notes. Exams missed due to a university-sponsored event or religious holiday may also be accommodated, provided that the student informs me of the conflict *at least two weeks in advance*. Students who have valid excuses, with documentation, for missing exam dates have *one week at the most* from the original date of the exam to complete a missed exam. *This is a legacy part of the syllabus that is here in the chance event that we meet in-person.* -->
 
+## Disputing an Assignment Grade
+
+I am willing to accommodate students who believe my grading of an assignment was too harsh or misunderstanding. Students who wish to dispute a grade on an assignment must submit a one-page, single-spaced argument for a grade change before I consider the request. From there, I will re-grade the entire assignment. The student should not assume a "ratchet effect" for disputing an assignment as the subsequent reevaluation may result in a lower grade.
+
+## Title IX Policy
+
+Clemson University is committed to a policy of equal opportunity for all persons and does not discriminate on the basis of race, color, religion, sex, sexual orientation, gender, pregnancy, national origin, age, disability, veteran's status, genetic information or protected activity (e.g., opposition to prohibited discrimination or participation in any complaint process, etc.) in employment, educational programs and activities, admissions and financial aid. This includes a prohibition against sexual harassment and sexual violence as mandated by Title IX of the Education Amendments of 1972.
+
+
+The University is committed to combatting sexual harassment and sexual violence. As a result, students should know that Clemson faculty and staff members who work directly with students are required to report any instances of sexual harassment and sexual violence, to Clemson University's Title IX Coordinator. As your professor, I am required to report any incidents of sexual harassment, sexual violence or misconduct, stalking, domestic and/or relationship violence that are directly reported to me, or of which I am somehow made aware. 
+
 ## Academic Dishonesty Policy
 
 I take academic integrity seriously and will show no tolerance for any instances of academic dishonesty. The logic behind cheating or plagiarism may be self-interest, but this is too myopic. Penalties for being caught are severe and the consequences of being found culpable will extend well beyond the student's time as a college student at Clemson. In the interest of clarification, I provide the definitions of several types of academic dishonesty below, [as understood by Clemson University](http://www.clemson.edu/administration/student-affairs/student-handbook/universitypolicies/academic_integrity.html).  Avoid intentionally or inadvertently committing any of these acts:
@@ -286,9 +297,6 @@ Federal laws mandate the provision of services at the university level to qualif
 
 <!-- Students who require quiet test rooms or extended time for exams must take the initiative to schedule a room at the [Test Proctoring Center](http://www.clemson.edu/campus-life/campus-services/sds/test-center.html) on campus. These rooms must be scheduled by the student for the day of the exam as listed in the syllabus. Failure by the student to schedule a room at the Test Proctoring Center for the day of the exam will lead to a zero on the assignment. -->
 
-## Disputing an Assignment Grade
-
-I am willing to accommodate students who believe my grading of an assignment was too harsh or misunderstanding. Students who wish to dispute a grade on an assignment must submit a one-page, single-spaced argument for a grade change before I consider the request. From there, I will re-grade the entire assignment. The student should not assume a "ratchet effect" for disputing an assignment as the subsequent reevaluation may result in a lower grade.
 
 
 \newpage
