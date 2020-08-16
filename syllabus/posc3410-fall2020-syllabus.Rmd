@@ -4,6 +4,7 @@ output:
     keep_tex: FALSE
     fig_caption: TRUE
     latex_engine: xelatex
+    dev: cairo_pdf
     template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-syllabus.tex
 geometry: margin=1in
 
@@ -60,66 +61,137 @@ library(ggcal)
 library(stringr)
 library(kfigr)
 library(broom)
+library(lubridate)
 
 # Calendar dates of importance ----
 
-firstmon <- as.Date("2020-08-17")
-mon <- firstmon
-lastday <- as.Date("2020-12-04")
+mon <- as.Date("2020-08-17")
 
-# fri <- as.Date("2016-01-08")
+not_here_dates <- c(ymd(20201103),
+              ymd(20201123):ymd(20201127))
 
-# * midterm and homework... -----
-
-midterm <- as.Date("2020-10-01")
-homework <- c(as.Date("2020-09-17"),
-              as.Date("2020-09-24"),
-              as.Date("2020-10-08"),
-              as.Date("2020-10-22"),
-              as.Date("2020-11-17"),
-              as.Date("2020-12-01"))
-finalexam <- as.Date("2020-12-09") # 8 am
-
-paper <- as.Date("2020-11-28")
-
-exam_dates <- c(midterm, finalexam)
-
-# * dates to remove... -----
-
-remove_dates <- c(as.Date("2020-11-03"),
-                  seq(as.Date("2020-11-23"), as.Date("2020-11-27"), by = "1 day"))
+exam_dates <- c(ymd(20201001),  ymd(20201209))
+hw_dates <- c(ymd(20200917), 
+              ymd(20200924), 
+              ymd(20201008),
+              ymd(20201022), 
+              ymd(20201119), 
+              ymd(20201201))
+paper_dates <- c(ymd(20201128))
+semester_dates <- seq(ymd(20200819),ymd(20201204), by=1)
 
 
-mydate <- seq(firstmon+2, lastday, by="1 day")
-mydate <- c(mydate, finalexam)
-
-# Empty dates in which I won't be here. -----
-# March 12: Alabama
-# March 16-20: Spring Break
-# Final exam: Thurs. 8 a.m. - 10:30 a.m (Apr. 30)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
 
 
-mydate <- mydate[! mydate %in% remove_dates]
+tibble(date = seq(ymd(20200801), ymd(20201231), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         exams = ifelse(date %in% exam_dates, 1, 0), # is it an exam?
+         hw = ifelse(date %in% hw_dates, 1, 0),
+         paper = ifelse(date %in% paper_dates, 1, 0),
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
 
-myfills <- ifelse(format(mydate, "%w") %in% c(0,1, 3, 5,6), "Other Day" ,"Class Day")
+Cal %>%
+  mutate(category = NA,
+         category = ifelse(semester == 1, "Semester", category),
+         category = ifelse(semester == 1 & wkdy %in% c("Tue", "Thu"), "Class Day", category),
+         category = ifelse(exams == 1, "Exams", category),
+         category = ifelse(hw == 1, "Homework Due", category),
+         category = ifelse(paper == 1, "Paper Due", category),
+         category = ifelse(is.na(category) | (semester == 1 & not_here == 1), "NA", category)) -> Cal 
 
-# Fill in exams
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  theme_steve_web() + 
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Exams"="indianred4",
+                             "Homework Due" = "lightpink2",
+                             "NA" = "white", # I like these whited out...
+                             "Paper Due" = "chocolate3"),
+                    breaks=c("Class Day","Exams","Homework Due", "Paper Due"))  +
+  labs(fill = "", x="", y="",
+       caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27)")  -> class_cal
 
-# exam_dates <- c(as.Date("2020-01-30"), 
-#                 as.Date("2020-02-20"),
-#                 as.Date("2020-04-02"),
-#                 finalexam)
-myfills <- ifelse(mydate %in% exam_dates, "Exams" ,myfills)
-myfills <- ifelse(mydate %in% homework, "Homework Due" ,myfills)
-myfills <- ifelse(mydate %in% paper, "Paper Due" ,myfills)
-
-# Fill in paper due dates
-
-# myfills <- ifelse(mydate %in% c(as.Date("2019-11-23")), "Paper Due (Turnitin)", myfills)
-
-give_me_days <- seq(as.Date("2020-08-01"),
-                    as.Date("2020-12-31"), by="1 day")
-give_me_days <- as.numeric(str_sub(give_me_days, start= -2))
+# 
+# 
+# 
+# firstmon <- as.Date("2020-08-17")
+# mon <- firstmon
+# lastday <- as.Date("2020-12-04")
+# 
+# # fri <- as.Date("2016-01-08")
+# 
+# # * midterm and homework... -----
+# 
+# midterm <- as.Date("2020-10-01")
+# homework <- c(as.Date("2020-09-17"),
+#               as.Date("2020-09-24"),
+#               as.Date("2020-10-08"),
+#               as.Date("2020-10-22"),
+#               as.Date("2020-11-17"),
+#               as.Date("2020-12-01"))
+# finalexam <- as.Date("2020-12-09") # 8 am
+# 
+# paper <- as.Date("2020-11-28")
+# 
+# exam_dates <- c(midterm, finalexam)
+# 
+# # * dates to remove... -----
+# 
+# remove_dates <- c(as.Date("2020-11-03"),
+#                   seq(as.Date("2020-11-23"), as.Date("2020-11-27"), by = "1 day"))
+# 
+# 
+# mydate <- seq(firstmon+2, lastday, by="1 day")
+# mydate <- c(mydate, finalexam)
+# 
+# # Empty dates in which I won't be here. -----
+# # March 12: Alabama
+# # March 16-20: Spring Break
+# # Final exam: Thurs. 8 a.m. - 10:30 a.m (Apr. 30)
+# 
+# 
+# mydate <- mydate[! mydate %in% remove_dates]
+# 
+# myfills <- ifelse(format(mydate, "%w") %in% c(0,1, 3, 5,6), "Other Day" ,"Class Day")
+# 
+# # Fill in exams
+# 
+# # exam_dates <- c(as.Date("2020-01-30"), 
+# #                 as.Date("2020-02-20"),
+# #                 as.Date("2020-04-02"),
+# #                 finalexam)
+# myfills <- ifelse(mydate %in% exam_dates, "Exams" ,myfills)
+# myfills <- ifelse(mydate %in% homework, "Homework Due" ,myfills)
+# myfills <- ifelse(mydate %in% paper, "Paper Due" ,myfills)
+# 
+# # Fill in paper due dates
+# 
+# # myfills <- ifelse(mydate %in% c(as.Date("2019-11-23")), "Paper Due (Turnitin)", myfills)
+# 
+# give_me_days <- seq(as.Date("2020-08-01"),
+#                     as.Date("2020-12-31"), by="1 day")
+# give_me_days <- as.numeric(str_sub(give_me_days, start= -2))
 
 
 
@@ -130,20 +202,20 @@ bib <- ReadBib("~/Dropbox/master.bib")
 myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
 library(stevemisc)
 
-class_cal <- ggcal(mydate, myfills) +
-  theme(plot.title=element_text(face="bold"),
-        plot.caption=element_text(hjust=1, size=9,
-                                    margin=margin(t=10), face="italic")) +
-  scale_fill_manual(values=c("Class Day"="steelblue", 
-                             "Other Day"="lightsteelblue",
-                             "Exams"="indianred4",
-                             "Homework Due" = "lightpink2",
-                             "Paper Due" = "chocolate3"),
-                    breaks=c("Class Day","Exams","Homework Due", "Paper Due")) +
-  theme(legend.position="bottom") +
-#  geom_point(shape=1, size=7) +
-  geom_text(aes(label=give_me_days)) +
-  labs(caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27).")
+# class_cal <- ggcal(mydate, myfills) +
+#   theme(plot.title=element_text(face="bold"),
+#         plot.caption=element_text(hjust=1, size=9,
+#                                     margin=margin(t=10), face="italic")) +
+#   scale_fill_manual(values=c("Class Day"="steelblue", 
+#                              "Other Day"="lightsteelblue",
+#                              "Exams"="indianred4",
+#                              "Homework Due" = "lightpink2",
+#                              "Paper Due" = "chocolate3"),
+#                     breaks=c("Class Day","Exams","Homework Due", "Paper Due")) +
+#   theme(legend.position="bottom") +
+# #  geom_point(shape=1, size=7) +
+#   geom_text(aes(label=give_me_days)) +
+#   labs(caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27).")
 
 ```
 
@@ -231,7 +303,7 @@ This is an unusual semester for us all. We are tentatively scheduled to start th
 
 I am also building in an assumption that, in the chance event we start meeting in-person after those first four weeks, the novel coronavirus (COVID-19) will not be contained. In all likelihood, the situation will be even worse, both locally and nationally. There is no venue of which I am aware right now where we could host traditional "office hours." In fact, there is not enough space in my tiny corner office in Brackett Hall to keep you (the student) and I six feet apart from each other.
 
-Given this, and given concerns for my own well-being in the chance event we resume in-person instruction at some point this semester: *I am packing my things and leaving the moment our class ends.* It is natural to either want to ask the professor something privately after class, or even just chit-chat with the professor about the lecture after class. This is normal and I would otherwise welcome the interaction. However, this is not a normal time and I need to adapt accordingly. Please do not take this personally.
+Given this, and given concerns for my well-being and the well-being of the multiple immunocompromised members of my family in the chance event we resume in-person instruction at some point this semester: *I am packing my things and leaving the moment our class ends.* It is natural to either want to ask the professor something privately after class, or even just chit-chat with the professor about the lecture after class. This is normal and I would otherwise welcome the interaction because they are some of my favorite face-to-face discussions with students. However, this is not a normal time and I need to adapt accordingly. Please do not take this personally.
 
 I am, however, available by any number of means. Students can email me or chat with me over a number of videoconferencing/video chat applications. I have FaceTime, Google Hangout, Skype, and Zoom. I think I even used Microsoft Teams once. It's not hard to get a hold of me, but the nature of this viral pandemic means I intend to make it difficult to get a hold of me in person. Again, please do not take that personally.
 
@@ -306,7 +378,8 @@ Federal laws mandate the provision of services at the university level to qualif
 Important: class readings are subject to change, contingent on mitigating circumstances and the progress we make as a class. Students should attend lectures, check their e-mail, and follow the course website to keep track of any changes to the schedule. Weeks corresponding with midterms will have the exams on Thursday preceded by an in-class review on Tuesday. The calendar below outlines the plan and highlights important dates for the semester. Dates within the semester that correspond with university holidays or in which the professor will be out of town are whitened out. Do note I have tried to accommodate students who, given the circumstances, wish to preserve money and follow the material through lecture and outside reading. Each week is heavily annotated with the week's topics. Students should search keywords to read more as they like.
 
 
-```{r calendar, echo=F, eval=T, fig.cap="A Calendar for POSC 3410 (Quantitative Methods in Political Science, Fall 2020)", results="hide",  warning=F, fig.width=11, fig.height=6}
+```{r calendar, echo=F, eval=T, fig.cap="A Calendar for POSC 3410 (Quantitative Methods in Political Science, Fall 2020)", results="hide",  warning=F, fig.width=11, fig.height=7}
+
 class_cal
 
 
