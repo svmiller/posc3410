@@ -1,0 +1,422 @@
+---
+title: "Syllabus Day (i.e. Welcome)"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: true
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+
+mon <- as.Date("2020-01-06")
+lastday <- as.Date("2020-04-24")
+finalexam <- as.Date("2020-04-30") # 8 am
+# fri <- as.Date("2016-01-08")
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+library(ggpmisc)
+library(anonymizer)
+library(lubridate)
+library(stringr)
+library(kfigr)
+library(broom)
+
+
+
+
+library(RefManageR)
+library(stevemisc)
+# library(knitcitations)
+# library(rcrossref)
+bib <- ReadBib("~/Dropbox/master.bib")
+myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+library(fredr)
+# My fred API key is set globally.
+library(tidyverse)
+
+```
+
+# Introduction
+### Goal for Today
+
+Familiarize students with the topic of the course and the instructor's expectations.
+
+
+<!-- # Structure of This Course -->
+<!-- ### Structure of This Course -->
+
+<!-- 1. The logic of scientific inquiry -->
+
+<!-- We'll give careful attention to the issue of inference too. -->
+
+# POSC 3410 Syllabus
+### Course Objectives
+
+1. Understand concepts and how we operationalize abstract concepts for the sake of testing.
+
+2. Delineate variables among various types, like nominal, ordinal and interval.
+
+3. Put together a formal research design to address questions of interest in the study of politics.
+
+4. Express why the logic of control is vital to any good research design.
+
+5. Understand important elements of data, like central tendency and spread.
+
+6. Become familiar with advanced topics like non-normal responses, Bayesian thinking, and post-estimation simulation.
+
+7. Learn the `R` programming language, which should be a major addition to a résumé.
+
+### Books
+
+```{r textbook, echo = FALSE, results="asis"} 
+bib["kellstedtwhitten2013fpsr", "pollockiii2016epa"]
+```
+
+
+## Course Policy
+
+### Grading Policy
+
+| **Assignment** | **(Due) Date** | **Percent of Grade** |
+|:---------------|:--------------:|:--------------------:|
+| Homework | Periodically | 30% |
+| Midterm | *before* Oct 1. 10:45 a.m. | 20% |
+| Research Paper | *before* Nov. 28, 10:00 a.m. | 20% |
+| Final Exam | *before* Dec. 9, 10:30 a.m. | 30% |
+
+
+Check syllabus for more information about the homework and paper requirements.
+
+### Attendance/Participation Policy
+
+```{r attenddata, include=FALSE, echo=T, results="hide"}
+read_csv("~/Dropbox/teaching/attendance-grades-relationship.csv") %>%
+  select(name:class,-id) %>%
+  mutate(name = anonymize(name, .seed = 8675309, .algo = "crc32"),
+         class = as_factor(class),
+         term = forcats::fct_relevel(term,
+                                     "Fall 2014", "Spring 2015",
+                                     "Fall 2015", "Spring 2016",
+                                     "Fall 2016", "Spring 2017",
+                                     "Fall 2017", "Spring 2018",
+                                     "Fall 2018", "Spring 2019",
+                                     "Fall 2019")) %>%
+  group_by(term, class) %>%
+  mutate(maxgrade = max(grade, na.rm=T),
+         grade = ifelse(maxgrade > 100, grade - (maxgrade-100), grade)) %>%
+  ungroup() %>%
+  mutate(perattend = (attendance/max)*100) -> Attend
+
+# library(ggpmisc)
+
+M1 <- lm(grade ~ perattend, Attend)
+M2 <- lm(grade ~ perattend, data=subset(Attend, perattend >= 75))
+my.formula <- y ~ scale(x, center=T, scale=F)
+
+M1df <- tidy(M1)
+M2df <- tidy(M2)
+# library(ggplot2)
+```
+
+I'd otherwise go on a big spiel here about the importance of attending class, but... lol...
+
+\bigskip
+
+For this semester:
+
+- Attendance is assumed not required.
+- Please make it a point to attend (online) lectures.
+
+
+
+<!-- Effectively mandatory: I deduct all participation points after five unexcused absences. -->
+
+<!-- - Don't ask me how many you missed. You'll know more than me. -->
+<!-- - Each class you miss coincides with an estimated `r round(M1$coefficients[2], 3)*5` points in your overall grade. -->
+
+<!-- Be prepared to answer questions. I might assign quizzes. -->
+
+<!-- - Quizzes will be graded/weighted against your participation grade for the semester. -->
+
+###
+
+![](musgrave-tweet.png)
+
+```{r attendplot, eval=F, echo=F, fig.height=8.5, fig.width = 14}
+
+# estdecrease <- round(M1df[2,2]*5, 3)
+# estdecrease_t <- round(M1df[2, 4], 3)
+# 
+# subtitletext <- paste0("Each missed class coincides with an estimated decrease of ", estdecrease, " points in the final grade (t = ", estdecrease_t, ")")
+# 
+# ggplot(Attend, aes(x = perattend, y = grade)) + geom_point() + 
+#   labs(x="Percent Attendance in Class", y="Final Grade in Class (0-100)") +
+#                               geom_smooth(method=lm) + theme_steve_web() +
+#   labs(title = "The Relationship Between Class Attendance and Final Grades, Fall 2014-Present",
+#        subtitle = subtitletext)
+
+Attend %>%
+  mutate(class = forcats::fct_recode(class,
+                                     "Intro to International Relations" = "1020",
+                                     "Quantitative Methods" = "3410",
+                                     "International Conflict" = "3610",
+                                     "U.S. Foreign Policy" = "3630")) %>%
+  ggplot(., aes(x = perattend, y = grade)) +
+  theme_steve() +
+  geom_point() + 
+  facet_wrap(~class) +
+  #scale_x_continuous(labels=scales::percent) +
+  labs(x="Percent Attendance in Class", y="Final Grade in Class (0-100)") +
+  geom_smooth(method = "lm", se=TRUE, formula = my.formula) +
+  stat_poly_eq(formula = my.formula, 
+               eq.with.lhs = "italic(hat(y))~`=`~",
+               aes(label = paste(..eq.label.., "~~~~~(",..rr.label..,")", sep = "")), 
+               geom = "label_npc", alpha = 0.33, fill="#619cff",
+               size=3,
+               parse = TRUE) +
+  labs(caption = "Data: My attendance records. Note: values are centered to the mean and coefficients communicate effect of a one percent increase in attendance.\nMultiply it by five to get a rough estimate of the effect of skipping/attending one class from the mean attendance rate.")
+
+
+```
+
+###
+
+```{r calendar, eval=T, echo=F, fig.height=8.5, fig.width = 14}
+# library(ggplot2)
+# Calendar dates of importance ----
+mon <- as.Date("2020-08-17")
+
+not_here_dates <- c(ymd(20201103),
+              ymd(20201123):ymd(20201127))
+
+exam_dates <- c(ymd(20201001),  ymd(20201209))
+hw_dates <- c(ymd(20200917), 
+              ymd(20200924), 
+              ymd(20201008),
+              ymd(20201022), 
+              ymd(20201119), 
+              ymd(20201201))
+paper_dates <- c(ymd(20201128))
+semester_dates <- seq(ymd(20200819),ymd(20201204), by=1)
+
+
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+
+tibble(date = seq(ymd(20200801), ymd(20201231), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         exams = ifelse(date %in% exam_dates, 1, 0), # is it an exam?
+         hw = ifelse(date %in% hw_dates, 1, 0),
+         paper = ifelse(date %in% paper_dates, 1, 0),
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+Cal %>%
+  mutate(category = NA,
+         category = ifelse(semester == 1, "Semester", category),
+         category = ifelse(semester == 1 & wkdy %in% c("Tue", "Thu"), "Class Day", category),
+         category = ifelse(exams == 1, "Exams", category),
+         category = ifelse(hw == 1, "Homework Due", category),
+         category = ifelse(paper == 1, "Paper Due", category),
+         category = ifelse(is.na(category) | (semester == 1 & not_here == 1), "NA", category)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  theme_steve_web() + 
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Exams"="indianred4",
+                             "Homework Due" = "lightpink2",
+                             "NA" = "white", # I like these whited out...
+                             "Paper Due" = "chocolate3"),
+                    breaks=c("Class Day","Exams","Homework Due", "Paper Due"))  +
+  labs(fill = "", x="", y="",
+       caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27)") 
+
+```
+
+
+<!-- ### Cell Phones, Laptops, etc... -->
+
+<!-- Unless SDS says its mandatory, put your laptops/phones away during class. -->
+
+<!-- - They are terrible learning devices. Take notes by hand instead. -->
+<!-- - You're on Facebook or playing Pokemon Go anyway. Don't pretend you're not. -->
+
+
+### Email Policy
+
+I'm usually quick to respond to student e-mails. However, I may not if:
+
+1. You could answer your question by reading the syllabus.
+2. You missed a class for which there was no exam.
+3. You want to know what you missed for the class you skipped.
+4. You're protesting a grade without specific objections.
+	- Read the syllabus about protesting a grade.
+5. You want to know how many classes you missed.
+6. You're requesting an extension on an assignment.
+7. You're protesting that a late assignment is not actually "late".
+8. You're grade-grubbing.
+9. You want an extra credit opportunity.
+
+<!-- ### Make-up Exams -->
+
+<!-- **No, *and don't bother asking***. -->
+
+<!-- - Sniffles/headaches don't count. Soldier through it. -->
+<!-- - University-sponsored events/holidays count, but give me two weeks advance. -->
+
+<!-- Students with valid excuses have one week *at the most* to make up an exam. -->
+
+### Disabilities Policy
+
+I'm more than happy to accommodate, but:
+
+- The student has to take the intiative. I can't.
+- Do let me know privately after class if I should expect to hear from SAS soon.
+
+<!-- If you require the Test Proctoring Center, *schedule your midterm and final now*. -->
+
+<!-- - I will not spend my free time watching you take an exam. -->
+
+# Etiquette and Expectations
+### My Contact Information
+
+- *Name*: Steve Miller (as in the band)
+- *E-mail*: \textcolor{clemsonorange}{svmille@clemson.edu}
+- *Office Hours*: \shrug
+- *Office*: \shrug
+- *Website*: \textcolor{clemsonorange}{posc3410.svmiller.com}
+
+### Additional Course Materials
+
+<!-- I don't like Canvas. I only intend to use it for: -->
+
+<!-- - Turnitin (and grading the Turnitin assignments) -->
+<!-- - Classwide e-mails -->
+
+I do like making lectures publicly available, though.
+
+- Check course website at [posc3410.svmiller.com](http://posc3410.svmiller.com)
+- Check my Github repository (just in case): [github.com/svmiller/posc3410](http://github.com/svmiller/posc3410)
+
+*I encourage the student to take initiative to keep track of their grade through the semester.*
+
+### My Expectations
+
+I come off as a bit cruel in my expectations.
+
+- I expect a lot, and I expect a commitment from you.
+- Otherwise, why bother? Your job is to become "pro-ready."
+
+I also expect it to be a bit difficult for you.
+
+- My philosophy: if you 100% understand something the first time you read it, you didn't learn anything.
+- Read and re-read if necessary.
+- Lectures should help, but they're not sufficient. You need to read.
+
+I take seriously the "science" of political science.
+
+- This may not be intuitive, but I'm also eager to help in-class or office hours.
+
+
+<!-- ### Etiquette Concerns -->
+
+<!-- In-class: -->
+
+<!-- - Raise your hand and ask a question the *moment* something doesn't make sense. -->
+<!--     - I do have a bad habit of talking a bit fast. -->
+<!-- - *Do the reading before class*. Seriously. -->
+<!-- - Resist the urge to write down every word on a slide. -->
+<!--     - Listening is more important than reading in this context. -->
+
+<!-- ### Etiquette Concerns -->
+
+<!-- Outside class:  -->
+
+<!-- - **Resist the urge** to e-mail me if you missed a class (for which there wasn't an exam). -->
+<!--     - Short answer: you missed what was on the syllabus. -->
+<!-- - Please use conventional e-mail etiquette. -->
+<!--     - This is a good professional exercise for you. -->
+<!-- - Knock first, even when the door is open. -->
+<!-- - You may not use my office supplies. -->
+<!-- - I am not a study session. Come prepared with something specific to ask or discuss. -->
+
+# Homework
+### You Have Homework!
+
+Basically, read these on my website (see course materials):
+
+- [A Beginner's Guide to Using `R`](http://svmiller.com/blog/2014/08/a-beginners-guide-to-using-r/)
+- [Reading a Regression Table: A Guide for Students](http://svmiller.com/blog/2014/08/reading-a-regression-table-a-guide-for-students/)
+- [The American Statistical Association's Statement on *p*-values: Context, Process, and Purpose](http://amstat.tandfonline.com/doi/abs/10.1080/00031305.2016.1154108)
+- [Taking Good Notes](http://svmiller.com/blog/2014/09/taking-good-notes/)
+- [Dos and Dont's of Writing for Students](http://svmiller.com/blog/2015/06/dos-and-donts-of-writing-for-students/)
+- [Assorted Tips for Students on Writing Research Papers](http://svmiller.com/blog/2015/12/assorted-tips-students-research-papers/)
+- [Exam Grading Policy](https://www.dropbox.com/s/apihjs7di81aqcv/svm-exam-grading-policy.pdf?dl=0)
+- [Writing a Prospectus](https://www.dropbox.com/s/i2vzzg0vmy6ppw4/posc3410-prospectus-guide.pdf)
+- [Prospectus Example](https://www.dropbox.com/s/swrs77jawpxpec8/posc3410-prospectus-example.pdf?dl=0)
+- [Research Design Paper Instructions](https://www.dropbox.com/s/qhv4d4pjsk2rxgt/posc3410-research-design-paper-instructions.pdf?dl=0)
+- [Fun with Attendance and Grades (i.e. Students Should Attend Class)](http://svmiller.com/blog/2016/05/fun-with-attendance-grades/)
+- [The Educational Power of Discomfort](http://svmiller.com/blog/2016/05/educational-power-discomfort/)
+- [Everybody Writes: A Web Content Approach for Students](http://svmiller.com/blog/2016/05/everybody-writes-academic/)
+<!-- - [Put Your Laptops Away, Kids (Vol. 2)](http://svmiller.com/blog/2016/05/put-your-laptops-away-2/) -->
+
+<!-- Links available on the course website (course materials). -->
