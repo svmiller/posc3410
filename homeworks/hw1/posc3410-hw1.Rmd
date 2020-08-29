@@ -8,11 +8,13 @@ fontfamily: mathpazo
 fontsize: 11pt
 header-includes:
    - \linespread{1.05}
+urlcolor: blue
 ---
 
-This homework assignment will refer to the `1-sc-primary-2016.R` script I wrote and made available on my GitHub.[^footnote] It contains county-level information about the share of the vote that Cruz, Rubio, and Trump got in the 2016 Republican primary, the share of the vote that Clinton and Sanders got in the 2016 Democratic primary, as well as other demographic/background information that might explain some of these vote shares. Answer the following questions in two to three *complete* sentences.
+This homework assignment will refer to the `1-sc-primary-2016.R` script I wrote and made available on my GitHub (see footnote).[^footnote] It contains county-level information about the share of the vote that Cruz, Rubio, and Trump got in the 2016 Republican primary, the share of the vote that Clinton and Sanders got in the 2016 Democratic primary, as well as other demographic/background information that might explain some of these vote shares.[^verify] Answer the following questions in two to three *complete* sentences.
 
-[^footnote]: https://github.com/svmiller/sc-primary-2016
+[^footnote]: https://github.com/svmiller/posc3410/blob/master/homeworks/hw1/1-sc-primary-2016.R
+[^verify]: An older version of this script, along with all supporting information, is available here: https://github.com/svmiller/sc-primary-2016
 
 1. Get the mean of the percentage of the vote Trump got in the primary. Get the median. What does this suggest in terms of skew of the variable?
 2. Get a density plot of the Trump share variable. What does this suggest about the distribution of this variable?
