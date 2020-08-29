@@ -21,6 +21,14 @@ Pollock III, Philip H. 2016. *The Essentials of Political Analysis* (5th Edition
 
 I assign these books because I believe they are useful. You should look into them if you'd like! Yet, quantitative methods is a unique subset of political science pedagogy where you could truly teach yourself if you had a working internet connection. Unlike other topics/fields in the discipline, political scientists who teach students about research design and methodology are apt to share their notes, lectures slides, and discuss stuff on Twitter. Coding-related inquiries are even more abundant on a place like [Stack Overflow](https://stackoverflow.com/). You could truly "just Google" your way through the semester if you were diligent. In light of the extraordinary situation of teaching students during a mishandled viral pandemic,  I intend to help you by giving ample clarification of what we will be discussing in a week if you wanted to take to Google or Stack Overflow to teach yourself these topics around my online (or in-person?) instruction. My feelings would not be hurt.
 
+## Homeworks
+
+These are the homework sets I ask you to complete during the course of the semester. Of note: the "prompt" contains the questions and the "script" contains the R code to execute various commands that will help you answer the question. The "repository" link is the Github repo for everything. The first homework set also includes answer templates for your consideration. I offer these to students interested in learning R Markdown. Students should check the syllabus to see when each is due.
+
+- Homework #1 ([Prompt](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw1/1-sc-primary-2016.R), Answer Template [[PDF](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.pdf), [MS Word](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.docx), [R Markdown](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.Rmd)]
+, [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw1))
+
+
 ## Additional Course Materials
 
 Students must read the following documents in the first week of class. These outline my expectations for the rest of the semester.
