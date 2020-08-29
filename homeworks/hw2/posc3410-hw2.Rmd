@@ -1,0 +1,19 @@
+---
+title: "Homework #2"
+subtitle: "POSC 3410 - Quantitative Methods in Political Science"
+author: Steven V. Miller
+output: pdf_document
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+---
+
+Answer the following questions in two to three *complete* sentences.
+
+1. Suppose your neighborhood/apartment complex at Clemson is 40% Republican and 60% Democrat. Suppose President Trump has the support of 90% of the Democrats and 50% of the Republicans. If a randomly selected person from this community supports Trump, what is the probability that person is a Democrat? What type of probability question is this?
+2. A fair coin tossed 20 times produces an incredulous 20 heads. What is the probability that it will give a heads on the 21st try? Why?
+3. A 2014 *New York Times* [college football fandom map](http://www.nytimes.com/interactive/2014/10/03/upshot/ncaa-football-map.html#9,34.934,-83.579) reported that 51% of the college football fans in the 29630 zip code self-identified as Clemson fans. 22% were South Carolina fans. 5% were Georgia fans. The remaining 22% were unclassified or supporters of other programs (like *The* Ohio State University). Assume we have 100 people from that zip code where the proportions match perfectly (i.e. 51 of the 100 people are Clemson fans, 22 are South Carolina fans, and so on). How many different ways could we choose a caravan of six fans for a tailgate in which there is just one Clemson fan, two South Carolina fans, two Georgia fans, and one fan of some other program? What type of counting rule is this?
+4. Describe two features of the normal density function.
+5. How many different ways could five flips of a fair coin produce four heads? How would you know from Pascal's triangle?
