@@ -1,0 +1,26 @@
+---
+title: "Homework #5"
+subtitle: "POSC 3410 - Quantitative Methods in Political Science"
+author: Steven V. Miller
+output: pdf_document
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+---
+
+This homework assignment will refer to the `1-wvs-usa-abortion.R` script I wrote and made available on the course's Github repository.[^footnote] This is a sample from six waves of World Values Survey isolating just the responses in the United States. I offer a codebook for this data set on my Github, which I encourage the student to read.[^codebook] Answer the following questions in two to three sentences each, unless otherwise noted.
+
+[^footnote]:  https://github.com/svmiller/posc3410/blob/master/homeworks/hw5/1-wvs-usa-abortion.R
+[^codebook]: https://github.com/svmiller/wvs-usa-abortion-attitudes
+
+1. Get a histogram of the dependent variable `(aj)`. How would you describe the distribution of this variable? Would you treat this as an interval-level measurement? Why or why not?
+2. Run Model 1 `(M1)`. What is statistically associated with attitudes toward the justifiability of abortion and in what direction? Your answer should be five to seven complete sentences.
+3. Look at the intercept for Model 1. What is the baseline? Why might this baseline be misleading?
+4. Run Model 2 `(M2)`. Notice the statistical significance of the coefficients didn't change but the interpretability of the coefficients did. What does the intercept communicate in Model 2 in substantive terms? What appears to have the largest effect (in magnitude) on the justifiability of abortion in the United States?
+5. Run Model 3 `(M3)` and plot the interactive relationship of religion and age on attitudes toward abortion. What do you see?
+
+## Extra Credit
+
+6. Run Model 4 `(M4)` and plot the random effect. What do you think this communicates about the change in attitudes toward abortion over time?
