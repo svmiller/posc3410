@@ -1,0 +1,23 @@
+---
+title: "Homework #4"
+subtitle: "POSC 3410 - Quantitative Methods in Political Science"
+author: Steven V. Miller
+output: pdf_document
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+urlcolor: blue
+---
+
+This homework assignment will refer to the `1-wvs-trumpism.R` script I wrote and made available on my GitHub page.[^footnote] The exercises here draw from a blog post I wrote over the summer of 2016 that analyzes the behavioral foundations of "Trumpism" using four waves of World Values Survey data.[^blogpost] Do read that post and the footnotes in it to get a sense of the data since the following exercises will be simple replications of the analyses I report there. Answer the following questions in two to three *complete* sentences, unless otherwise noted.
+
+[^footnote]: https://github.com/svmiller/posc3410/blob/master/homeworks/hw4/1-wvs-trumpism.R
+[^blogpost]: http://svmiller.com/blog/2016/05/america-strong-leaders-world-values-survey-trump/
+
+1. Run Model 1 `(M1)`, which is a simpler generalized linear model of the first model I report in the first regression table in that blog post. This model uses four waves of survey data from 1995 to 2011. *Substantively* explain these results to me in five-to-seven complete sentences.
+2. Run Model 2 `(M2)`. This resembles the model you ran above (and the second model I show in the first regression table in that blog post), but it subsets the data to just 2011. What do you see and what's different in terms of statistical significance? *Substantively* explain these results to me in five-to-seven complete sentences.
+3. Do note the interaction in the previous two models. What does the interactive term capture? What about the constituent terms of high school education or less and self-identification with the Republican party?
+4. What are `z_age` and `I(z_age^2)` doing in these two statistical models? How would you interpret these results?
+5. Run Model 3 `(M3)`, which resembles the first model of the second regression table from the blog post. *Substantively* explain these results to me in five-to-seven complete sentences.
