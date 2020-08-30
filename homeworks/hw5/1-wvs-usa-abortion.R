@@ -102,6 +102,7 @@ if(length(new.packages)) install.packages(new.packages)
 
 # Of note: modelr will be the only one I ask you to directly load right now
 # broom and arm will be loaded quietly
+
 library(modelr)
 
 
