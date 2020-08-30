@@ -29,6 +29,7 @@ These are the homework sets I ask you to complete during the course of the semes
 , [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw1))
 - Homework #2 ([Prompt](http://posc3410.svmiller.com/homeworks/hw2/posc3410-hw2.pdf), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw2))
 - Homework #3 ([Prompt](http://posc3410.svmiller.com/homeworks/hw3/posc3410-hw3.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw3/1-simulate-population.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw3))
+- Homework #4 ([Prompt](http://posc3410.svmiller.com/homeworks/hw4/posc3410-hw4.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw4/1-wvs-trumpism.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw4))
 
 
 ## Additional Course Materials
