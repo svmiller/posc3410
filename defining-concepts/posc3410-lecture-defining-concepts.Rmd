@@ -72,7 +72,7 @@ This leads to questions we want to answer:
 
 It's better to to ask **concrete questions.**
 
-- These carry with it a priori beliefes about what "counts" as the concept in question.
+- These carry with it a priori beliefs about what "counts" as the concept in question.
 
 ### Asking Concrete Questions
 
@@ -113,11 +113,12 @@ Long story short: who looks like a "liberal" and who looks like a "conservative?
 
 ### Images of Liberals and Conservatives
 
-| **Liberals** | **Conservatives** |
+| **Liberal** | **Conservative** |
 |:-------------|:------------------|
 | Has low income | Has high income |
 | Is younger | Is older |
 | Supports social justice | Opposes social justice |
+| Opposes free market | Supports free market |
 | Supports government-sponsored health care | Opposes government-sponsored health care |
 | Opposes tax cuts | Supports tax cuts |
 | Opposes abortion restrictions | Supports abortion restrictions |
@@ -143,9 +144,10 @@ The answer should be a clear "yes."
 
 ### Condensed Images of Liberals and Conservatives
 
-| **Liberals** | **Conservatives** |
+| **Liberal** | **Conservative** |
 |:-------------|:------------------|
 | Supports social justice | Opposes social justice |
+| Opposes free market | Supports free market |
 | Supports government-sponsored health care | Opposes government-sponsored health care |
 | Opposes tax cuts | Supports tax cuts |
 | Opposes abortion restrictions | Supports abortion restrictions |
@@ -174,6 +176,7 @@ If you can only "know it when you see it" (a la Potter Stewart), then you must d
 
 | **Liberals** | **Conservatives** |
 |:-------------|:------------------|
+| Supports government-sponsored health care | Opposes government-sponsored health care |
 | Opposes tax cuts | Supports tax cuts |
 | Opposes abortion restrictions | Supports abortion restrictions |
 | Supports same-sex marriage | Opposes same-sex marriage |
@@ -198,7 +201,7 @@ In short, we have a **multimensional concept**, which are common in political sc
 ## Units of Analysis
 ### Units of Analysis
 
-All conceptual dimensions specify a **unit of analysis** (i.e. the entity wewant to describe). We generally have two levels that interest us:
+All conceptual dimensions specify a **unit of analysis** (i.e. the entity we want to describe). We generally have two levels that interest us:
 
 - Individual-level (e.g. citizens, Congressmen)
 - Aggregate-level (e.g. classrooms, districts, states, countries)
