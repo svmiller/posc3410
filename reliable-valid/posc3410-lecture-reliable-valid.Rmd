@@ -17,13 +17,21 @@ mainfont: "Open Sans"
 titlefont: "Titillium Web"
 ---
 
-```{r setup, include=FALSE, message=F, warning=F, cache=TRUE}
+```{r setup, include=FALSE, message=F, warning=F, cache=FALSE}
 library(tidyverse)
 library(stevemisc)
 library(qs)
 library(WDI)
+library(knitr)
 
-WDI(country="all", indicator = c("EG.USE.ELEC.KH.PC", "NY.GDP.PCAP.KD"), start=1960, end=2020)
+KWHPC <- WDI(country="all", indicator = c("EG.USE.ELEC.KH.PC", "NY.GDP.PCAP.KD"), start=1960, end=2020) %>% tbl_df()
+
+KWHPC %>%
+  rename(kwhpc = EG.USE.ELEC.KH.PC,
+         gdppc = NY.GDP.PCAP.KD) %>%
+  mutate(ccode = countrycode::countrycode(country, "country.name", "cown"),
+         ccode = ifelse(country == "Serbia", 345, ccode)) -> KWHPC
+
 
 # 
 # USA <- qs::qread("~/Dropbox/data/wvs/wvs6wave-20180912.qs") %>%
@@ -299,18 +307,33 @@ Compare/contrast the nighttime photos of North and South Korea.
 
 ### Top Ten Energy-Consuming States in my 2008 Sample
 
-|   | Country | Kilowatt Hours per Capita |
-|---|---------|:-------------------------:|
-| 1 | Iceland | 50067 |
-| 2 | Norway | 24867 |
-| 3 | Canada | 17061 |
-| 4 | UAE | 16891 |
-| 5 | Finland | 16350 |
-| 6 | Luxembourg | 15895 |
-| 7 | Qatar | 15682 |
-| 8 | Sweden | 14869 |
-| 9 | USA | 13654 |
-| 10 | Bahrain | 13144 |
+```{r, echo=F}
+
+KWHPC %>% filter(year == 2008) %>%
+  filter(country %in% c("Iceland", "Norway","Canada","United Arab Emirates","Finland", 
+                        "Luxembourg", "Qatar", "Sweden", "Bahrain", "United States")) %>%
+  arrange(-kwhpc) %>%
+  mutate(rank = 1:n()) %>%
+  select(rank, country, kwhpc) %>%
+  mutate_if(is.numeric, ~round(.,2)) %>%
+  kable(.,
+        col.names = c("Rank", "Country", "Kilowatt Hours per Capita"),
+        align = c("c", "l","c"))
+
+```
+
+<!-- |   | Country | Kilowatt Hours per Capita | -->
+<!-- |---|---------|:-------------------------:| -->
+<!-- | 1 | Iceland | 50067 | -->
+<!-- | 2 | Norway | 24867 | -->
+<!-- | 3 | Canada | 17061 | -->
+<!-- | 4 | UAE | 16891 | -->
+<!-- | 5 | Finland | 16350 | -->
+<!-- | 6 | Luxembourg | 15895 | -->
+<!-- | 7 | Qatar | 15682 | -->
+<!-- | 8 | Sweden | 14869 | -->
+<!-- | 9 | USA | 13654 | -->
+<!-- | 10 | Bahrain | 13144 | -->
 
 ### Face Validity
 
@@ -333,19 +356,44 @@ Is this variable empirically related with other variables to which it should be 
 - If a state is truly developed, the average citizen should have more material wealth than the citizen in a developing state.
 - Thus, we should expect a relationship between our variable and gross national income.
 
-**What I did:** Grab gross national income per capita data for each of the 50 countries randomly sampled.
+**What I did:** Grab gross national income per capita data for all countries from 2009 to 2014.
 
 - Thereafter, I regressed this other variable on kilowatt hours per capita.
 - Consider this a preview. We will go over linear regression in considerable detail later in the course.
 
-### Regressing Kilowatt Hours per Capita on GNI per Capita
+### 
 
-|          | Estimate | Std. Error | t value | Pr(>t) |
-|---------:|---------:|-----------:|--------:|---------:|
-| (Intercept) | -142.4559 | 1086.3390 | -.013 | 0.8962  |
-| Kilowatt hours per capita | 3.2269 | 0.2059 | 15.67 | 0.0000 |
+```{r kilowatt-hours-and-gdp-per-capita, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+KWHPC %>%
+  filter(year >= 2009) %>%
+  na.omit %>%
+  group_by(year) %>%
+  nest() %>%
+  mutate(fit = map(data, ~lm(gdppc ~ kwhpc, data= .x)),
+         tidy = map(fit, broom::tidy))  %>%
+  pull(tidy) %>% 
+  map2_df(.,
+          c(2009:2014),
+          ~mutate(.x, year =.y)) %>%
+  filter(term == "kwhpc") %>%
+  mutate(lwr = estimate - z95*std.error,
+         upr = estimate + z95*std.error) %>%
+  ggplot(.,aes(as.factor(year), estimate, ymin=lwr, ymax=upr)) +
+  geom_hline(yintercept = 0, linetype="dashed") + theme_steve_web() +
+    geom_pointrange() + coord_flip() +
+  labs(x ="", y="Estimated effect for unit increase in kilowatt hours per capita on GDP per capita (with 95% intervals)",
+       caption = "Data: World Bank API (2009-2014)",
+       subtitle = "This simple exercise suggests kilowatt hours per capita as stand-in for state development passes a construct validity test.",
+       title = "Simple Linear Regressions of GDP per Capita on Kilowatt Hours per Capita for All Countries, by Year")
+  
+```
 
-The regression results suggest that the two variables are indeed strongly associated, which we expected.
+<!-- |          | Estimate | Std. Error | t value | Pr(>t) | -->
+<!-- |---------:|---------:|-----------:|--------:|---------:| -->
+<!-- | (Intercept) | -142.4559 | 1086.3390 | -.013 | 0.8962  | -->
+<!-- | Kilowatt hours per capita | 3.2269 | 0.2059 | 15.67 | 0.0000 | -->
+
+<!-- The regression results suggest that the two variables are indeed strongly associated, which we expected. -->
 
 # Conclusion
 ### Conclusion
