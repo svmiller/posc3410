@@ -27,3 +27,8 @@
   filename: defining-concepts
   dirname: defining-concepts
   tldr:  "A discussion of politics is ultimately conceptual. Political *science* entails operationalizing those concepts."
+
+- title: "Reliability and Validity"
+  filename: reliable-valid
+  dirname: reliable-valid
+  tldr:  "Ideally our measures are supposed to--consistently--capture the true concept without measuring anything else."
