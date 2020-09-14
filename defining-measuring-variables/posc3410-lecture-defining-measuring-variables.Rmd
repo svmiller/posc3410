@@ -1,0 +1,456 @@
+---
+title: "Defining and Measuring Variables"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+library(tidyverse)
+library(stevemisc)
+library(qs)
+
+USA <- qread("~/Dropbox/data/wvs/wvs6wave-20180912.qs") %>% rename_all(tolower) %>%
+  filter(s003 == 840)
+
+USA %>% filter(s002 == 5) %>%
+    select(s020, x047cs) %>%
+    mutate(inccat = x047cs - 840040) -> USA2006
+```
+
+# Introduction
+### Goal for Today
+
+*Discuss the definition and measurement of variables.*
+
+### Introduction
+
+The previous lecture discussed that we start with a broader concept that interests us.
+
+- e.g. "political tolerance", "war", or "state development"
+
+However, proceeding with political *science* requires a tangible measure of the concept in question.
+
+- Measurement really is the heart of science.
+
+Once we have that measure, we have, in essence, a **variable**.
+
+# On Variables
+### Variables
+
+What is a **variable**?
+
+- It is the empirical measurement of a characteristic.
+- It's also a numeric array of data that has at least two separate values.
+
+### Dummy Variables
+
+A variable with just two values is called a **dummy variable**.
+
+- Some type of phenomenon is either present or absent.
+- Typically coded as 1 or 0, respectively.
+
+Gender is the most common and intuitive dummy variables.
+
+- We typically code women as 1, men as 0.
+
+We don't try to explain variations in gender (seriously, don't), but gender may explain phenomena of interest.
+
+- e.g. support for parental leave policies in Europe, support for contraceptive coverage in the U.S.
+
+
+## Levels of Measurement
+### Levels of Measurement
+
+There are three levels of precision in a variable.
+
+1. Nominal
+2. Ordinal
+3. Interval
+
+### Nominal Variables
+
+A **nominal variable** has the lowest level of precision.
+
+- This is also called a "categorical variable".
+
+The numeric values in these variables code differences *and nothing else*.
+
+### Nominal Variables
+
+What does this mean? Take our gender example.
+
+- i.e. women = 1 and men = 0.
+- We need to substitute these numeric values for labels in order to do any statistical analysis.
+
+Numerically, we know 1 > 0.
+
+- That does not mean we are saying that women are "better" than men.
+
+We are not saying that 1 > 0, but that 1 != (i.e. does not equal) 0.
+
+- All binary variables are, by design, nominal variables.
+
+### Nominal Variables
+
+There are other examples of nominal variables with plenty of different values. Examples:
+
+- State of origin (e.g. Alabama, Alaska, Arizona...)
+- Country of Origin (e.g. USA, Canada, Bahamas...)
+- Race (e.g. white, black, etc...)
+- Religion (e.g. Protestant, Catholic, Muslim, etc...)
+- Party affiliation (e.g. Democrat, Republican, Independent, etc...)
+
+Again, values in these variables simply code differences.
+
+### Ordinal Variables
+
+**Ordinal variables** capture rank, or order, within the numeric values.
+
+- They often (but do not always) look like Likert items.
+
+Likert items make a statement and prompt a level of agreement with the statement.
+
+- e.g. "People who sell cannabis should always be prosecuted"
+	- Actual question from British Social Attitudes Survey
+- Answers: Strongly agree, agree, neutral, disagree, strongly disagree.
+- Corresponding values: 2, 1, 0, -1, -2.
+    - Alternatively: 1, 2, 3, 4, 5. It's just good to have a zero, though.
+
+### Ordinal Variables
+
+Since the variable captures degree of agreement, we can say that 2>1 and 1>-2.
+
+- People who respond "agree" are more in agreement with the statement than those who "strongly disagree".
+- However, this variable does not precisely say much.
+
+An ordinal variable captures order and rank, but only captures *relative* difference.
+
+### What about Party ID?
+
+Consider this wrinkle in how to measure party identification. From GSS:
+
+1. Strong Democrat
+2. Not strong Democrat
+3. Independent, near Democrat
+4. Independent
+5. Independent, near Republican
+6. Not strong Republican
+7. Strong Republican
+8. Other party
+
+Is this ordinal or nominal?
+
+### What about Party ID?
+
+"Other Party" makes this a nominal variable.
+
+- Its inclusion automatically eliminates a natural semblance of order.
+
+One "solution": treat it is as missing. Why?
+
+- Statistically: "Other party" is usually no more than 3% of the data.
+- Theoretically: most "independents" are closet partisans anyway.
+- What remains: an ordinal measure of "partisanship" and not a nominal variable of party ID
+
+### Interval Variables
+
+An **interval variable** captures *exact* differences.
+
+- It's our most precise level of measurement.
+
+Perhaps the most common interval measure we observe is age in years.
+
+- i.e. someone who is 34 is 13 years older than someone who is 21.
+- Notice the difference is no longer relative, but exact and precise.
+
+Age is an easy way of thinking of interval variables, but we have others too.
+
+- Political economy researchers have a glut of interval variables.
+- e.g. gross national income, GDP per capita, kilowatt hours consumed per capita, consumer price index.
+
+### Is It Ordinal or Interval?
+
+The difference between ordinal and interval is mostly intuitive, but there is a gray area sometimes.
+
+- Do we know if a guy who earns $50,001 is exactly one dollar richer than a guy who makes $50k even?
+	- We may have an issue of cents.
+- Is the person who is 21 exactly one year older than a 20-year-old?
+	- We may have an issue of days and months.
+
+How would you know when it's ordinal or interval?
+
+### A Rule of Thumb
+
+We love to treat technically ordinal variables as interval when we can.
+
+- Especially true for age and income.
+
+We asks ourselves two questions.
+
+1. How many different values are there?
+2. How are the data distributed?
+
+### A Rule of Thumb
+
+If it has seven or more different values, you can *start* to think of it as interval.
+
+- e.g. financial satisfaction on a 10-point scale.
+- e.g. justifiability of bribe-taking on a 10-point scale.
+
+However, check to see how the data are distributed.
+
+- Is it bimodal? Is there a noticeable skew?
+- If so, *don't* treat it as interval.
+
+We'll be using two examples from the 2000 wave of World Values Survey.
+
+### 
+
+```{r wvs-usa-financial-satisfaction-2006, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+USA %>% select(s020, c006) %>% 
+  haven::zap_labels(.) %>%
+  group_by(s020) %>%
+  count(c006) %>% filter(s020 == 2006) %>% na.omit %>%
+  ggplot(.,aes(as.factor(c006), n)) +
+  theme_steve_web() +
+  geom_bar(stat="identity", fill="#619cff", alpha=.8,color="black")  +
+  geom_text(aes(label=n), color="black",
+            position=position_dodge(width=.9), 
+            size=4, vjust = -.5, family="Open Sans") +
+  scale_x_discrete(labels =c("Dissatisfied", "2", "3", "4","5","6","7",
+                             "8","9", "Satisfied")) +
+  labs(title = "The Distribution of Financial Satisfaction in the U.S. in 2006",
+       y = "Number of Observations", x = "Financial Satifaction",
+       caption = "Data: World Values Survey (United States, 2006)",
+       subtitle = "Data are limited to a 1-10 scale, but are sufficiently spaced out with no heaping. You could treat this as interval for convenience.")
+
+```
+
+
+###
+
+```{r british-immigration-sentiment-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+ESS9GB %>%
+  group_by(immigsent) %>% # group_by unique values of immigsent
+  summarize(n = n()) %>% # return number of times that particular value was coded for variable
+  na.omit %>% # drop NAs, which won't matter much here.
+  ggplot(.,aes(as.factor(immigsent), n)) +  # create foundation ggplot
+  # bar chart, with some prettiness
+  geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
+  geom_text(aes(label=n), color="black",
+            position=position_dodge(width=.9), 
+            size=3.5, vjust = -.5, family="Open Sans") +
+  theme_steve_web() + 
+  labs(y = "Number of Observations",
+       x = "Value of the Pro-Immigration Sentiment Variable",
+       caption = "Data: European Social Survey, Round 9 in the United Kingdom\nBlog post: http://svmiller.com/blog/2020/03/what-explains-british-attitudes-toward-immigration-a-pedagogical-example/",
+       title = "A Bar Chart of Pro-Immigration Sentiment in the United Kingdom from the ESS Data (Round 9)",
+       subtitle = "There's a natural heaping of 0s and 30s but I've seen worse variables treated as interval for an OLS model or summarized by means.")
+
+```
+
+
+### 
+
+```{r wvs-usa-justif-bribe, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+USA %>% select(s020, f117) %>% 
+  haven::zap_labels(.) %>%
+  group_by(s020) %>%
+  count(f117) %>% na.omit %>%
+  group_by(s020) %>%
+  mutate(perc = n/sum(n),
+         lab = paste0(round(perc*100, 1), "%")) %>%
+  ggplot(.,aes(as.factor(f117), perc)) +
+  facet_wrap(~s020) +
+  theme_steve_web() +
+  geom_bar(stat="identity", fill="#619cff", alpha=.8,color="black")  +
+  geom_text(aes(label=lab), color="black",
+            position=position_dodge(width=.9), 
+            size=3.5, vjust = -.5, family="Open Sans") +
+  scale_x_discrete(labels =c("Never\nJustifiable", "2", "3", "4","5","6","7",
+                             "8","9", "Always\nJustifiable")) +
+  scale_y_continuous(labels=scales::percent,limits = c(0,.9)) +
+  labs(title = "The Justifiability of Taking a Bribe in the United States, 1981-2011",
+       y = "Percentage of Responses", x = "Justifiability of Taking a Bribe",
+       caption = "Data: World Values Survey (United States, 1981-2011)",
+       subtitle = "There is a clear right skew with a natural heaping at 0. *Don't* treat this as interval and don't ask for a mean of it.")
+
+```
+
+### 
+
+```{r wvs-usa-justif-abortion, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+USA %>% select(s020, f120) %>% 
+  haven::zap_labels(.) %>%
+  group_by(s020) %>%
+  count(f120) %>% na.omit %>%
+  group_by(s020) %>%
+  mutate(perc = n/sum(n),
+         lab = paste0(round(perc*100, 1), "%")) %>%
+  ggplot(.,aes(as.factor(f120), perc)) +
+  facet_wrap(~s020) +
+  theme_steve_web() +
+  geom_bar(stat="identity", fill="#619cff", alpha=.8,color="black")  +
+  geom_text(aes(label=lab), color="black",
+            position=position_dodge(width=.9), 
+            size=4, vjust = -.5, family="Open Sans") +
+  scale_y_continuous(limits = c(0,.5)) +
+  scale_x_discrete(labels =c("Never\nJustifiable", "2", "3", "4","5","6","7",
+                             "8","9", "Always\nJustifiable")) +
+  labs(title = "The Justifiability of an Abortion in the United States, 1981-2011",
+       y = "Percentage of Responses", x = "Justifiability of an Abortion",
+       caption = "Data: World Values Survey (United States, 1981-2011)",
+       subtitle = "You're observing clear clumping/heaping in these data for which an ''average'' wouldn't look so average.")
+
+```
+
+
+### Condensing Interval to Nominal
+
+You can always condense a measure to lower levels of precision, but cannot add levels of precision. Take income, for example.
+
+- **Interval**: income in dollars.
+    - This will likely have a right skew, though.
+- **Ordinal**: 0-$25k, $25k-$50k, $50k-$75k, $75k-$100k, $100k and above
+- **Nominal**: low income earners (i.e. < $25k) and not low income earners.
+
+### An Example in World Values Survey Data, USA 2006
+
+"In what group your household is, counting all wages, salaries, pensions and other incomes":
+
+![Income categories](inccat.png)
+
+### Example Code
+
+\scriptsize
+
+```{r wvsusa2006, echo=TRUE, eval=FALSE, message=F, warning=F, cache=TRUE}
+
+USA %>% filter(s002 == 5) %>%
+    select(s020, x047cs) %>%
+    mutate(inccat = x047cs - 840040) %>% 
+  haven::zap_labels() -> USA2006
+
+USA2006 %>%
+  count(inccat) %>%
+  ggplot(.,aes(as.factor(inccat), n)) +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") 
+
+# 5 income categories:
+# 1 = $19,999 and below; 2 = between $20k and 39,999; 3 = between $40k and 74,999
+# 4 = between $75k and 99,999; 5 = $100k and above
+USA2006 %>% # note: carr comes in my stevemisc package
+  mutate(cat5 = carr(inccat, "1:6=1; 7:10=2; 11:13=3; 
+                     14:15=4; 16:19=5")) %>%
+  group_by(cat5) %>% tally() %>%
+  ggplot(.,aes(cat5, n)) +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") 
+
+USA2006 %>% # just those making $100k or more
+  mutate(highincome = ifelse(inccat >= 16, 1, 0)) %>%
+  count(highincome) %>%
+  ggplot(.,aes(as.factor(highincome), n)) +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") 
+
+```
+
+### 
+
+
+```{r usa-2006-inccats-19-vals, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+USA2006 %>% haven::zap_labels() %>%
+  count(inccat) %>%
+  ggplot(.,aes(as.factor(inccat), n)) +
+  theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") +
+  geom_text(aes(label=n), color="black",
+            position=position_dodge(width=.9), 
+            size=4, vjust = -.5, family="Open Sans") +
+  labs(x = "Income Categories (1 = Less than $5,000; 19= $175,000 or more)",
+       y = "Number of Observations",
+       caption = "Data: World Values Survey (United States, 2006)",
+       title = "The Distribution of Self-Reported Household Incomes in the 2006 U.S. Wave of World Values Survey Data",
+       subtitle = "The data are neatly distributed in 19 distinct income categories.")
+```
+
+###
+
+```{r usa-2006-inccats-5-vals, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+USA2006 %>% mutate(cat5 = carr(inccat, "1:6=1; 7:10=2; 11:13=3; 
+                     14:15=4; 16:19=5")) %>%
+  group_by(cat5) %>% tally() %>%
+  ggplot(.,aes(as.factor(cat5), n)) +
+  theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") +
+  geom_text(aes(label=n), color="black",
+            position=position_dodge(width=.9), 
+            size=4, vjust = -.5, family="Open Sans") +
+  labs(x = "Income Categories",
+       y = "Number of Observations",
+       caption = "Data: World Values Survey (United States, 2006)",
+       title = "The Distribution of Self-Reported Household Incomes in the 2006 U.S. Wave of World Values Survey Data",
+       subtitle = "The data here are collapsed to five categories, for which a mean would not be useful information.")
+```
+
+### 
+
+```{r usa-2006-inccats-2-vals, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+USA2006 %>% # just those making $100k or more
+  mutate(highincome = ifelse(inccat >= 16, 1, 0)) %>%
+  count(highincome) %>%
+  ggplot(.,aes(as.factor(highincome), n))  +
+  theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") +
+  geom_text(aes(label=n), color="black",
+            position=position_dodge(width=.9), 
+            size=4, vjust = -.5, family="Open Sans") +
+  scale_x_discrete(labels = c("Not High Income", "High Income")) +
+  labs(x = "Income Group",
+       y = "Number of Observations",
+       caption = "Data: World Values Survey (United States, 2006)",
+       title = "The Distribution of Self-Reported Household Incomes in the 2006 U.S. Wave of World Values Survey Data",
+       subtitle = "The data here are collapsed to two categories, which makes it a dummy variable.")
+```
+
+# Conclusion
+### Conclusion
+
+This lecture focused on describing variables by their precision.
+
+- Variables are nominal, ordinal, or interval.
+- We have intuitive means to classify them.
+
+Correctly classifying them is important.
+
+- This will condition our choice of tools for descriptive and inferential statistics.
