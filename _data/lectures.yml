@@ -32,3 +32,8 @@
   filename: reliable-valid
   dirname: reliable-valid
   tldr:  "Ideally our measures are supposed to--consistently--capture the true concept without measuring anything else."
+
+- title: "Defining and Measuring Variables"
+  filename: defining-measuring-variables
+  dirname: defining-measuring-variables
+  tldr:  "Measurement is the heart of science. Let's talk about how we can categorize measurement."
