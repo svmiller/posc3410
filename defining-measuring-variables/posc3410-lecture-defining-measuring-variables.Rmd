@@ -229,7 +229,6 @@ However, check to see how the data are distributed.
 - Is it bimodal? Is there a noticeable skew?
 - If so, *don't* treat it as interval.
 
-We'll be using two examples from the 2000 wave of World Values Survey.
 
 ### 
 
