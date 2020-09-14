@@ -4,6 +4,9 @@
 # ignore hidden files
 .*
 
+# ignore cache
+cache*
+
 # ignore files with the rolling extensions
 *.DS_Store
 *.Rhistory
