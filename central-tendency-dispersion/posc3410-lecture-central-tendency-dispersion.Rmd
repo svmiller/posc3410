@@ -1,0 +1,390 @@
+---
+title: "Central Tendency and Dispersion"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+library(tidyverse)
+library(stevemisc)
+library(post8000r)
+library(qs)
+library(knitr)
+library(kableExtra)
+
+# USA <- qread("~/Dropbox/data/wvs/wvs6wave-20180912.qs") %>% rename_all(tolower) %>%
+#   filter(s003 == 840)
+# 
+# USA %>% filter(s002 == 5) %>%
+#     select(s020, x047cs) %>%
+#     mutate(inccat = x047cs - 840040) -> USA2006
+
+GSS <- qread("/home/steve/Dropbox/data/gss/GSS_spss-2018/gss7218.qs") %>% select(year, region, attend, tvhours)
+```
+
+# Introduction
+### Goal for Today
+
+*Describe variables by reference to central tendency and dispersion.*
+
+### Defining and Measuring Variables
+
+Last lecture focused on a typology of variables.
+
+1. Nominal
+2. Ordinal
+3. Interval
+
+Correct classification will condition how we can *describe* variables.
+
+# Central Tendency
+### Central Tendency
+
+The most common description of interest is the **central tendency**.
+
+- This is the variables "typical", or "average" value.
+- This takes on different forms contingent on variable type.
+
+Think of what follows as a "tool kit" for researchers.
+
+- More precise variables allow for more precise measures.
+- Use the right tool for the job, if you will.
+
+### Mode
+
+The **mode** is the most basic central tendency statistic.
+
+- It identifies the most frequently occurring value.
+
+Suppose I have a random sample of 50 students and measured party affiliation.
+
+- Democrats: 26; Republicans: 20; Others: 4
+
+What's the modal category?
+
+### Mode
+
+If I randomly grabbed a student from that sample and guessed "Democrat", I would be right 26 times of 50 (on average).
+
+- No other guess, on average, would be as good.
+
+This is the only central tendency statistic for nominal variables.
+
+### Median
+
+The **median** is the middlemost value.
+
+- It's the most precise statistic for ordinal variables.
+- It's a useful robustness check for interval variables too.
+
+Formally, a median *m* exists when the following equalities are satisfied.
+
+\begin{equation}
+	P(X \le m) \ge \frac{1}{2} \; \textrm{and} \;  P(X \ge m) \ge \frac{1}{2}
+\end{equation}
+
+### Finding the Median
+
+Order the observations from lowest to highest and find what value lies in the exact middle.
+
+- The median is the point where half the values lie below and half are above.
+- We can do this when our variables have some kind of "order".
+- Medians of nominal variables are nonsensical.
+
+### Mean
+
+The arithmetic **mean** is used only for interval variables.
+
+- This is to what we refer when we say "average".
+
+Formally, *i* through *n*:
+
+\begin{equation}
+	\frac{1}{n}\Sigma x_i
+\end{equation}
+
+We can always describe interval variables with mode and median.
+
+- We cannot do the same for ordinal or nominal with the mean.
+
+# Dispersion
+### Dispersion
+
+We also need to know variables by reference to its **dispersion**.
+
+- i.e. "how average is 'average'?"
+- How far do variables deviate from the typical value?
+- If they do, measures of central tendency can be misleading.
+
+The interval variable with no dispersion problem is one in which the mode, median, and mean are the same value.
+
+- This will not happen when there is a significant **skew**, or a **bimodal** distribution.
+
+### Frequency Distribution
+
+A **frequency distribution** is a summary of a variable's values.
+
+ <!-- ![](tab22.pdf) -->
+ 
+```{r, echo=F, message=F, warning=F, results="asis"}
+skable <- function(data, caption) {
+  knitr::kable(data, caption = caption, format = "latex", booktabs = TRUE, longtable =T, linesep = "") %>%
+    kable_styling(full_width = F, 
+                  latex_options = c("repeat_header", "hold_position")) %>%
+    row_spec(0, bold= TRUE)
+}
+
+GSS %>% select(year, region) %>%
+  filter(year == 2018) %>%
+  mutate(division = as.character(str_to_title(as_factor(region)))) %>%
+  select(-region) %>%
+  mutate(division = dplyr::recode(division,
+                                "E. Nor. Central" = "East North Central",
+                                "W. Sou. Central" = "West South Central",
+                                "W. Nor. Central" = "West North Central",
+                                "E. Sou. Central" = "East South Central")) %>%
+  left_join(., States %>% select(division, region)) %>%
+  group_by(region) %>% tally() %>%
+  mutate(region = ifelse(region == "North Central", "Midwest", region),
+         perc = n/sum(n),
+         perc = paste0(mround2(perc),"%")) %>%
+  bind_rows(., tibble(region = "Total", perc = "100%" )) %>%
+  mutate(holdme = sum(n,na.rm=T),
+         n = ifelse(is.na(n), holdme, n)) %>% select(-holdme) %>%
+  kable(., format="latex",
+        caption = "Region of Residence (General Social Survey, 2018)",
+        col.names = c("Region","Frequency","Percentage"),
+        align = c("l","c","c"), booktabs=TRUE, longtable=TRUE) %>%
+  row_spec(5, italic=TRUE) %>%
+  row_spec(0, bold=TRUE) 
+
+```
+
+### Cumulative Percentage
+
+A **cumulative percentage** is the percentage of cases at or below a given value.
+
+```{r, echo=F, message=F, warning=F, results="asis"}
+
+GSS %>%
+  filter(year == 2018) %>%
+  arrange(attend) %>%
+  mutate(attend_f = str_to_title(as_factor(attend))) %>%
+  filter(!is.na(attend)) %>%
+  mutate(attend_f = forcats::fct_inorder(attend_f)) %>%
+  group_by(attend_f) %>% tally() %>%
+  mutate(attend_f = c("Never or Less Than Once a Year",
+                      "Never or Less Than Once a Year",
+                      "Once a Year",
+                      "Several Times a Year",
+                      "Once a Month",
+                      "2-3 Times a Month",
+                      "Nearly Every Week",
+                      "Every Week or More",
+                      "Every Week or More")) %>%
+  group_by(attend_f) %>% mutate(nt = sum(n)) %>%
+  distinct(attend_f, nt) %>%
+  ungroup() %>%
+  mutate(perc = nt/sum(nt),
+         cumperc = cumsum(perc)) %>%
+  mutate(perc = paste0(mround2(perc), "%"),
+         cumperc =paste0(mround2(cumperc), "%")) %>%
+   kable(., format="latex",
+        caption = "Attendance at Religious Services (General Social Survey, 2018)",
+        col.names = c("Attendance","Frequency","Percentage", "Cumulative Percentage"),
+        align = c("l","c","c","c"), booktabs=TRUE, longtable=TRUE,linesep='') %>%
+  # row_spec(5, italic=TRUE) %>%
+  row_spec(0, bold=TRUE) 
+  
+
+```
+
+###
+
+```{r church-attendance-over-time, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+
+GSS %>%
+  mutate(attend_f = str_to_title(as_factor(attend))) %>% 
+  filter(!is.na(attend_f)) %>% #distinct(attend_f) %>%
+  mutate(attend_f = dplyr::recode(attend_f,
+                                  "Never" = "Never or Less Than Once a Year",
+                                  "Once A Year" = "Once or Several Times a Year",
+                                  "Once A Month" = "At Least Once a Month",
+                                  "Lt Once A Year" = "Never or Less Than Once a Year",
+                                  "Sevrl Times A Yr" = "Once or Several Times a Year",
+                                  "More Thn Once Wk" = "Every Week or More",
+                                  "Every Week" = "Every Week or More",
+                                  "2-3x A Month" = "At Least Once a Month",
+                                  "Nrly Every Week" = "At Least Once a Month")) %>%
+  mutate(attend_f = forcats::fct_relevel(attend_f,
+                                         "Never or Less Than Once a Year",
+                                         #"Once a Year",
+                                         "Once or Several Times a Year",
+                                     #    "Once a Month",
+                                         "At Least Once a Month",
+                                      #   "Nearly Every Week",
+                                         "Every Week or More")) %>%
+  group_by(year, attend_f) %>%
+  tally() %>%
+  group_by(year) %>%
+  mutate(perc = n/sum(n)) %>% #filter(attend_f %nin% c("Once a Month", "2-3 Times a Month")) %>%
+  ggplot(.,aes(year, perc, color=attend_f,linetype=attend_f)) + geom_line(size=1.1) +
+  theme_steve_web()  +  scale_color_brewer(palette = "PuOr") +
+  scale_x_continuous(breaks = seq(1970,2020, by=4)) +
+  labs(color="",linetype="",
+       title = "The Variation of Self-Reported Church Attendance in the United States, 1972-2018",
+       x = "",
+       y = "Percentage of Responses in a Given Survey Year",
+       caption = "Data: General Social Survey, 1972-2018",
+       subtitle = "In these truncated categories, the ''never'' group went from being the smallest in 1972 to the clear largest in 2018.")
+
+```
+
+###
+
+```{r bar-chart-region, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+GSS %>% select(year, region) %>%
+  filter(year == 2018) %>%
+  mutate(division = as.character(str_to_title(as_factor(region)))) %>%
+  select(-region) %>%
+  mutate(division = dplyr::recode(division,
+                                "E. Nor. Central" = "East North Central",
+                                "W. Sou. Central" = "West South Central",
+                                "W. Nor. Central" = "West North Central",
+                                "E. Sou. Central" = "East South Central")) %>%
+  left_join(., States %>% select(division, region)) %>%
+  group_by(region) %>% tally() %>%
+  mutate(region = ifelse(region == "North Central", "Midwest", region),
+         perc = n/sum(n),
+         perc = paste0(mround2(perc),"%")) %>%
+  ggplot(.,aes(region, n)) + 
+  theme_steve_web() +
+  geom_bar(stat="identity", color="black", fill="#619cff") +
+   geom_text(aes(label=n), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family = "Open Sans") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Condensed Census Region",
+       y = "Number of Observations",
+       title = "A Bar Chart of Region of Residence in the General Social Survey (2018)",
+       subtitle = "Your mileage may vary, but I think there's more value in bar charts for basic descriptive stuff.",
+       caption = "Data: General Social Survey, 2018.")
+```
+
+###
+
+```{r bar-chart-churchatd, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+GSS %>%
+  filter(year == 2018) %>%
+  arrange(attend) %>%
+  mutate(attend_f = str_to_title(as_factor(attend))) %>%
+  filter(!is.na(attend)) %>%
+  mutate(attend_f = forcats::fct_inorder(attend_f)) %>%
+  group_by(attend_f) %>% tally() %>%
+  mutate(attend_f = c("Never or Less Than Once a Year",
+                      "Never or Less Than Once a Year",
+                      "Once a Year",
+                      "Several Times a Year",
+                      "Once a Month",
+                      "2-3 Times a Month",
+                      "Nearly Every Week",
+                      "Every Week or More",
+                      "Every Week or More")) %>%
+  group_by(attend_f) %>% mutate(nt = sum(n)) %>%
+  distinct(attend_f, nt) %>%
+  ungroup() %>%
+  mutate(perc = nt/sum(nt),
+         cumperc = cumsum(perc)) %>%
+  mutate(attend_f = fct_inorder(attend_f)) %>%
+  ggplot(.,aes(attend_f, nt)) + 
+  theme_steve_web() +
+  geom_bar(stat="identity", color="black", fill="#619cff") +
+   geom_text(aes(label=nt), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family = "Open Sans") +
+  labs(x = "Self-Reported Church Attendance",
+       y = "Number of Observations",
+       caption = "Data: General Social Survey, 2018.",
+       title = "A Bar Chart of Self-Reported Church Attendance in the General Social Survey (2018)",
+       subtitle = "A simple bar chart helps less with cumulative percentages, but it'll better point you in the direction of potential bimodality.")
+```
+
+
+###
+
+```{r bar-chart-tvwatching, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+
+GSS %>%
+  filter(year == 2018) %>%
+  summarize(meantv = mean(tvhours,na.rm=T),
+            mediantv = median(tvhours, na.rm=T)) -> sumssums
+
+
+GSS %>%
+  filter(year == 2018) %>%
+  group_by(tvhours) %>% tally() %>% na.omit %>%
+  ggplot(.,aes(tvhours, n)) +
+  theme_steve_web() +
+  geom_bar(stat="identity", color="black", fill="#619cff") +
+    geom_vline(xintercept = sumssums$meantv, linetype="dashed") +
+  geom_vline(xintercept = sumssums$mediantv, linetype="dotted") +
+  scale_x_continuous(breaks = 0:24) +
+     geom_text(aes(label=n), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5, family = "Open Sans") +
+  labs(title = "Self-Reported Hours Watching TV (General Social Survey, 2018)",
+       subtitle = "A simple bar chart will also help visualize skew in an intuitive way.",
+       x = "Self-Reported Hours Watching TV",
+       y = "Number of Observations",
+       caption = "Data: General Social Survey, 2018. No one is watching 24 hours of TV. You're not fooling anyone.\nMode and median (2) captured in dotted line. Mean in dashed line.")
+
+
+
+```
+
+
+# Conclusion
+### Conclusion
+
+Here are some final thoughts.
+
+- There is a reason we discuss "median income" and not the "average income".
+- The mean of a dummy variable communicates the percentage of 1s, divided by 100.
+- Skew is mostly a problem of interval variables, and a problem of degree.
+
+Always look carefully at your data!
