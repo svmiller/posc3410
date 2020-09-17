@@ -44,7 +44,7 @@ Students must read the following documents in the first week of class. These out
 - [Assorted Tips for Students on Writing Research Papers](http://svmiller.com/blog/2015/12/assorted-tips-students-research-papers/)
 - [Exam Grading Policy](https://www.dropbox.com/s/apihjs7di81aqcv/svm-exam-grading-policy.pdf?dl=0)
 - [Writing a Prospectus](https://www.dropbox.com/s/i2vzzg0vmy6ppw4/posc3410-prospectus-guide.pdf)
-- [Prospectus Example](https://www.dropbox.com/s/swrs77jawpxpec8/posc3410-prospectus-example.pdf?dl=0)
+- [Prospectus Example](http://posc3410.svmiller.com/prospectus-example/posc3410-prospectus-example.pdf)
 - [Research Design Paper Instructions](https://www.dropbox.com/s/qhv4d4pjsk2rxgt/posc3410-research-design-paper-instructions.pdf?dl=0)
 - [Fun with Attendance and Grades (i.e. Students Should Attend Class)](http://svmiller.com/blog/2016/05/fun-with-attendance-grades/)
 - [The Educational Power of Discomfort](http://svmiller.com/blog/2016/05/educational-power-discomfort/)
