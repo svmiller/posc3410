@@ -1,0 +1,73 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: FALSE
+    fig_caption: true
+    latex_engine: xelatex
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-article2.tex
+bibliography: "`r paste0(Sys.getenv('HOME'),'/Dropbox/master.bib')`"
+biblio-style: apsr
+geometry: margin=1in
+header-includes:
+   - \linespread{1.05}
+title: "External Territorial Threats and Tolerance of Corruption: A Private/Government Distinction"
+thanks: "This is an example prospectus for my undergraduate quantitative methods class (POSC 3410). It has since been published in *Peace Economics, Peace Science and Public Policy* and [is available here if you're interested](https://www.degruyter.com/view/journals/peps/24/1/article-20170043.xml)."
+author:
+- name: Steven V. Miller
+  affiliation: Clemson University
+  email: svmille@clemson.edu
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+
+mainfont: cochineal
+sansitup: TRUE
+sansfont: Linux Biolinum O
+#fontfamily: mathpazo
+fontfamilyoptions: sc, osf
+fontsize: 11pt
+---
+
+
+# Introduction
+
+Government corruption, understood as the misuse of public office for private gain, seems inimical to the interests of society. The extent to which government actors, especially in nascent democracies, steal state resources or allocate resources to those who pay outside legal channels represents the extent to which democracy is questioned as a legitimate form of government. However, many corrupt governments survive, even thrive, in office like Nursultan Nazarbayev in Kazakhstan. This stands at odds with extant corruption research, especially research on corruption scandals that builds in strong assumptions that the perception of government is equivalent to the intolerance of corruption. It is intuitive that these are related, but corruption *perception* and corruption *tolerance* are ultimately separable concepts.
+
+Can individuals perceive government corruption but tolerate its presence?  In addition, can individuals extend this liberty to government actors to behave corruptly but condemn corruption from non-government actors in society? I propose an answer to both the issue of tolerance of government corruption and tolerance of private (non-government) corruption.  Building from territorial conflict literature, I argue that external threats to the state lead to individuals value the government providing for their security. Thus, they are willing to reduce oversight on government behavior elsewhere. However, the same conflict process that draws individuals toward their government makes them intolerant of their compatriots who deviate from group norms and engage in corrupt behavior. In what follow, I provide a prospectus of my approach to this empirical question.finding.
+
+# Government Corruption: Its Perception and Tolerance
+
+Is corruption, defined as the use of public office for personal gain [@williams1999nco], even a bad thing for the administration and prosperity of a country? Political scientists, for many decades, sang the praises of corruption in politics [@huntington1968pocs; @beckmaher1986cbb; @leys1989pch] while economists decried that corruption of any kind distorts economic outputs [e.g. @krueger1974pers; @mauro1995cg].  Only after the conclusion of the Cold War did political scientists begin seeing corruption as something worse than a "necessary evil."  Without the normative justification of promoting corrupt governments that were anti-communist, the more corrosive elements of government corruption became apparent.  Corruption erodes trust in the government and between people as well [@mishlerrose2001wopt; @roseackerman1999thc; @changchu2006ct]. Citizens who do not trust government institutions amid widespread corruption become bribers themselves [@dellaporta2000scbg; @morrisklesner2007ct]. 
+
+Curbing the pernicious effects of corruption after the end of the Cold War turned attention to the problem of measurement. To overcome potential problems of measurement bias, corruption research measures the extent of corruption by reference to *perception* of corruption. An unintended side effect of this approach has been the conflation of corruption perception and corruption *tolerance* as equivalent concepts. The perception approach assumes it is self-evident that corruption perception and corruption tolerance are equivalent.  Though this is intuitive, these are separable concepts. An individual does not have to be intolerant of behavior observed as corrupt.
+
+What leads individuals to tolerate government corruption? @pani2011hnv argues that government corruption leads to a decrease in public expenditure and the tax rate, which some non-corrupt and honest citizens may enjoy. @manzettiwilson2007wdcg and @changkerr2009dvh both argue an insider-outsider framework that emphasizes the role of patron-client relationships in conditioning citizens to accurately perceive corruption and tolerate it, provided they are in the private goods network. Beyond that, not much exists separating perception of government corruption from tolerance of government corruption.  Tolerance of corruption has been a neglected topic in a literature focused on the issue of perception [@manzettiwilson2007wdcg, 950]. This disparity regarding what we know about tolerance of corruption becomes more pronounced in available research using the standard question of the justifiability of bribe-taking. Here, questions about what is an acceptable *social* behavior [@katzaetal1994frmd; @dongaetal2012cc] are misconstrued as questions about what is an acceptable *political* behavior for the government. Citizens can perceive and condone government corruption, but condemn private corruption [@argandona2003ppc].
+
+# Territorial Threat and Varying Tolerance for Corruption
+
+I propose an answer to tolerance of both forms of corruption by reference to the external threat environment. Building from territorial conflict literature, I argue that external threats to the state can elicit this individual-level tolerance of government corruption.  Disputes over territory in the international system constitute a threat to the individual citizen, who looks to the state leader's government to provide security.  When individuals value the government providing for their security, they are willing to reduce oversight on government behavior elsewhere.  This allows state leaders and their governments to behave corruptly, which the citizen permits.  
+
+However, the same conflict process that draws individuals toward their government makes them intolerant of their compatriots who deviate from group norms.  Deviating from non-sanctioned behavior constitutes a sign of weakness that individuals cannot tolerate under threat.  Individuals in society who take bribes in the course of their duties are seen as acting for individual gain at a critical time when the pursuit of the common good is necessary.  Territorial threat leads individuals to tolerate government corruption but leads them to be intolerant of corruption in society.
+
+# Research Design and Methods
+
+I test my argument drawing data from three cross-national survey data sets (Globalbarometer, Latinobarómetro, World Values Survey) to estimate an individual's tolerance or permissive attitudes toward government and private corruption. From these three data sets, I derive four dependent variables. The first dependent variable comes from a Globalbarometer question that asks the respondent to state what is the country's most important national problem. I recode this variable to equal 1 if the respondent believes corruption is the most important problem and 0 if the respondent does not believe corruption is the most important problem. The next two dependent variables come from the 2002 wave of Latinobarómetro data, which is unique for its comprehensive questions on attitudes toward corruption. One question explicitly gauges attitudes toward government corruption while the other is the standard ten-point justifiability of bribe-taking question. I take this same ten-point justifiability of bribe-taking question from two waves of World Values Survey data as well.
+
+My measure of territorial threat is taken from the Correlates of War Militarized Interstate Dispute (COW-MID) data set. For every country in each of these three data sources, I look through the MID history in the five years prior to the survey year. I code a 1 if the country was the target of a revisionist claim to its territory in the five-year window prior to the survey year. I employ several control variables from a review of the corruption literature and estimate the models using mixed effects logistic modeling [see: @luke2004mm].
+
+# Implications of the Project
+
+The findings of my analyses may suggest rethinking how scholars gauge individual-level attitudes toward corruption. Not all forms of corruption are the same nor are all attitudes toward corruption equivalent. Individuals can observe corruption and tolerate its presence and can extend this tolerance to some people and not others. However, our most common way of approaching this issue of corruption tolerance is the standard ten-point survey item on the justifiability of bribe-taking given by the World Values Survey. This gives only a cursory probe of attitudes toward corruption. Latinobarómetro provides a unique data source to test the full implications of my argument. Future installments of cross-national survey data should dig deeper on attitudes toward corruption.
+
+Beyond promoting a refinement of the extant political science literature on corruption, the analyses presented here have some important implications for the literature on territorial conflict. That individuals tolerate government corruption but condemn private corruption conforms well with Hutchison's [-@hutchison2011ttm] argument that territorial threat allows governments to mobilize and shape public opinion and behavior in accordance with the government's preferences. Thus, the government is able to communicate to citizens that it needs the necessary liberties in order to work toward national defense and to behave corruptly with respect to other aspects of the budget. This same cue from the government is likely to induce greater political participation, as Hutchison does find, because the government communicates that everyone must do their part in order to achieve the common good. This process then leads individuals to be intolerant of corrupt behavior among themselves that can be seen as undermining that goal. Territorial threat may pervade domestic politics at deeper levels than previously considered.
+
+
+\newpage
+<!--
+# References
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+\vspace*{-0.2in}
+\noindent
+-->
+
