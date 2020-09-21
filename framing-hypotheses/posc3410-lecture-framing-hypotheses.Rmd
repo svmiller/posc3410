@@ -1,0 +1,182 @@
+---
+title: "Framing Hypotheses"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+---
+
+# Introduction
+### Goal for Today
+
+*Discuss theory-writing and proper framing of hypotheses.*
+
+### Introduction
+
+A review of what we have done to this point:
+
+- The problem and interest of "concepts".
+- Issues of reliability and validity in operationalization.
+- Descriptive statistics of our measure.
+
+### Introduction
+
+Description of a variable should give way questions of the distribution of the variable.
+
+- e.g. why is the mean of some interval variable x greater for one group than another group?
+
+We have gone from description to explanation.
+
+- Our question is no longer "what", but "why".
+
+# The Importance of "Why"
+### The Importance of "Why"
+
+We don't take the "why" part lightly. It's not enough to say.
+
+- Republicans and Democrats differ on support for some policy.
+- Western Europe is more developed than Sub-Saharan Africa.
+- Asia has more regional threat than North America.
+
+These are testable statements, but uninteresting when put this way.
+
+- After all, aren't these facts we want to explain?
+
+### Today's Lecture
+
+Today's lecture will discuss.
+
+1. Theory-writing
+2. Framing hypotheses
+
+## Writing Theories
+### On Theories and Proposed Explanations
+
+Theory-writing is the hardest part of research.
+
+- It's also the most important.
+
+Some general things to consider:
+
+- "Keep it Kosher"
+- Speak conceptually. Test operationally.
+- Don't fit theory to data.
+
+### On Theories and Proposed Explanations
+
+Ultimately, theory-writing is *your* argument.
+
+- What do *you* think explains variation in a variable?
+- What's the overall causal process you're wanting to tell?
+- How "non-obvious" is your story?
+
+The example of partisanship and gun control illustrates this well.
+
+### Hypotheses
+
+When done right, theories lead to **hypotheses**.
+
+- These are testable statements about the empirical relationship between an **independent variable** and a **dependent variable**.
+- Dependent variable: something you wish to explain, or an "effect".
+- Independent variable: something you think explains the effect, or the "cause".
+
+### What Should Hypotheses Say?
+
+Hypotheses must communicate the following:
+
+1. The cause and effect
+2. The relationship expected between both variables
+3. The unit of analysis
+4. The measured variables and not the concepts
+
+### What Should Hypotheses Say?
+
+Consider the following hypothesis taken from the book.
+
+- In a comparison of individuals, those who are Republicans will be more likely to oppose gun control than will those who are Democrats
+
+Is this a satisfactory hypothesis?
+
+### What Should Hypotheses Say?
+
+The answer is yes.
+
+1. It clearly specifies a cause and effect.
+2. It specifies a relationship (negative).
+
+	- This assumes Republicans are coded as 1.
+3. It is clear about the unit of analysis.
+4. The cause and effect are/can be intuitively operationalized.
+
+### What Should Hypotheses Say?
+
+Consider the following hypotheses?
+
+
+1. Some people are more likely to donate money to political action committees than others.
+2. Catholics show high rates of political intolerance.
+3. A comparison of countries in the international system shows that democracy and gross national income are related.
+4. As a result of prevailing changes in the international system shortly after World War II, the incidence of observed alliance contracts between countries has greatly diminished.
+
+Which of these are satisfactory?
+
+### What Should Hypotheses Say?
+
+It wouldn't be the first.
+
+- No independent variable is specified. Who are "some people"?
+
+### What Should Hypotheses Say?
+
+The second is also inadequate.
+
+- It's not an insufficient hypothesis. It's just not a hypothesis.
+- It could be true, for all we know, but hypotheses are relative statements.
+
+### What Should Hypotheses Say?
+
+The third is also not a good hypothesis.
+
+- No relationship is specified.
+
+### What Should Hypotheses Say?
+
+The fourth is also inadequate.
+
+- Concepts are not concretely defined.
+- What does "prevailing changes in the international system" even mean?
+
+# Conclusion
+### Conclusion
+
+The "why" part of political science is the most important.
+
+- Theories communicate our proposed explanations, to be tested empirically.
+- Hypotheses communicate testable relationships.
+
+There may not be a single "right" way to do either one.
+
+- There are clearly wrong ways to do it, however.
