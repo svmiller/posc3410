@@ -42,3 +42,8 @@
   filename: central-tendency-dispersion
   dirname: central-tendency-dispersion
   tldr:  'We can describe variables by reference to what is typical and how typical is "typical."'
+  
+- title: "Framing Hypotheses"
+  filename: framing-hypotheses
+  dirname: framing-hypotheses
+  tldr: "A quick primer on hypotheses, how to do them, and how not to do them."
