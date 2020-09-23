@@ -169,10 +169,7 @@ USA7 %>% rename_all(tolower) %>%
          bornhere = q263,
          homelanguage = q272,
          raceethnic = q290,
-         neighb_lang = ifelse(q26 == 1, 1, 0),
-         neighb_lgbt = ifelse(q22 == 1, 1, 0),
-         neighb_immig = ifelse(q21 == 1, 1, 0),
-         neighb_race = ifelse(q19 == 1, 1, 0),) %>%
+         neighb_lgbt = ifelse(q22 == 1, 1, 0)) %>%
   select(age:ncol(.)) %>%
   mutate(agecat = carr(age, "18:29=1; 30:49=2; 50:100=3")) %>%
   filter(bornhere == 1 & raceethnic == 840001 & homelanguage == 1240) %>%
