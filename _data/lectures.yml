@@ -52,3 +52,8 @@
   filename: making-comparisons
   dirname: making-comparisons
   tldr: "A discussions of types of relationships between variables and how to make comparisons between them."
+  
+- title: "Probability and Counting for Political Science"
+  filename: probability-1
+  dirname: probability-1
+  tldr: "A gentle introduction to some rules for probability and counting, with political science applications."
