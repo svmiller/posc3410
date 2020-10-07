@@ -200,7 +200,7 @@ In R:
 dbinom (5,10,.5)
 ```
 
-### An Application: Everyone Hates Congress
+### An Application: A Gridlocked Congress
 
 Congress is doing nothing at a historic rate. This much we know.
 
@@ -209,9 +209,9 @@ Congress is doing nothing at a historic rate. This much we know.
     - This estimate says nothing about substantive importance of the bill.
   
 
-Assume *p* = .05. What's the probability that Congresses passes three (*x*) of the next 20 (*n*) bills it gets?
+Assume *p* = .05. What's the probability that Congress passes three (*x*) of the next 20 (*n*) bills it gets?
 
-### An Application: Everyone Hates Congress
+### An Application: A Gridlocked Congress
 
 
 
@@ -387,7 +387,7 @@ The height of the distribution for $x = 0$ when $\mu = 0$ and $\sigma^2 = 1$ is 
 
 ### Demystifying the Normal Distribution
 
-Notice: we talked about the height and shape of the distribution as a $function$. It does not communicate probabilities.
+Notice: we talked about the height and shape of the distribution as a *function*. It does not communicate probabilities.
 
 - The normal distribution is continuous. Thus, probability for any one value is basically 0.
 
