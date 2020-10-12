@@ -62,3 +62,8 @@
   filename: probability-2
   dirname: probability-2
   tldr: "A discussion of two types of distributions you'll see in political science applications."
+  
+- title: "Controlled Comparisons and Controlled Relationships"
+  filename: controlled-comparison-1
+  dirname: controlled-comparison-1
+  tldr: "A discussion of controlled comparisons and how to make them with or without experiments."
