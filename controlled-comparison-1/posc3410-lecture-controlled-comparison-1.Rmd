@@ -1,23 +1,36 @@
 ---
-title: Controlled Comparisons and Controlled Relationships
-subtitle: POSC 3410 - Quantitative Methods in Political Science
+title: "Controlled Comparisons and Controlled Relationships"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
 author: Steven V. Miller
 institute: Department of Political Science
 titlegraphic: /Dropbox/teaching/clemson-academic.png
 date: 
-fontsize: 10pt
 output:
  beamer_presentation:
     template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
-#    keep_tex: true
-# toc: true
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: true
     slide_level: 3
-#    fig_caption: yes
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
 ---
 
 
 # Introduction
-### Goal for Today
+### Goals for Today
 
 - *Introduce students to making controlled comparisons and understanding controlled relationships.*
 - *Discuss importance of controlling for rival explanations*.
@@ -36,10 +49,10 @@ Our standard research design is similar to an **experimental design** with **ran
 
 - Complete with **test group** and **control group**.
 
-Experiments are either **lab experiments** or **field experiments**.
+Experiments are typically either **lab experiments** or **field experiments**.
 
 - Lab experiments: greater **internal validity** than **external validity**.
-- Field experiments: vice-versa. Think of the GOTV example.
+- Field experiments: vice-versa. Think of "get out the vote" experiments here.
 
 ### The Problem of Selection
 
