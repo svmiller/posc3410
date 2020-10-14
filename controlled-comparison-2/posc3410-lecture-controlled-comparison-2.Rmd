@@ -1,0 +1,718 @@
+---
+title: "Applied Controlled Comparisons"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: true
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadpackages, include=FALSE, cache=FALSE}
+library(tidyverse)
+library(stevemisc)
+#library(post8000r)
+library(qs)
+library(knitr)
+library(kableExtra)
+
+skable <- function(data, caption, aligns,  colnames) {
+  require(knitr)
+  require(kableExtra)
+  knitr::kable(data, caption = caption, col.names = if(missing(colnames)) { names(data)} else { colnames }, format = "latex", booktabs = TRUE, longtable =T, linesep = "", align = if(missing(aligns)) {} else { aligns }) %>%
+    kable_styling(full_width = F, 
+                  latex_options = c("repeat_header", "hold_position")) %>%
+    row_spec(0, bold= TRUE)
+}
+```
+
+```{r loaddata, include=FALSE, cache=TRUE}
+gunlaw <- qread("/home/steve/Dropbox/data/gss/GSS_spss-2018/gss7218.qs") %>% 
+  select(year, gunlaw, partyid, sex) %>% 
+  filter(year == 2018) %>%
+  mutate(gender = case_when(
+    sex == 2 ~ "Female",
+    sex == 1 ~ "Male"
+  ),
+  gunlaw = carr(gunlaw, "1=1;2=0"),
+  gunlawcat = ifelse(gunlaw == 1, "Favor", "Oppose"),
+         pidcat = case_when(
+           partyid %in% c(0,1, 2) ~ "Democrat/Lean Democrat",
+           partyid == 3 ~ "Independent",
+           partyid %in% c(4,5,6) ~ "Republican/Lean Republican"
+         ))
+
+abortimport <- haven::read_dta("/home/steve/Dropbox/data/anes/2020-ets/anes_pilot_2020ets_dta.dta") %>%
+  select(abort1, abort_imp, pid7, vote16) %>%
+  mutate(abort_always = carr(abort1, "9=NA;1:3=0;4=1"),
+         abort_never = carr(abort1, "9=NA;1=1;2:4=0"),
+         abort_impdum = carr(abort_imp, "9=NA;1:2=1;3:5=0"),
+         pidcat = case_when(
+           pid7 %in% c(1,2,3) ~ "Republican/Lean Republican",
+           pid7 == 4 ~ "Independent",
+           pid7 %in% c(5,6,7) ~ "Democrat/Lean Democrat"
+         ),
+         vote16cat = case_when(
+           vote16 == 1 ~ "Donald Trump",
+           vote16 == 2 ~ "Hillary Clinton",
+           vote16 == 3 ~ "Someone Else",
+           vote16 == 4 ~ "Did Not Vote"
+         )) %>% haven::zap_labels() %>%
+  mutate(votetrump = ifelse(vote16cat == "Donald Trump", 1, 0))
+
+```
+
+# Introduction
+### Goals for Today
+
+- *Give applied examples of controlled comparisons and controlled relationships.*
+- *Show how to do some of these with R code.*
+- *Discuss controlled effects and partial effects.*
+
+### Three Types of Controlled Relationships
+
+1. Spurious relationship
+2. Additive relationship
+3. Interactive relationship
+
+Notice our discussion here is *not* bivariate.
+
+- We need to consider "control" for potential confounders in a bivariate relationship.
+
+# Applied Controlled Comparisons
+### Applied Controlled Comparisons
+
+We can summarize these controlled relationships with:
+
+1. Cross-tabulation
+2. Mean comparison analysis
+
+We will also use actual data.
+
+
+
+### Example Data
+
+We'll be going over two toy examples, largely patterned off Pollock:
+
+1. Attitudes about gun control as a function of partisanship and gender.
+2. Vote choice in 2016 as a function of abortion attitudes and issue importance.
+
+Data come from General Social Survey (2018) and ANES (2020, ETS), respectively.
+
+### R Packages
+
+```r
+library(tidyverse) # for most things
+library(qs) # for loading my version of the GSS data
+library(knitr) # for tables
+library(kableExtra) # for prettier tables
+```
+
+### 
+
+\scriptsize
+```{r, eval=F}
+# load data, assuming this qs object
+# see: http://svmiller.com/blog/2020/02/comparing-qs-fst-rds-for-bigger-datasets/
+gunlaw <- qread("~/Dropbox/data/gss/GSS_spss-2018/gss7218.qs") %>% 
+  # select just what we want
+  select(year, gunlaw, partyid, sex) %>% 
+  filter(year == 2018) %>%
+  # recode sex to gender category
+  mutate(gender = case_when(
+    sex == 2 ~ "Female",
+    sex == 1 ~ "Male"
+  ),
+  # recode data so that 1 = favor
+  gunlaw = carr(gunlaw, "1=1;2=0"),
+  # Group the leaners with the partisans
+  gunlawcat = ifelse(gunlaw == 1, "Favor", "Oppose"),
+         pidcat = case_when(
+           partyid %in% c(0,1, 2) ~ "Democrat/Lean Democrat",
+           partyid == 3 ~ "Independent",
+           partyid %in% c(4,5,6) ~ "Republican/Lean Republican"
+         ))
+```
+\normalsize
+
+###
+
+\scriptsize
+
+```{r, eval=F}
+# load data, from here...
+# https://electionstudies.org/data-center/2020-exploratory-testing-survey/
+haven::read_dta("~/Dropbox/data/anes/2020-ets/anes_pilot_2020ets_dta.dta") %>%
+  # select just what we want
+  select(abort1, abort_imp, pid7, vote16) %>%
+  # recode that we get the "never permit abortion" people as 1s
+  # and whether the issue is extremely or very important
+  # also lump leaners with the partisans and create vote choice variables
+  mutate(abort_never = carr(abort1, "9=NA;1=1;2:4=0"),
+         abort_impdum = carr(abort_imp, "9=NA;1:2=1;3:5=0"),
+         pidcat = case_when(
+           pid7 %in% c(1,2,3) ~ "Republican/Lean Republican",
+           pid7 == 4 ~ "Independent",
+           pid7 %in% c(5,6,7) ~ "Democrat/Lean Democrat"
+         ),
+         vote16cat = case_when(
+           vote16 == 1 ~ "Donald Trump",
+           vote16 == 2 ~ "Hillary Clinton",
+           vote16 == 3 ~ "Someone Else",
+           vote16 == 4 ~ "Did Not Vote"
+         )) %>% haven::zap_labels() %>%
+  mutate(votetrump = ifelse(vote16cat == "Donald Trump", 1, 0)) -> abortimport
+```
+\normalsize
+
+### Partisanship and Gun Control (GSS, 2018)
+
+```{r, echo=F, message=F, warning=F, results="asis"}
+
+gunlaw %>%
+  filter(pidcat != "Independent") %>%
+  select(pidcat, gunlawcat) %>% na.omit %>%
+  group_by(pidcat, gunlawcat) %>%
+  tally() %>%
+  spread(pidcat, n) %>%
+  rowwise() %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  mutate_if(is.numeric,~(./sum(.))) %>%
+  mutate_if(is.numeric, ~(paste0(mround2(.), "%"))) %>%
+  bind_rows(., tibble(gunlawcat = "Total"))  %>%
+  replace(is.na(.), "100%") %>%
+  kable(., format="latex",
+        caption="The Relationship Between Partisanship and Support for Gun Control",
+         col.names = c("Opinion on Gun Permits", "D/Lean D", "R/Lean R", "Total"),
+         align = c("l","c","c","c","c","c","c"), booktabs=TRUE, longtable=TRUE) %>%
+  kable_styling(font_size = 9) %>%
+  # add_header_above(c(" ", "Women" = 3, "Men"= 3), italic = TRUE) %>%
+  row_spec(2, hline_after = T) %>%
+  row_spec(0, bold= TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  footnote(general = "Data: General Social Survey (2018)",
+           footnote_as_chunk = TRUE)
+  
+
+```
+
+### Zero-order Relationship
+
+This table is a zero-order relationship.
+
+- The effect of *x* on *y* **not** controlling for *z*.
+
+In 2018, the zero-order effect of partisanship on support for gun control was about -22.87 percentage points.
+
+
+### Partisanship and Gun Control (GSS, 2018)
+
+```{r, echo=F, message=F, warning=F, results="asis"}
+
+gunlaw %>%
+  filter(pidcat != "Independent") %>%
+  filter(gender == "Female") %>%
+  select(pidcat, gender, gunlawcat) %>% na.omit %>%
+  group_by(pidcat, gunlawcat) %>%
+  tally() %>%
+  spread(pidcat, n) %>%
+  rowwise() %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  mutate_if(is.numeric,~(./sum(.))) -> women
+
+
+gunlaw %>%
+  filter(pidcat != "Independent") %>%
+  filter(gender == "Male") %>%
+  select(pidcat, gender, gunlawcat) %>% na.omit %>%
+  group_by(pidcat, gunlawcat) %>%
+  tally() %>%
+  spread(pidcat, n) %>%
+  rowwise() %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>%
+  ungroup() %>%
+  mutate_if(is.numeric,~(./sum(.))) -> men
+
+# men %>% 
+#   rename(a = 2, b=3, c=4) -> men
+
+
+bind_cols(women, men %>% select(-gunlawcat)) %>%
+  mutate_if(is.numeric, ~(paste0(mround2(.), "%"))) %>%
+  bind_rows(., tibble(gunlawcat = "Total")) %>%
+  replace(is.na(.), "100%") %>% 
+  kable(., format="latex",
+        caption="Partisanship and Support for Gun Control, Controlling for Gender",
+         col.names = c("Opinion on Gun Permits", "D/Lean D", "R/Lean R", "Total", "D/Lean D", "R/Lean R", "Total"),
+         align = c("l","c","c","c","c","c","c"), booktabs=TRUE, longtable=TRUE) %>%
+  kable_styling(font_size = 9) %>%
+  add_header_above(c(" ", "Women" = 3, "Men"= 3), italic = TRUE) %>%
+ row_spec(2, hline_after = T) %>%
+    row_spec(3, italic = TRUE) %>%
+  row_spec(0, bold= TRUE) %>%
+  footnote(general = "Data: General Social Survey (2018)",
+           footnote_as_chunk = TRUE)
+
+```
+
+## Controlled and Partial Effects
+### Controlled Comparison Table
+
+That was a **controlled comparison table**.
+
+- It shows the relationship between *x* and *y* for each (truncated) value of *z*.
+
+These tables reveal two types of effects.
+
+1. Controlled effect
+2. Partial effect
+
+### Controlled Effect
+
+A **controlled effect** is a relationship between *x* and *y* within one value of *z*.
+
+- It could also be between *z* and *y* within one value of *x*.
+
+We obtain the controlled effect of partisanship for both women and men.
+
+- 85.89% of female Dems/Dem leaners favor these permits to 64.91% of Rs/R leaners.
+    - The controlled effect is -20.98 percentage points.
+- 76.87% of male Dems/Dem leaners favor these permits to 66.05% of Rs/R leaners.
+    - The controlled effect is -23.81 percentage points.
+    
+### Partial Effect
+
+We summarize controlled effects as **partial effect**.
+
+- Summarizes a relationship between two variables taking into account rival variables.
+
+It's tempting, but *don't average the two controlled effects*.
+
+- Doing so assumes the samples are equal.
+
+Instead: weight the controlled effect by percentage of the sample.
+
+- Then: add those.
+
+
+### 
+
+\footnotesize
+```{r}
+gunlaw %>%
+  select(gunlawcat, gender, pidcat) %>%
+  na.omit %>%
+  group_by(gender) %>% tally() %>%
+  mutate(prop = n/sum(n),
+         contreff = c(-20.98, -23.81),
+         product = prop*contreff,
+         parteff = sum(product))
+```
+\normalsize
+
+The partial effect of partisanship on gun control opinions is about -22.2 percentage points.
+
+
+### Partial Effect
+
+What is the partial effect of *gender* on gun control attitudes?
+
+- Sounds weird to ask. No one "increases" in gender.
+
+Follow the **rule of direction for nominal relationships**.
+
+- Treat the left-most column as the base category (here: women).
+
+### Partial Effect
+
+Controlled effects:
+
+- 85.89% of female Dems/leaners favor these permits to 76.87% of male Dems/leaners (-9.02%).
+- 64.91% of female Rs/leaners favor permits to 53.06% of male Republicans (-11.85%).
+
+Weight the controlled effects (*by partisanship*) to get a partial effect.
+
+<!-- - 10.7$*$(.570) + 13.8$*$(.430) = 12.03 -->
+
+### 
+
+\footnotesize
+```{r}
+gunlaw %>%
+  select(gunlawcat, gender, pidcat) %>%
+  # simple example excludes the indies
+  filter(pidcat != "Independent") %>%
+  na.omit %>%
+  group_by(pidcat) %>% tally() %>%
+  mutate(prop = n/sum(n),
+         contreff = c(-9.02, -11.85),
+         product = prop*contreff,
+         parteff = sum(product))
+```
+
+\normalsize
+
+The partial effect of gender on gun control opinions (controlling for partisanship) is about -10.2 percentage points.
+
+## Identifying the Pattern
+### Identifying the Pattern
+
+Ask the following three questions for relationships among *x*, *y*, and *z*.
+
+1. Does a relationship exist between *x* and *y* in at least one value of *z*?
+2. Is the tendency (i.e. positive or negative) the same at all values of *z*?
+3. Is the magnitude effect the same or close to it in all values of *z*?
+
+### Identifying the Pattern
+
+If the answer to the first question is no, you can stop there.
+
+- It's a spurious relationship.
+
+If the answer to the second question is no, you can stop there.
+
+- There's an interaction effect.
+
+If the answer to the third question is no, there's an interaction.
+
+- If "yes", it's an additive relationship.
+
+###
+
+```{r partisanship-gun-control-gender, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+gunlaw %>%
+  group_by(pidcat, gender) %>%
+  summarize(mean = mean(gunlaw, na.rm=T)) %>%
+  na.omit %>%
+  filter(pidcat != "Independent") %>%
+  ggplot(.,aes(x=pidcat, y = mean,
+               group=gender,color=gender,
+               linetype=gender, shape=gender)) + 
+  theme_steve_web() +
+  geom_point(size=4) + geom_line(size=1.1) +
+  scale_color_brewer(palette="Paired") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "A Line Chart of Partisanship and Support for Gun Control, Controlling for Gender",
+       subtitle = "The lines are effectively the same, implying an additive relationship. The distance between two points on the same part of the x-axis is the controlled effect of gender.",
+       x = "",
+       y = "Percentage Supporting a Police Permit Before Obtaining a Gun",
+       linetype = "", color = "", shape="",
+       caption = "Data: General Social Survey")
+```
+
+
+### Abortion Opinions, Issue Salience, and Vote Choice (ANES, 2020)
+
+```{r, echo=F, message=F, warning=F, results="asis"}
+
+abortimport %>%
+  filter(abort_impdum == 0) %>%
+  select(abort_impdum, votetrump, abort_never) %>%
+  na.omit %>%
+  group_by(abort_never, votetrump) %>%
+  tally() %>%
+  spread(abort_never, n) %>%
+  rowwise() %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>%
+  ungroup()  %>%
+  mutate_if(is.numeric,~(./sum(.))) -> abort_notimp
+
+abortimport %>%
+  filter(abort_impdum == 1) %>%
+  select(abort_impdum, votetrump, abort_never) %>%
+  na.omit %>%
+  group_by(abort_never, votetrump) %>%
+  tally() %>%
+  spread(abort_never, n) %>%
+  rowwise() %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>%
+  ungroup()  %>%
+  mutate_if(is.numeric,~(./sum(.))) -> abort_veryimp
+
+
+
+bind_cols(abort_notimp, abort_veryimp %>% select(-votetrump)) %>%
+  arrange(-votetrump) %>%
+  mutate(votetrump = c("Yes", "No")) %>%
+  mutate_if(is.numeric, ~(paste0(mround2(.), "%"))) %>%
+  bind_rows(., tibble(votetrump = "Total")) %>%
+  replace(is.na(.), "100%") %>%
+  kable(., format="latex",
+        caption="Abortion Permissibility and the Trump Vote, Controlling for Issue Importance",
+         col.names = c("Voted for Trump?", "Permit", "Never Permit", "Total",
+                       "Permit", "Never Permit", "Total"),
+         align = c("l","c","c","c","c","c","c"), booktabs=TRUE, longtable=TRUE) %>%
+  kable_styling(font_size = 9) %>%
+  add_header_above(c(" ", "Not Very Important" = 3, "Very Important"= 3), italic = TRUE) %>%
+ row_spec(2, hline_after = T) %>%
+    row_spec(3, italic = TRUE) %>%
+  row_spec(0, bold= TRUE) %>%
+  footnote(general = "Data: American National Election Studies (2020 Exploratory Testing Survey)",
+           footnote_as_chunk = TRUE)
+
+
+```
+
+
+### Abortion Opinions, Salience, and Vote Choice
+
+The controlled effect of abortion opinion:
+
+- 33.33 -> 42.37 for "not very important" = `r abs(33.33 - 42.37)`
+- 33.48 -> 62.13 for "very important" = `r abs(33.48 - 62.13)`
+
+Controlled effect of issue importance:
+
+- 33.33 -> 33.48 for "permit" = `r abs(33.33 - 33.48)`
+- 42.37 -> 62.13 for "never permit" = `r abs(42.37 - 62.13)`
+<!-- - Partial effect: -18.8 $*$ (.416) + 11 $*$ (.584) = -1.39 -->
+
+Something already looks a lot different here.
+
+
+### 
+
+\footnotesize
+```{r}
+abortimport %>%
+  select(abort_impdum, votetrump, abort_never) %>%
+  na.omit %>%
+  group_by(abort_impdum) %>% tally() %>%
+  mutate(prop = n/sum(n),
+         contreff = c(9.04, 28.65),
+         product = prop*contreff,
+         parteff = sum(product))
+```
+
+\normalsize
+
+The partial effect of issue importance is about 20.2 percentage points.
+
+### 
+
+\footnotesize
+```{r}
+abortimport %>%
+  select(abort_impdum, votetrump, abort_never) %>%
+  na.omit %>%
+  group_by(abort_never) %>% tally() %>%
+  mutate(prop = n/sum(n),
+         contreff = c(.15, 19.76),
+         product = prop*contreff,
+         parteff = sum(product))
+```
+
+\normalsize
+
+The partial effect of attitudes about abortion is about 3.11 percentage points.
+
+
+###
+
+```{r abortion-opinions-vote-trump, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+abortimport %>%
+  group_by(abort_impdum, abort_never) %>%
+  summarize(mean = mean(votetrump, na.rm=T)) %>%
+  na.omit %>% ungroup() %>%
+  mutate(abort_impdum = c("Not as Important", "Not as Important",
+                          "Very or Extremely Important", "Very or Extremely Important"),
+         abort_impdum = fct_inorder(abort_impdum)) %>%
+  ggplot(.,aes(x=as.factor(abort_never), y = mean,
+               group=abort_impdum,color=abort_impdum,
+               linetype=abort_impdum, shape=abort_impdum)) + 
+  theme_steve_web() +
+  geom_point(size=4) + geom_line(size=1.1) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_discrete(labels = c("At Least\nSometimes Permit", "Never Permit")) +
+  scale_color_brewer(palette="Paired") +
+  labs(title = "A Line Chart of Abortion Attitudes and the Trump Vote, Controlling for the Importance of Abortion as an Issue",
+       subtitle = "The lines show a different effect of abortion attitudes by importance of the issue, suggesting a clear interactive effect.",
+       x = "",
+       y = "Percentage Saying They Voted for Trump",
+       linetype = "", color = "", shape="",
+       caption = "Data: American National Election Studies (2020 Exploratory Testing Survey)")
+```
+
+<!-- ### Partisanship and Gun Control -->
+
+<!-- ![](tab51.pdf) -->
+
+<!-- ### Zero-order Relationship -->
+
+<!-- Table 5.1 illustrates a **zero-order relationship**. -->
+
+<!-- - This is the effect of *x* on *y* **not** controlling for *z*. -->
+
+<!-- The zero-order effect of partisanship on attitudes toward gun control is about 23 percentage points. -->
+
+<!-- ### Partisanship, Gender, and Gun Control -->
+
+<!-- Consider this arrangement. -->
+
+<!-- ![](tab52.pdf) -->
+
+<!-- ## Controlled and Partial Effects -->
+<!-- ### Controlled Comparison Table -->
+
+<!-- Table 5.2 is a **controlled comparison table**. -->
+
+<!-- - It shows the relationship between *x* and *y* for each value of *z*. -->
+
+<!-- These tables reveal two types of relationships. -->
+
+<!-- 1. Controlled effect -->
+<!-- 2. Partial effect -->
+
+<!-- ### Controlled Effect -->
+
+<!-- A **controlled effect** is a relationship between *x* and *y* within one value of *z*. -->
+
+<!-- - It could also be between *z* and *y* within one value of *x*. -->
+
+<!-- We obtain the controlled effect of partisanship for both women and men. -->
+
+<!-- - 91.5% of female Dems favor permits to 74.9% of female Republicans. -->
+<!-- 	- The controlled effect is 16.6 percentage points. -->
+<!-- - 80.8% of male Dems favor permits to 61.1% of male Republicans. -->
+<!-- 	- The controlled effect is 19.7 percentage points. -->
+
+<!-- ### Partial Effect -->
+
+<!-- We summarize controlled effects as **partial effect**. -->
+
+<!-- - Summarizes a relationship between two variables taking into account rival variables. -->
+
+<!-- It's tempting, but *don't average the two controlled effects*. -->
+
+<!-- - Doing so assumes the samples are equal. -->
+
+<!-- Instead: weight the controlled effect by percentage of the sample. -->
+
+<!-- - In our case: 16.6 $*$ (.562) + 19.7 $*$ (.438) = 17.96 -->
+
+<!-- The partial effect of partisanship on gun control opinions is 17.96. -->
+
+<!-- ### Partial Effect -->
+
+<!-- What is the partial effect of *gender* on gun control attitudes? -->
+
+<!-- - Sounds weird to ask. No one "increases" in gender. -->
+
+<!-- Follow the **rule of direction for nominal relationships**. -->
+
+<!-- - Treat the left-most column as the base category (here: women). -->
+
+<!-- ### Partial Effect of Gender on Gun Control -->
+
+<!-- Controlled effects: -->
+
+<!-- - 91.5% of female Dems favor permits to 80.8% of male Dems (10.7%). -->
+<!-- - 74.9% of female Republicans favor permits to 61.1% of male Republicans (13.8). -->
+
+<!-- Weight the controlled effects to get a partial effect. -->
+
+<!-- - 10.7$*$(.570) + 13.8$*$(.430) = 12.03 -->
+
+<!-- The partial effect of gender on gun control opinions is 12.03. -->
+
+<!-- ## Identifying the Pattern -->
+<!-- ### Identifying the Pattern -->
+
+<!-- Ask the following three questions for relationships among *x*, *y*, and *z*. -->
+
+<!-- 1. Does a relationship exist between *x* and *y* in at least one value of *z*? -->
+<!-- 2. Is the tendency (i.e. positive or negative) the same at all values of *z*? -->
+<!-- 3. Is the magnitude effect the same or close to it in all values of *z*? -->
+
+<!-- ### Identifying the Pattern -->
+
+<!-- If the answer to the first question is no, you can stop there. -->
+
+<!-- - It's a spurious relationship. -->
+
+<!-- If the answer to the second question is no, you can stop there. -->
+
+<!-- - There's an interaction effect. -->
+
+<!-- If the answer to the third question is no, there's an interaction. -->
+
+<!-- - If "yes", it's an additive relationship. -->
+
+
+<!-- ### Partisanship, Gender, and Gun Control -->
+
+<!-- ![](fig51.pdf) -->
+
+
+<!-- ## A Clear Example of an Interaction -->
+<!-- ### Abortion Opinions, Salience, and Vote Choice -->
+
+<!-- Consider the following controlled comparison table. -->
+
+<!-- ![](tab53.pdf) -->
+
+<!-- ### Abortion Opinions, Salience, and Vote Choice -->
+
+<!-- The controlled effect of abortion opinion: -->
+
+<!-- - 63.2 - 45.9 for "low" = 17.3 -->
+<!-- - 82 - 34.9 for "high" = 47.1 -->
+<!-- - Partial effect: 17.3 $*$ (.495) + 47.1 $*$ (.505) = 32.3 -->
+
+<!-- Controlled effect of salience: -->
+
+<!-- - 63.2 - 82 for "always permit" = -18.8 -->
+<!-- - 45.9 - 34.9 for "not always permit" = 11 -->
+<!-- - Partial effect: -18.8 $*$ (.416) + 11 $*$ (.584) = -1.39 -->
+
+<!-- Something already looks a lot different here. -->
+
+<!-- ### Abortion Opinions, Salience, and Vote Choice -->
+
+<!-- ![](fig52.pdf) -->
+
+# Conclusion
+### Conclusion
+
+No causal statement can be made as a zero-order relationship
+
+- This will get more complicated in multiple regression.
+- Fortunately, computers do the heavy lifting for us.
+
+Get comfortable making these types of controlled comparisons within a simple three-variable context. 

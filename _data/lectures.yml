@@ -67,3 +67,8 @@
   filename: controlled-comparison-1
   dirname: controlled-comparison-1
   tldr: "A discussion of controlled comparisons and how to make them with or without experiments."
+  
+- title: "Applied Controlled comparisons"
+  filename: controlled-comparison-2
+  dirname: controlled-comparison-2
+  tldr: "A primer on making controlled comparisons and estimating partial effects in simple cases."
