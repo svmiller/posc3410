@@ -71,7 +71,7 @@ gunlaw <- qread("/home/steve/Dropbox/data/gss/GSS_spss-2018/gss7218.qs") %>%
   gunlawcat = ifelse(gunlaw == 1, "Favor", "Oppose"),
          pidcat = case_when(
            partyid %in% c(0,1, 2) ~ "Democrat/Lean Democrat",
-           partyid == 3 ~ "Independent",
+           #partyid == 3 ~ "Independent", # omit indies
            partyid %in% c(4,5,6) ~ "Republican/Lean Republican"
          ))
 
@@ -80,11 +80,6 @@ abortimport <- haven::read_dta("/home/steve/Dropbox/data/anes/2020-ets/anes_pilo
   mutate(abort_always = carr(abort1, "9=NA;1:3=0;4=1"),
          abort_never = carr(abort1, "9=NA;1=1;2:4=0"),
          abort_impdum = carr(abort_imp, "9=NA;1:2=1;3:5=0"),
-         pidcat = case_when(
-           pid7 %in% c(1,2,3) ~ "Republican/Lean Republican",
-           pid7 == 4 ~ "Independent",
-           pid7 %in% c(5,6,7) ~ "Democrat/Lean Democrat"
-         ),
          vote16cat = case_when(
            vote16 == 1 ~ "Donald Trump",
            vote16 == 2 ~ "Hillary Clinton",
@@ -137,6 +132,7 @@ Data come from General Social Survey (2018) and ANES (2020, ETS), respectively.
 
 ```r
 library(tidyverse) # for most things
+library(stevemisc) # for recoding stuff
 library(qs) # for loading my version of the GSS data
 library(knitr) # for tables
 library(kableExtra) # for prettier tables
@@ -148,22 +144,18 @@ library(kableExtra) # for prettier tables
 ```{r, eval=F}
 # load data, assuming this qs object
 # see: http://svmiller.com/blog/2020/02/comparing-qs-fst-rds-for-bigger-datasets/
-gunlaw <- qread("~/Dropbox/data/gss/GSS_spss-2018/gss7218.qs") %>% 
-  # select just what we want
+gunlaw <- qread("/home/steve/Dropbox/data/gss/GSS_spss-2018/gss7218.qs") %>% 
   select(year, gunlaw, partyid, sex) %>% 
   filter(year == 2018) %>%
-  # recode sex to gender category
   mutate(gender = case_when(
     sex == 2 ~ "Female",
     sex == 1 ~ "Male"
   ),
-  # recode data so that 1 = favor
   gunlaw = carr(gunlaw, "1=1;2=0"),
-  # Group the leaners with the partisans
   gunlawcat = ifelse(gunlaw == 1, "Favor", "Oppose"),
          pidcat = case_when(
            partyid %in% c(0,1, 2) ~ "Democrat/Lean Democrat",
-           partyid == 3 ~ "Independent",
+           #partyid == 3 ~ "Independent", # omit indies
            partyid %in% c(4,5,6) ~ "Republican/Lean Republican"
          ))
 ```
@@ -184,11 +176,6 @@ haven::read_dta("~/Dropbox/data/anes/2020-ets/anes_pilot_2020ets_dta.dta") %>%
   # also lump leaners with the partisans and create vote choice variables
   mutate(abort_never = carr(abort1, "9=NA;1=1;2:4=0"),
          abort_impdum = carr(abort_imp, "9=NA;1:2=1;3:5=0"),
-         pidcat = case_when(
-           pid7 %in% c(1,2,3) ~ "Republican/Lean Republican",
-           pid7 == 4 ~ "Independent",
-           pid7 %in% c(5,6,7) ~ "Democrat/Lean Democrat"
-         ),
          vote16cat = case_when(
            vote16 == 1 ~ "Donald Trump",
            vote16 == 2 ~ "Hillary Clinton",
@@ -204,7 +191,6 @@ haven::read_dta("~/Dropbox/data/anes/2020-ets/anes_pilot_2020ets_dta.dta") %>%
 ```{r, echo=F, message=F, warning=F, results="asis"}
 
 gunlaw %>%
-  filter(pidcat != "Independent") %>%
   select(pidcat, gunlawcat) %>% na.omit %>%
   group_by(pidcat, gunlawcat) %>%
   tally() %>%
@@ -245,7 +231,6 @@ In 2018, the zero-order effect of partisanship on support for gun control was ab
 ```{r, echo=F, message=F, warning=F, results="asis"}
 
 gunlaw %>%
-  filter(pidcat != "Independent") %>%
   filter(gender == "Female") %>%
   select(pidcat, gender, gunlawcat) %>% na.omit %>%
   group_by(pidcat, gunlawcat) %>%
@@ -258,7 +243,6 @@ gunlaw %>%
 
 
 gunlaw %>%
-  filter(pidcat != "Independent") %>%
   filter(gender == "Male") %>%
   select(pidcat, gender, gunlawcat) %>% na.omit %>%
   group_by(pidcat, gunlawcat) %>%
@@ -313,7 +297,7 @@ We obtain the controlled effect of partisanship for both women and men.
 
 - 85.89% of female Dems/Dem leaners favor these permits to 64.91% of Rs/R leaners.
     - The controlled effect is -20.98 percentage points.
-- 76.87% of male Dems/Dem leaners favor these permits to 66.05% of Rs/R leaners.
+- 76.87% of male Dems/Dem leaners favor these permits to 53.06% of Rs/R leaners.
     - The controlled effect is -23.81 percentage points.
     
 ### Partial Effect
@@ -376,8 +360,6 @@ Weight the controlled effects (*by partisanship*) to get a partial effect.
 ```{r}
 gunlaw %>%
   select(gunlawcat, gender, pidcat) %>%
-  # simple example excludes the indies
-  filter(pidcat != "Independent") %>%
   na.omit %>%
   group_by(pidcat) %>% tally() %>%
   mutate(prop = n/sum(n),
@@ -420,7 +402,6 @@ gunlaw %>%
   group_by(pidcat, gender) %>%
   summarize(mean = mean(gunlaw, na.rm=T)) %>%
   na.omit %>%
-  filter(pidcat != "Independent") %>%
   ggplot(.,aes(x=pidcat, y = mean,
                group=gender,color=gender,
                linetype=gender, shape=gender)) + 
