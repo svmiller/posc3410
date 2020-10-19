@@ -68,7 +68,12 @@
   dirname: controlled-comparison-1
   tldr: "A discussion of controlled comparisons and how to make them with or without experiments."
   
-- title: "Applied Controlled comparisons"
+- title: "Applied Controlled Comparisons"
   filename: controlled-comparison-2
   dirname: controlled-comparison-2
   tldr: "A primer on making controlled comparisons and estimating partial effects in simple cases."
+  
+- title: "Random Sampling and Variation"
+  filename: random-sampling-variation
+  dirname: random-sampling-variation
+  tldr: "A pivot into the world of inference, starting with a discussion of random sampling."
