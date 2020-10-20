@@ -32,7 +32,7 @@ Population %>%
 set.seed(8675309) # Jenny, I got your number...
 
 # Get the actual samples and conver them to a data frame.
-Samp5_10 <- sapply(1:5, function(i){ x <-sample(Population$therm, 10, replace = FALSE) }) %>% 
+Samp5_10 <- sapply(1:5, function(i){ x <-sample(Population$therm, 10, replace = TRUE) }) %>% 
   # coerce matrix to data frame, then tibble
   as.data.frame %>% as_tibble() %>%
   gather(sample, therm)
@@ -47,7 +47,7 @@ set.seed(8675309) # Jenny, I got your number...
 # Get 100,000 samples of size 10.
 # Btw, this might take a while and it's fine that it does.
 # There are faster sampling approaches in R, but they require more add-on packages.
-Samp100k10 <- sapply(1:1e5, function(i){ x <- mean(sample(Population$therm, 10, replace = FALSE)) })  %>% 
+Samp100k10 <- sapply(1:1e5, function(i){ x <- mean(sample(Population$therm, 10, replace = TRUE)) })  %>% 
   as_tibble() %>% mutate(iter = 1:n()) %>% select(iter, value) %>% rename(sampmean = value)
 
 
