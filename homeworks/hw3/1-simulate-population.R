@@ -54,7 +54,6 @@ Samp100k10 <- sapply(1:1e5, function(i){ x <- mean(sample(Population$therm, 10, 
 Samp100k10 %>%
   ggplot(.,aes(sampmean)) + 
   geom_density(linetype="dashed") +
-  # geom_histogram(binwidth=.5,aes(y=..density..),alpha=0.7) +
   geom_vline(xintercept = mean(Population$therm), linetype="dotted") +
   stat_function(fun=dnorm,
                 color="black", size=1.5, 
@@ -63,6 +62,7 @@ Samp100k10 %>%
   labs(caption = "Density plot in dashed lines. Normal function with sample mean and standard deviation overlayed in thick, solid line.")
 
 # Extra credit
+sample_sizes <- c(10, 25, 100, 400, 2000, 4000, 10000)
 Samps = list() 
 # don't forget your seed!
 set.seed(8675309) # Jenny, I got your number...
