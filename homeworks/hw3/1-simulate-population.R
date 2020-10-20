@@ -27,6 +27,11 @@ Population %>%
   ggplot(.,aes(therm, n)) + geom_bar(stat="identity", fill="#619cff",color="black")
   
 
+Population %>%
+  summarize(mean = mean(therm),
+            median = median(therm),
+            sd = sd(therm))
+
 # Get five samples of size 10
 # don't forget your seed!
 set.seed(8675309) # Jenny, I got your number...
