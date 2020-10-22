@@ -215,7 +215,7 @@ Let's create a hypothetical "population" with the set parameters from the Trump 
 - Data will be bound between 0 and 100 with a mean of 42.42 and standard deviation of 38.84.
 - N  = 250,000 (i.e. scaled down from U.S. adult population of ~250 million).
 
-We want to guess the "population" mean thermometer rating: 48.61.
+We want to approximate the "population" mean thermometer rating via central limit theorem.
 
 - We'll grab a million samples of ten respondents and store the sample means.
 
@@ -398,7 +398,7 @@ If we were to randomly pick a sample mean from the distribution, there's a 95% c
 
 What's the next step? Assume this scenario for illustration.
 
-- We as researchers have a sample of 100 people from the Obama thermometer item.
+- We as researchers have a sample of 100 people from this population.
 
 ```{r oursample, cache=T, eval=T, echo=T}
 set.seed(8675309)
