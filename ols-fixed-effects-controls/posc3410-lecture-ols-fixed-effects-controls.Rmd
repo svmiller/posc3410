@@ -48,6 +48,8 @@ library(tidyverse)
 library(stevemisc)
 library(stevedata)
 library(stargazer)
+library(modelsummary)
+library(kableExtra)
 
 election_turnout %>%
   mutate(south = ifelse(region == "South", 1, 0)) -> election_turnout
@@ -88,7 +90,8 @@ This lecture will deal with those topics accordingly.
 library(tidyverse)
 library(stevemisc)
 library(stevedata) # ?election_turnout, ?anes_prochoice
-library(stargazer)
+library(modelsummary)
+library(kableExtra) # nip-and-tuck table formatting
 
 election_turnout %>%
   mutate(south = ifelse(region == "South", 1, 0)) -> election_turnout
@@ -118,17 +121,15 @@ Return to our education and turnout example: what if we're just interested in th
 
 ```{r showm1, echo=TRUE, eval=F}
 M1 <- lm(turnoutho ~ ss, data=election_turnout)
-
-# need stargazer and broom packages
-
 M1df <- broom::tidy(M1)
 
-stargazer(M1, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Swing State"),
-          title="The Effect of Being a Swing State on Voter Turnout, 2016")
-
+library(modelsummary)
+modelsummary(list(" " = M1), output="latex",
+             title = "The Effect of Being a Swing State on Voter Turnout, 2016",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("ss" = "Swing State",
+                          "(Intercept)" = "Intercept"),
+             align = "lc")
 
 ```
 
@@ -138,11 +139,13 @@ stargazer(M1, style="ajps",
 M1 <- lm(turnoutho ~ ss, data=election_turnout)
 M1df <- broom::tidy(M1)
 
-stargazer(M1, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Swing State"),
-          title="The Effect of Being a Swing State on Voter Turnout, 2016")
+library(modelsummary)
+modelsummary(list(" " = M1), output="latex",
+             title = "The Effect of Being a Swing State on Voter Turnout, 2016",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("ss" = "Swing State",
+                          "(Intercept)" = "Intercept"),
+             align = "lc")
 ```
 
 ### Swing States and Voter Turnout
@@ -172,11 +175,20 @@ Let's first unpack regional variation by looking at the effect of the South rela
 M2 <- lm(turnoutho ~ south, data=election_turnout)
 M2df <- broom::tidy(M2)
 
-stargazer(M2, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("South"),
-          title="The Effect of Being a Southern State on Voter Turnout, 2016")
+modelsummary(list(" " = M2), output="latex",
+             title = "The Effect of Being a Southern State on Voter Turnout, 2016",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("ss" = "Swing State",
+                          "south" = "State is in the South",
+                          "(Intercept)" = "Intercept"),
+             align = "lcc") %>%
+  row_spec(0, bold=TRUE)
+
+# stargazer(M2, style="ajps",
+#           omit.stat=c("F","rsq","ser"), header=FALSE,
+#           dep.var.labels.include = FALSE,
+#           covariate.labels=c("South"),
+#           title="The Effect of Being a Southern State on Voter Turnout, 2016")
 ```
 
 ### Southern States and Voter Turnout
@@ -216,11 +228,24 @@ election_turnout %>%
 M3 <- lm(turnoutho ~ regionf, data=election_turnout)
 M3df <- broom::tidy(M3)
 
-stargazer(M3, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Northeast", "Midwest", "West"),
-          title="The Effect of State Regions on Voter Turnout, 2016")
+modelsummary(list(" " = M3), output="latex",
+             title = "The Effect of State Regions on Voter Turnout, 2016",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("ss" = "Swing State",
+                          "south" = "State is in the South",
+                          "regionfNortheast" = "Northeast",
+                          "regionfNorth Central" = "Midwest",
+                          "regionfWest" = "West",
+                          "(Intercept)" = "Intercept"),
+             align = "lccc") %>%
+  row_spec(0, bold=TRUE)
+
+
+# stargazer(M3, style="ajps",
+#           omit.stat=c("F","rsq","ser"), header=FALSE,
+#           dep.var.labels.include = FALSE,
+#           covariate.labels=c("Northeast", "Midwest", "West"),
+#           title="The Effect of State Regions on Voter Turnout, 2016")
 ```
 
 
@@ -273,11 +298,28 @@ In other words, I contend your argument linking education (*x*) to voter turnout
 M4 <- lm(turnoutho ~ percoled + south + ss, data=election_turnout)
 M4df <- broom::tidy(M4)
 
-stargazer(M4, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("\\% College Diploma", "South", "Swing State"),
-          title="A Simple Model of Voter Turnout, 2016")
+
+modelsummary(list("Swing State Model" = M1,
+                  "South Model" = M2,
+                  "Full Model" = M4), output="latex",
+             title = "Simple Models of Voter Turnout, 2016",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("ss" = "Swing State",
+                          "south" = "State is in the South",
+                          "percoled" = "% College Diploma",
+                          "regionfNortheast" = "Northeast",
+                          "regionfNorth Central" = "Midwest",
+                          "regionfWest" = "West",
+                          "(Intercept)" = "Intercept"),
+             align = "lccc")  %>%
+  row_spec(0, bold=TRUE)
+
+
+# stargazer(M4, style="ajps",
+#           omit.stat=c("F","rsq","ser"), header=FALSE,
+#           dep.var.labels.include = FALSE,
+#           covariate.labels=c("\\% College Diploma", "South", "Swing State"),
+#           title="A Simple Model of Voter Turnout, 2016")
 ```
 
 ### Multiple Regression
@@ -374,20 +416,21 @@ where:
 
 ### R Code
 
-\scriptsize
+\tiny
 
 ```{r showm5, echo=T, eval=F}
 M5 <- lm(lchoice ~ pid*knowspeaker, data=anes_prochoice)
 M5df <- broom::tidy(M5)
 
-library(stargazer)
-stargazer(M5, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Party ID (D to R)", "Political Knowledge", 
-                             "Party ID*Political Knowledge"),
-          title="A Simple Interaction Between Partisanship and 
-          Political Knowledge on Pro-Choice Attitudes (ANES, 2012)")
+modelsummary(list(" " = M5), output="latex",
+             title = "A Simple Interaction Between Partisanship and Political Knowledge on Pro-Choice Attitudes (ANES, 2012)",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("pid" = "Partisanship (D to R)",
+                          "knowspeaker" = "Political Knowledge",
+                          "pid:knowspeaker" = "Partisanship*Political Knowledge",
+                          "(Intercept)" = "Intercept"),
+             align = "lccc")  %>%
+  row_spec(0, bold=TRUE)
 ```
 
 ###
@@ -396,11 +439,15 @@ stargazer(M5, style="ajps",
 M5 <- lm(lchoice ~ pid*knowspeaker, data=anes_prochoice)
 M5df <- broom::tidy(M5)
 
-stargazer(M5, style="ajps",
-          omit.stat=c("F","rsq","ser"), header=FALSE,
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Party ID (D to R)", "Political Knowledge", "Party ID*Political Knowledge"),
-          title="A Simple Interaction Between Partisanship and Political Knowledge on Pro-Choice Attitudes (ANES, 2012)")
+modelsummary(list(" " = M5), output="latex",
+             title = "A Simple Interaction Between Partisanship and Political Knowledge on Pro-Choice Attitudes (ANES, 2012)",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("pid" = "Partisanship (D to R)",
+                          "knowspeaker" = "Political Knowledge",
+                          "pid:knowspeaker" = "Partisanship*Political Knowledge",
+                          "(Intercept)" = "Intercept"),
+             align = "lccc")  %>%
+  row_spec(0, bold=TRUE)
 ```
 
 ### Interactive Effects
