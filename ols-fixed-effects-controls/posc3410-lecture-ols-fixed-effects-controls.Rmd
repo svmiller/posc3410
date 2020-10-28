@@ -1,5 +1,5 @@
 ---
-title: "Extending OLS: Fixed Effects and Controls"
+title: "Extending OLS: Fixed Effects, Controls, and Interactions"
 subtitle: POSC 3410  -- Quantitative Methods in Political Science
 author: Steven V. Miller
 institute: Department of Political Science
