@@ -91,4 +91,4 @@
 - title: "Extending OLS: Fixed Effects and Controls"
   filename: ols-fixed-effects-controls
   dirname: ols-fixed-effects-controls
-  tldr: "Once you understand OLS in a simple bivariate context, understanding its extensions is akin to adding more ingredients."
+  tldr: "Once you understand OLS in a simple bivariate context, its extensions are akin to adding more ingredients."
