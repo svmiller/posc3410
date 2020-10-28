@@ -1,0 +1,465 @@
+---
+title: "Extending OLS: Fixed Effects and Controls"
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: FALSE
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE, warning=F, message=F)
+knitr::opts_chunk$set(fig.path='figs/',  fig.width=14, fig.height=8.5)
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loaddata, echo=F, eval=T, message=F, warning=F}
+
+library(tidyverse)
+library(stevemisc)
+library(stevedata)
+library(stargazer)
+
+election_turnout %>%
+  mutate(south = ifelse(region == "South", 1, 0)) -> election_turnout
+
+
+```
+
+# Introduction
+### Goal for Today
+
+*Add some wrinkles to the OLS regression framework.*
+
+### Introduction
+
+By this point, I think you could be doing your own research.
+
+- You know what variables are.
+- You know how to describe them.
+- You know how to propose an explanation for variations in them.
+- You know how to set up a research design to test an argument.
+- You even know how to interpret a regression coefficient!
+
+### Limitations in Bivariate Regression
+
+However, simple bivariate OLS is never enough.
+
+- Variables of interest in political science are rarely interval.
+- Bivariate regression does not control for confounders.
+
+This lecture will deal with those topics accordingly.
+
+
+### R Packages We'll Be Using
+
+\small
+
+```r
+library(tidyverse)
+library(stevemisc)
+library(stevedata) # ?election_turnout, ?anes_prochoice
+library(stargazer)
+
+election_turnout %>%
+  mutate(south = ifelse(region == "South", 1, 0)) -> election_turnout
+```
+
+\normalsize
+
+# Extending OLS
+## Dummy Variables as Predictors
+### Dummy Variables as Predictors
+
+Dummy variables are everywhere in political science.
+
+- They play an important role in "fixed effects" regression.
+- Sometimes we're just interested in the effect of "one thing".
+
+### Swing States and Voter Turnout
+
+Return to our education and turnout example: what if we're just interested in the effect of a state being a "swing state?"
+
+- We'll follow 538's coding of "swing states": CO, FL, IA, MI, MN, NV, NH, NC, OH, PA, VA, and WI
+- When *x* = 0, we have the *y*-intercept.
+
+### R Code
+
+\scriptsize
+
+```{r showm1, echo=TRUE, eval=F}
+M1 <- lm(turnoutho ~ ss, data=election_turnout)
+
+# need stargazer and broom packages
+
+M1df <- broom::tidy(M1)
+
+stargazer(M1, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("Swing State"),
+          title="The Effect of Being a Swing State on Voter Turnout, 2016")
+
+
+```
+
+###
+
+```{r m1, echo=F, eval=T, results="asis"}
+M1 <- lm(turnoutho ~ ss, data=election_turnout)
+M1df <- broom::tidy(M1)
+
+stargazer(M1, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("Swing State"),
+          title="The Effect of Being a Swing State on Voter Turnout, 2016")
+```
+
+### Swing States and Voter Turnout
+
+- The estimated turnout in safe states is `r paste0(round(M1df$estimate[1], 2), "%")`
+- The estimated turnout in swing states is `r paste0(round(M1df$estimate[1] + M1df$estimate[2], 2), "%")` 
+- The "swing state" effect is an estimated `r paste0(round(M1df$estimate[2], 2), "%")` (s.e.: `r round(M1df$std.error[2], 2)`).
+- *t*-statistic: `r round(M1df$estimate[2], 2)`/`r round(M1df$std.error[2], 2)` = `r round(M1df$statistic[2], 2)`
+
+We can rule out, with high confidence, an argument that being a "swing state" has no effect on voter turnout.
+
+- Our findings suggest a precise positive effect.
+
+### What About Regional Variation?
+
+Southern states tend to have lower turnout, for any number of reasons.
+
+- Most Southern states are safe states.
+- Southern states also tend to have poorer citizens, which raise costs of voting.
+- A few have larger minority populations and a gross past/recent history of votings rights restrictions.
+
+Let's first unpack regional variation by looking at the effect of the South relative to non-Southern states on voter turnout.
+
+###
+
+```{r m2, echo=F, eval=T, results="asis"}
+M2 <- lm(turnoutho ~ south, data=election_turnout)
+M2df <- broom::tidy(M2)
+
+stargazer(M2, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("South"),
+          title="The Effect of Being a Southern State on Voter Turnout, 2016")
+```
+
+### Southern States and Voter Turnout
+
+- The estimated turnout in non-Southern states is `r paste0(round(M2df$estimate[1], 2), "%")`
+- The estimated turnout in Southern states is `r paste0(round(M2df$estimate[1] + M2df$estimate[2], 2), "%")` 
+- The "South" effect is an estimated `r paste0(round(M2df$estimate[2], 2), "%")` (s.e.: `r round(M2df$std.error[2], 2)`).
+- *t*-statistic: `r round(M2df$estimate[2], 2)`/`r round(M2df$std.error[2], 2)` = `r round(M2df$statistic[2], 2)`
+
+We can rule out, with high confidence, an argument that being a Southern state has no effect on voter turnout.
+
+- Our findings suggest a precise negative effect.
+- However, don't confuse this for a large effect. The difference is an estimated 3%.
+    - This amounts to about half a standard deviation change across *y*.
+
+
+## Fixed Effects in Regression
+### Fixed Effects and Voter Turnout
+
+Obviously, this last regression isn't that informative.
+
+- It also problematically treats non-Southern states as homogenous.
+- A meager R$^2$ suggests that.
+
+We can specify other regions as "fixed effects".
+
+- These treat predictors as a series of dummy variables for each value of *x*.
+- One predictor (or group) is left out as "baseline category".
+	- Otherwise, we'd have no *y*-intercept.
+	
+###
+
+```{r m3, echo=F, eval=T, results="asis"}
+election_turnout %>%
+  mutate(regionf = forcats::fct_relevel(region, "South", "Northeast", "North Central", "West")) -> election_turnout
+
+M3 <- lm(turnoutho ~ regionf, data=election_turnout)
+M3df <- broom::tidy(M3)
+
+stargazer(M3, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("West", "Midwest", "Northeast"),
+          title="The Effect of State Regions on Voter Turnout, 2016")
+```
+
+
+### Region Fixed Effects and Voter Turnout
+
+How to interpret this regression:
+
+- All coefficients communicate the effect of that region versus the baseline category.
+	- This is the South in our example.
+- Estimated turnout in the South is `r paste0(round(M3df$estimate[1], 2), "%")`.
+- Turnout in the Northeast is discernibly higher than the South (*t* = `r round(M3df$statistic[2], 2)`)
+- Turnout in the Midwest is discernibly higher than the South (*t* = `r round(M3df$statistic[3], 2)`).
+- We cannot estimate a difference between the South and West (*t* = `r round(M3df$statistic[4], 2)`)
+
+Notice the coefficient for the West is positive, but probability of observing it if there's no actual difference between South and West is `r round(1 - pnorm(abs(.4036199)/2.101534), 2)`. Kinda probable.
+
+## Multiple Regression
+### Multiple Regression
+
+Your previous example is basically an applied **multiple regression**.
+
+- However, it lacks control variables.
+
+Multiple regression produces **partial regression coefficients**.
+
+### Multiple Regression
+
+Let's return to our state voter turnout example. Let:
+
+- $x_1$: % of citizens in state having a college diploma.
+- $x_2$: states in the South.
+- $x_3$: state is a swing state.
+
+Important: we do this to "control" for potential confounders.
+
+### The Rationale
+
+Assume you are proposing a novel argument that state-level education explains voter turnout. I might argue for omitted variable bias on these grounds:
+
+- The "South" effect depresses state-level education and voter turnout.
+- The "swing state" effect may explain state-level education (roll with it...) and increases voter turnout.
+
+In other words, I contend your argument linking education (*x*) to voter turnout (*y*) is spurious to these other factors (*z*). 
+
+- That's why you "control." Not to soak up variation but to test for effect of potential confounders.
+
+### 
+
+```{r m4, echo=F, eval=T, results="asis"}
+M4 <- lm(turnoutho ~ percoled + south + ss, data=election_turnout)
+M4df <- broom::tidy(M4)
+
+stargazer(M4, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("\\% College Diploma", "South", "Swing State"),
+          title="A Simple Model of Voter Turnout, 2016")
+```
+
+### Multiple Regression
+
+- Estimated turnout for 1) a state not in the South that's 2) not a swing state and in which 3) no one graduated from college: `r paste0(round(M4df$estimate[1], 2), "%")`
+    - This seems reasonable, but recall the minimum on this variable is WV (19.2%).
+    - This parameter is effectively useless.
+- The partial regression coefficient for \% college diploma: `r round(M4df$estimate[2], 2)` (*t* = `r round(M4df$statistic[2], 2)`).
+- The partial regression coefficient for the South is insignificant.
+    - Conceivable explanation: education levels have a more precise effect and muddy the estimated negative effect of the South.
+- The estimated effect of being a "swing state" is to increase voter turnout by an estimated `r paste0(round(M4df$estimate[4], 2), "%")` (*t* = `r round(M4df$statistic[4], 2)`)
+
+## Interactive Effects
+### Interactive Effects
+
+Multiple regression is linear and additive.
+
+- However, some effects (say: $x_1$) may depend on the value of some other variable (say: $x_2$).
+
+In regression, we call this an **interactive effect**.
+
+### A Real World Example
+
+Consider this argument from Zaller (1992):
+
+- Democrats are weakly more pro-choice than Republicans.
+- However, the difference is very stark among the politically aware.
+
+Let's use 2012 ANES data to evaluate whether there's something to this.
+
+### Our Data
+
+
+**IVs**: Party ID, political knowledge, interaction between both
+
+- Party ID: (0 = Dem, 1 = Independent, 2 = GOP)
+- Political knowledge: does respondent know who Speaker of the House is?
+
+###
+
+![Only 40% of respondents (n= 5,914) in the 2012 ANES data knew who the Speaker of the House was.](john-boehner.jpg)
+Only 40% of respondents (n= 5,914) in the 2012 ANES data knew who the Speaker of the House was.
+
+### Our Data
+
+**DV**: latent pro-choice score via graded response model of favor/oppose/neither abortion if:
+
+- non-fatal health risk to woman
+- fatal health risk to woman
+- woman pregnant via incest
+- woman pregnant via rape
+- birth defect cases
+- financial hardship cases
+- woman wants to select child gender
+- it's woman's choice.
+
+Emerging estimate has a mean of zero and standard deviation of one.
+
+- Higher values = more "pro-choice."
+
+###
+
+```{r hist, echo=F, warning=F}
+ggplot(anes_prochoice, aes(lchoice)) + 
+  geom_density() + theme_steve_web() +
+  xlim(-2.5,2.5) +
+  labs(title = "Density Plot of Latent Pro-Choice Score (ANES, 2012)",
+       subtitle = "The data were generated from a graded response model to have an approximate mean of 0 and standard deviation of 1.",
+       y = "Density", x="Latent Pro-Choice Score",
+       caption = "Data: ANES (2012). Data available as anes_prochoice in stevedata. Github: svmiller/stevedata")
+```
+
+### Interactive Effects
+
+Our regression formula would look like this:
+
+$$
+\hat{y} = \hat{a} + \hat{b_1}(x_1) + \hat{b_2}(x_2) + \hat{b_3}(x_1*x_2)
+$$
+
+where:
+
+- $\hat{y}$ = estimated pro-choice scale score.
+- $x_1$ = partisanship (0 = Dems, 1 = Ind., 2 = GOP).
+- $x_2$ = political knowledge (0 = doesn't know Speaker, 1 = knows Speaker).
+- $x_1 * x_2$ = product of the two variables.
+
+### A Caution About Constituent Terms
+
+*Be careful with interpreting regression coefficients for constituent terms of an interaction.*
+
+- The regression coefficient for party ID is effect of party ID when political knowledge = 0.
+- The political knowledge coefficient is effect of knowledge when party ID variable = 0 (i.e. among Democrats).
+
+### R Code
+
+\scriptsize
+
+```{r showm5, echo=T, eval=F}
+M5 <- lm(lchoice ~ pid*knowspeaker, data=anes_prochoice)
+M5df <- broom::tidy(M5)
+
+library(stargazer)
+stargazer(M5, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("Party ID (D to R)", "Political Knowledge", 
+                             "Party ID*Political Knowledge"),
+          title="A Simple Interaction Between Partisanship and 
+          Political Knowledge on Pro-Choice Attitudes (ANES, 2012)")
+```
+
+###
+
+```{r m5, echo=F, eval=T, results="asis"}
+M5 <- lm(lchoice ~ pid*knowspeaker, data=anes_prochoice)
+M5df <- broom::tidy(M5)
+
+stargazer(M5, style="ajps",
+          omit.stat=c("F","rsq","ser"), header=FALSE,
+          dep.var.labels.include = FALSE,
+          covariate.labels=c("Party ID (D to R)", "Political Knowledge", "Party ID*Political Knowledge"),
+          title="A Simple Interaction Between Partisanship and Political Knowledge on Pro-Choice Attitudes (ANES, 2012)")
+```
+
+### Interactive Effects
+
+How to interpret Table 5:
+
+- Our estimate of pro-choice scores is `r round(M5df$estimate[1], 3)` for low-knowledge Democrats.
+-  $\hat{b_1}$, $\hat{b_2}$, and $\hat{b_3}$ are all statistically significant.
+- When $x_1$ and $x_2$ $=$ 1, subtract `r round(M5df$estimate[4], 3)` from $\hat{y}$.
+- Political knowledge leads to higher pro-choice scores *among Democrats*.
+
+### Interactive Effects
+
+Here's what this does for Democrats:
+
+- $\hat{y}$ for low-knowledge Democrats: `r with(M5df, round(estimate[1], 3))`.
+- $\hat{y}$ for high-knowledge Democrats: `r with(M5df, round(estimate[1] + estimate[3]*1, 3))`.
+
+What this does for Republicans is arguably more interesting.
+
+- $\hat{y}$ for low-knowledge Republicans: `r with(M5df, round(estimate[1] + estimate[2]*2, 3))`.
+- $\hat{y}$ for high-knowledge Republicans: `r with(M5df, round(estimate[1] + estimate[2]*2 + estimate[3]*1 + estimate[4]*2, 3))`.
+
+You see a huge effect of political knowledge on Democrats and, perhaps, no large (or even discernible) effect on Republicans.
+
+###
+
+```{r showeffect, echo=F, warning=F}
+
+lkd <- with(M5df, round(estimate[1], 3))
+hkd <- with(M5df, round(estimate[1] + estimate[3]*1, 3))
+lkr <- with(M5df, round(estimate[1] + estimate[2]*2, 3))
+hkr <- with(M5df, round(estimate[1] + estimate[2]*2 + estimate[3]*1 + estimate[4]*2, 3))
+
+ggplot(anes_prochoice, aes(lchoice)) + 
+  geom_density() + theme_steve_web() +
+  xlim(-2.5,2.5) +
+  labs(title = "Density Plot of Latent Pro-Choice Score With Emphasized Interactive Effects",
+       subtitle = "Notice the effect of political knowledge on pro-choice attitudes is larger among the Democrats than the Republicans.",
+       y = "Density", x="Latent Pro-Choice Score",
+       caption = "Data: ANES (2012). Data available as anes_prochoice in stevedata. Github: svmiller/stevedata. Party IDs are intuitively color-coded. Solid lines = low knowledge. Dashed lines = high knowledge.") +
+  geom_segment(x=lkd, y=0, xend=lkd, yend=.6, color="blue") +
+  geom_segment(x=hkd, y=0, xend=hkd, yend=.6, color="blue", linetype="dashed") +
+  geom_segment(x=lkr, y=0, xend=lkr, yend=.6, color="red") +
+  geom_segment(x=hkr, y=0, xend=hkr, yend=.6, color="red", linetype="dashed") +
+  geom_segment(x=lkd+.01, y=.1, xend=hkd-.01, yend=.1, color="blue",
+               arrow = arrow(length = unit(0.15, "cm")))
+
+```
+
+# Conclusion
+### Conclusion
+
+This chapter is the culmination of everything discussed previously.
+
+- It's basically what quantitative political science is.
+
+Regrettably, we can only use OLS for interval-level dependent variables.
+
+- We rarely have that.
+- Next, we'll discuss what to do with non-normal responses.
+
