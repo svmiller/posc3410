@@ -219,7 +219,7 @@ M3df <- broom::tidy(M3)
 stargazer(M3, style="ajps",
           omit.stat=c("F","rsq","ser"), header=FALSE,
           dep.var.labels.include = FALSE,
-          covariate.labels=c("West", "Midwest", "Northeast"),
+          covariate.labels=c("Northeast", "Midwest", "West"),
           title="The Effect of State Regions on Voter Turnout, 2016")
 ```
 
