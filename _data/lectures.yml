@@ -87,3 +87,8 @@
   filename: correlation-linear-regression
   dirname: correlation-linear-regression
   tldr: "A gentle introduction to correlation and linear regression as a means to describe a relationship between two interval-level variables."
+  
+- title: "Extending OLS: Fixed Effects and Controls"
+  filename: ols-fixed-effects-controls
+  dirname: ols-fixed-effects-controls
+  tldr: "Once you understand OLS in a simple bivariate context, understanding its extensions is akin to adding more ingredients."
