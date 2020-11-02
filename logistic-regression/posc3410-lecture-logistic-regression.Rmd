@@ -50,6 +50,7 @@ library(stevedata) # for ?election_turnout and ?gss_abortion
 library(modelsummary) # for tables
 library(kableExtra) # for prettying up tables
 
+  
 
 ```
 
@@ -262,19 +263,53 @@ Ever hear of something like "the odds are 4 to 1 against" an event occurring?
 
 - Translation: for every five trials, we expect 1 occurrence to 4 non-occurrences, on average.
 
-###
+### Education and Turnout (Hypothetical Data)
 
-\small
+Let's take a look at this with some hypothetical data.
 
-| Vote | 0. Low | 1. Mid-low | 2. Middle | 3. Mid-high | 4. High | Total |
-|:----:|:-------:|:-----------:|:----------:|:------------:|:--------:|:-----:|
-| Yes  | 6  | 20 | 50 | 80 | 94 | 250 |
-| No   | 94 | 80 | 50 | 20 | 6 | 250 |
-| *N* | 100 | 100 | 100 | 100 | 100 | 500 |
-|     |     |     |     |     |     |     |
-| p(vote) | .06 | .20 | .50 | .80 | .94 | .50 |
+```{r, echo=F, eval=T}
+tibble(educat = c(rep("0: Low", 100),
+                  rep("1: Mid-Low", 100),
+                  rep("2: Middle", 100),
+                  rep("3: Mid-High", 100),
+                  rep("4: High", 100)),
+       vote = c(rep(1, 6), rep(0, 94),
+                rep(1, 20), rep(0, 80),
+                rep(1, 50), rep(0, 50),
+                rep(1, 80), rep(0, 20),
+                rep(1, 94), rep(0, 6))) -> Fake
 
-Table: Individual-Level Education and Voting (Hypothetical Data)
+Fake %>%
+  group_by(educat, vote) %>%
+  summarize(n = n()) %>%
+  spread(educat, n) %>%
+  mutate(vote = c("No", "Yes")) %>%
+  bind_rows(., tibble(vote = "Total")) %>%
+  rename(Vote = vote) %>%
+  mutate_if(is.numeric, ~ifelse(is.na(.), 100, .)) %>%
+  kable(., caption = "Individual-Level Education and Voting (Hypothetical Data)",
+        format="latex",
+        align = c("l","c","c","c","c","c"), booktabs=TRUE, longtable=TRUE) %>%
+  row_spec(0, bold=TRUE) %>%
+  row_spec(2, hline_after = TRUE) %>%
+  row_spec(3, italic = TRUE)
+```
+
+Note: we're going to fudge/round some odds slightly for sake of pedagogy.
+
+- The goal here is to unpack odds and logits in an accessible way.
+
+<!-- \small -->
+
+<!-- | Vote | 0. Low | 1. Mid-low | 2. Middle | 3. Mid-high | 4. High | Total | -->
+<!-- |:----:|:-------:|:-----------:|:----------:|:------------:|:--------:|:-----:| -->
+<!-- | Yes  | 6  | 20 | 50 | 80 | 94 | 250 | -->
+<!-- | No   | 94 | 80 | 50 | 20 | 6 | 250 | -->
+<!-- | *N* | 100 | 100 | 100 | 100 | 100 | 500 | -->
+<!-- |     |     |     |     |     |     |     | -->
+<!-- | p(vote) | .06 | .20 | .50 | .80 | .94 | .50 | -->
+
+<!-- Table: Individual-Level Education and Voting (Hypothetical Data) -->
 
 <!-- ### Education and Turnout
 
@@ -299,13 +334,13 @@ Think of the issue as analogous to a "tipping point".
 
 ### Visualizing Odds
 
-| Education  | p(vote) | Odds of Voting  |
+| **Education**  | **p(vote)** | **Odds of Voting**  |
 |:------------|:-------:|:--------------:|
-| 0. Low      | .06     | .06/.94 = .06  |
-| 1. Mid-low  | .20     | .20/.80 = .25  |
-| 2. Middle   | .50     | .50/.50 = 1    |
-| 3. Mid-high | .80     | .80/.20 = 4    | 
-| 4. High     | .94     | .94/.06 = 16   | 
+| 0: Low      | .06     | .06/.94 = .06  |
+| 1: Mid-low  | .20     | .20/.80 = .25  |
+| 2: Middle   | .50     | .50/.50 = 1    |
+| 3: Mid-high | .80     | .80/.20 = 4    | 
+| 4: High     | .94     | .94/.06 = 16   | 
 
 Table: Probability/Odds of Education and Voting (Hypothetical Data)
 
@@ -412,15 +447,15 @@ Leonhard Euler proposed the answer is *e* (an irrational number) and can be deno
 
 ### Natural Logarithmic Transformation
 
-Take the natural log for our odds of *y*. Let's Add to Table 2 now.
+Take the natural log for our odds of *y*. Let's add it to our summary table now.
 
-| Education  | p(vote) | Odds of Voting  | Logged Odds |
+| **Education**  | **p(vote)** | **Odds of Voting**  | **Logged Odds** |
 |:------------|:-------:|:--------------:|:-----------:|
-| 0. Low      | .06     | .06/.94 = .06  | -2.8      |
-| 1. Mid-low  | .20     | .20/.80 = .25  | -1.4      |
-| 2. Middle   | .50     | .50/.50 = 1    | 0           |
-| 3. Mid-high | .80     | .80/.20 = 4    | 1.4       |
-| 4. High     | .94     | .94/.06 = 16 | 2.8       |
+| 0: Low      | .06     | .06/.94 = .06  | -2.8      |
+| 1: Mid-low  | .20     | .20/.80 = .25  | -1.4      |
+| 2: Middle   | .50     | .50/.50 = 1    | 0           |
+| 3: Mid-high | .80     | .80/.20 = 4    | 1.4       |
+| 4: High     | .94     | .94/.06 = 16 | 2.8       |
 
 Table: Probability, Odds, and Logits of Education and Voting (Hypothetical Data)
 
