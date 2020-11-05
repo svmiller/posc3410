@@ -49,7 +49,6 @@ library(stevemisc) # for %nin% and formatting
 library(stevedata) # for ?election_turnout and ?gss_abortion
 library(modelsummary) # for tables
 library(kableExtra) # for prettying up tables
-
   
 
 ```
@@ -354,7 +353,7 @@ Now, let's look at the odds of voting.
 
 ### Visualizing Odds
 
-The middle column, odds of voting, translates probabilities to odds.
+The right column, odds of voting, translates probabilities to odds.
 
 - e.g.  $\frac{p}{1-p}$ when *x* = 0 = $\frac{.06}{.94}$ = .06382979.
 - Once we get to the middle education category, the odds become integers.
@@ -587,7 +586,7 @@ gss_abortion %>%
          female = ifelse(sex == "Female", 1, 0)) -> Data
 
 M3 <- glm(abany ~ female + factor(race) + hispanic + educ + 
-            pid7 + relactiv, data=Data,
+            pid + relactiv, data=Data,
           family=binomial(link="logit"))
 
 modelsummary(list("Should Abortion Be Allowed for Any Reason?" = M3), output="latex",
@@ -618,7 +617,7 @@ gss_abortion %>%
          female = ifelse(sex == "Female", 1, 0)) -> Data
 
 M3 <- glm(abany ~ female + factor(race) + hispanic + educ + 
-            pid7 + relactiv, data=Data,
+            pid + relactiv, data=Data,
           family=binomial(link="logit"))
 
 modelsummary(list("Should Abortion Be Allowed for Any Reason?" = M3), output="latex",
@@ -653,7 +652,7 @@ modelsummary(list("Should Abortion Be Allowed for Any Reason?" = M3), output="la
 Let's say we're interested in the effect of Hispanics.
 
 - Exp(-0.354) = $e^{-0.354}$ = .701. This is the odds ratio.
-- 100*($e^{-0.354}$ - 1) = -29.81%. This is the percentage change in the odds of voting.
+- 100*($e^{-0.354}$ - 1) = -29.81%. This is the percentage change in the odds of supporting abortion for any reason.
 
 What about the effect of increasing education levels.
 
