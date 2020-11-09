@@ -1,0 +1,672 @@
+---
+title: 'Making the Most of Regression ("Divide By 4", Scaling)'
+subtitle: POSC 3410  -- Quantitative Methods in Political Science
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: FALSE
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE, warning=F, message=F)
+knitr::opts_chunk$set(fig.path='figs/',  fig.width=14, fig.height=9)
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loaddata, echo=F, eval=T, message=F, warning=F}
+
+library(tidyverse) # for most things
+library(stevemisc) # for formatting and r2sd()
+library(stevedata) # for ?TV16
+library(modelsummary) # for tables
+library(kableExtra) # for prettying up tables
+  
+TV16 %>%
+  filter(state == "Pennsylvania" & racef == "White") -> Penn
+
+```
+
+
+# Introduction
+### Goal for Today
+
+*Make the most of regression by making coefficients directly interpretable.*
+
+### Introduction
+
+You all should be familiar with regression by now.
+
+### Introduction
+
+Regression coefficients communicate:
+
+- Estimated change in *y* for one-unit change in *x*.
+    - This is in linear regression.
+- Estimated change in *logged odds* of *y* for one-unit change in *x*. 
+    - This is the interpretation for logistic regression.
+
+These communicate some quantities of interest.
+
+- After all, you want to know the effect of *x* on *y*!
+
+### Introduction
+
+However, it's easy (and tempting) to provide misleading quantities of interest.
+
+- Our variables are seldom (if ever) on the same scale.
+    - e.g. age can be anywhere from 18 to 100+, but years of education are typically bound between 0 and 25 (or so).
+- Worse yet, zero may not occur in any variable.
+    - We would have an uninterpretable *y*-intercept.
+  - From my experience, this can lead to false convergence of the model itself.
+	
+**Your goal**: regression results should be as easily interpretable as possible.
+
+- Today will be about how to do that.
+
+### R Code/Packages for Today
+
+```r
+library(tidyverse) # for most things
+library(stevemisc) # for formatting and r2sd()
+library(stevedata) # for ?TV16
+library(modelsummary) # for tables
+library(kableExtra) # for prettying up tables
+  
+TV16 %>%
+  filter(state == "Pennsylvania" & racef == "White") -> Penn
+```
+
+
+# Gelman's Parlor Tricks
+### Gelman's Parlor Tricks
+
+Andrew Gelman (2006 [with Hill], 2008) has two parlor tricks for getting the most out of regression.
+
+1. The "divide by 4" rule for logistic regression coefficients.
+2. Scaling by two standard deviations instead of one.
+
+## The "Divide by 4" Rule
+### The "Divide by 4" Rule
+
+OLS coefficients are intuitive. 
+
+- One unit increase in *x* increases estimated value of *y*.
+
+Logistic regression coefficients are not intuitive (yet).
+
+- One unit increase in *x* increases estimated natural logged odds of *y*.
+
+### The "Divide by 4" Rule
+
+Gelman and Hill (2006, 82) argue you can extract more information from your coefficient if you know about the logistic curve.
+
+- The logistic curve is a familiar "S-curve" that transforms continuous variables to range from 0 to 1.
+
+It'll look something like this.
+
+```{r, echo=TRUE, eval=F}
+tibble(x = seq(-6, 6)) %>% 
+  ggplot(.,aes(x)) + 
+  stat_function(fun =  function(x) exp(x)/(1+exp(x)))
+```
+
+###
+
+```{r logistic-curve, echo=F}
+tibble(x = seq(-6, 6)) %>% 
+  ggplot(.,aes(x)) + 
+  theme_steve_web() +
+  scale_x_continuous(breaks = seq(-6, 6, by=1)) +
+  stat_function(fun =  function(x) exp(x)/(1+exp(x))) +
+  labs(title = "The Logistic Curve",
+       subtitle = "Notice the bounds between 0 and 1 on the y-axis for an unbounded x-axis. Also notice the curve is steepest in the middle.")
+```
+
+
+### The "Divide by 4" Rule
+
+See how the curve is steepest in the middle? Remember derivatives from calc?
+
+- It means that's the point where the slope is maximized.
+
+That means it attains the value where
+
+$$
+\beta e ^0/(1 + e^0)^2 = \beta/(1 + 1)^2 = \beta/4
+$$
+
+Dividing a logistic regression coefficient by 4 gives you a reasonable *upper bound* of the predictive difference in *y* for a unit difference in *x*.
+
+### An Example
+
+Let's assume we want to explain the white Trump vote in PA in 2016 as a function of education.
+
+- *y*: respondent voted for Trump (Y/N)
+- *x*: respondent has a four-year college diploma (Y/N)
+
+```{r}
+M1 <- glm(votetrump ~ collegeed, data=Penn,
+          family=binomial(link="logit"))
+
+tidyM1 <- broom::tidy(M1)
+interceptM1 <- tidyM1[1, 2] %>% pull()
+coefM1 <- tidyM1[2, 2] %>% pull()
+```
+
+###
+
+\scriptsize
+
+```{r, echo=F, eval= T}
+
+M1 <- glm(votetrump ~ collegeed, data=Penn,
+          family=binomial(link="logit"))
+
+broom::tidy(M1) -> tidyM1
+interceptM1 <- tidyM1[1, 2] %>% pull()
+coefM1 <- tidyM1[2, 2] %>% pull()
+
+
+modelsummary(list("Did White PA Respondent Vote for Trump?" = M1), output="latex",
+             title = "Predicting the White Trump Vote in 2016 (CCES, 2016)",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("collegeed" = "College Educated",
+                          "(Intercept)" = "Intercept"),
+             align = "lc")
+
+```
+
+\normalsize
+
+### An Example
+
+Interpretation here is straightforward, but not too intuitive.
+
+- The natural logged odds of voting for Trump for those without college education is `r round(interceptM1, 3)`.
+- College education decreases those natural logged odds by `r round(coefM1, 3)`.
+
+Divide that coefficient by 4 and you get `r round(coefM1/4, 3)`.
+
+- That's an upper bound of the estimated effect in the probability of a white vote for Trump in PA for having a college diploma.
+
+### "Divide by 4" vs. DIY
+
+It's actually a really good heuristic!
+
+```{r}
+
+# Gelman's divide by 4
+coefM1/4
+
+# Manually estimating the difference from the regression
+plogis((interceptM1 + coefM1)) - plogis(interceptM1)
+
+```
+
+Where *p(y = 1)* isn't too small or large, this will do quite well when you look at your logistic regression output.
+
+## Standardize (by Two Standard Deviations)
+### Standardize (by Two Standard Deviations)
+
+Multiple regression models will have some other difficulties.
+
+- Predictors will include variables on different scales (e.g. age in years, or male-female gender).
+- Intercepts will come in tow, but may not make sense.
+
+Variables will almost never share the same scale.
+
+- Thus, you can't compare coefficients to each other, only to a null hypothesis of zero effect.
+
+### Standardize (by Two Standard Deviations)
+
+Gelman (2008) offers a technique for interpreting regression results: scale the non-binary input data by two standard deviations.
+
+- This makes continuous inputs (roughly) on same scale as binary inputs.
+- It allows a preliminary evaluation of relative effect of predictors otherwise on different scales.
+
+### Why Two Instead of One?
+
+Scaling by one standard deviation has important benefits.
+
+- Scale variable has mean of 0 and standard deviation of 1.
+- Communicates magnitude change across 34% of the data.
+- Creates meaningful *y*-intercept (that approximates a mean/typical case).
+- However, it won't help us make preliminary comparisons with dummy variables.
+
+Scaling by two standard deviations has more benefits.
+
+- Scale variable has mean of 0 and standard deviation of .5.
+- Creates magnitude change across 47.7% of the data.
+- Puts continuous inputs on roughly same scale as binary inputs.
+
+### How Does This Work?
+
+Consider a dummy IV with 50/50 split between 0s and 1s.
+
+- $p(dummy = 1) = .5$
+- Then, standard deviation equals .5 ($\sqrt{.5*.5} = \sqrt{.25} = .5$)
+- We can directly compare this dummy variable with our new standardized input variable!
+
+This works well in most cases, except when $p(dummy = 1)$ is really small.
+
+- e.g. $p(dummy = 1) = .25$, then $\sqrt{.25*.75} = .43$
+
+### An Extended Example
+
+Let's go back to our white Pennsylvanian data.
+
+- *DV*: did respondent vote for Trump? (Y/N)
+- *IV*s: age [18:88], gender (female), college education, household income [1:12], L-C ideology [1:5], D-R partisanship [1:7], respondent is born-again Christian.
+
+```{r, echo=T, eval=T}
+M2 <- glm(votetrump ~ age + female + collegeed + famincr + ideo +
+            pid7na + bornagain, data=Penn,
+          family=binomial(link="logit"))
+
+tidyM2 <- broom::tidy(M2)
+```
+
+###
+
+\scriptsize
+
+```{r, echo=F}
+modelsummary(list("Did White PA Respondent Vote for Trump?" = M2), output="latex",
+             title = "Predicting the White Trump Vote in 2016 (CCES, 2016)",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("age" = "Age", 
+                          "female" = "Female", 
+                          "collegeed" = "College Educated",
+                          "famincr" = "Household Income", 
+                          "ideo" = "Ideology (L-C)", 
+                          "pid7na" = "Partisanship (D-R)", 
+                          "bornagain" = "Born Again Christian", 
+                          "(Intercept)" = "Intercept"),
+             align = "lc")
+
+```
+
+\normalsize
+
+### Interpreting These Results
+
+- Estimated natural logged odds of a Trump vote when all those things are 0 is about `r round(tidyM2[1, 2], 3)`, but that person doesn't exist.
+- Largest (absolute) effects are college education (`r round(tidyM2[4, 2], 3)`), ideology (`r round(tidyM2[6, 2], 3)`), and partisanship (`r round(tidyM2[7, 2], 3)`).
+- We don't appear to discern any effects of income or gender.
+
+
+### A Question
+
+What is the largest effect on the white Trump vote in PA?
+
+- Few/none of these variables share a common scale, so coefficient comparisons won't help.
+- You can discern precision and discernibility from zero.
+- You *cannot* say one is necessarily bigger than the other.
+
+Why so?
+
+- College education is binary, which (all else equal) drives up coefficient (and standard error)
+- Age (for example) has 71 different values, which drives down coefficient (and standard error)
+
+*Use your head*: we're talking about a partisan vote here (for president).
+
+- Partisanship should be way more important than education, but it has more categories than college education.
+
+### Scaling Everything That's Not Binary
+
+```{r, echo=T}
+Penn %>%
+    mutate_at(vars("age", "famincr","pid7na","ideo"),
+              # r2sd() is in stevemisc
+              list(z = ~r2sd(.))) %>%
+    rename_at(vars(contains("_z")),
+              ~paste("z", gsub("_z", "", .), sep = "_") ) -> Penn
+
+M3 <- glm(votetrump ~ z_age + female + collegeed + z_famincr + 
+            z_ideo + z_pid7na + bornagain, data=Penn,
+          family=binomial(link="logit"))
+
+tidyM3 <- broom::tidy(M3)
+```
+
+
+###
+
+\scriptsize
+
+```{r, echo=F}
+modelsummary(list("Did White PA Respondent Vote for Trump? (Standardized)" = M3), output="latex",
+             title = "Predicting the White Trump Vote in 2016 (CCES, 2016)",
+             stars = TRUE, gof_omit = "IC|F|Log.|R2$",
+             coef_map = c("z_age" = "Age", 
+                          "female" = "Female", 
+                          "collegeed" = "College Educated",
+                          "z_famincr" = "Household Income", 
+                          "z_ideo" = "Ideology (L-C)", 
+                          "z_pid7na" = "Partisanship (D-R)", 
+                          "bornagain" = "Born Again Christian", 
+                          "(Intercept)" = "Intercept"),
+             align = "lc")
+
+```
+
+\normalsize
+
+### Interpretation
+
+Notice what *didn't* change.
+
+- Scaling the other variables doesn't change the binary IVs.
+- Notice the *z*-value doesn't change either even as coefficient and standard errors change.
+
+However, this regression table is much more readable.
+
+- $y$-intercept is much more meaningful. It's natural logged odds of voting for Trump a non-born again, non-college educated white man of average/values/income.
+- It suggests (which, use your head) that partisanship and ideology have the largest effects.
+
+# Conclusion
+### Conclusion
+
+We're building toward an important point: *regression is akin to storytelling.*
+
+- Tell your story well and get the most usable information out of what you're doing.
+
+Some preliminary parlor tricks via Gelman:
+
+- "Divide by 4": takes unintuitive logistic regression coefficients and returns upper bound predictive difference.
+- Scaling by two SDs: provides preliminary comparison of coefficients (including binary inputs) and makes *y*-intercepts meaningful.
+
+<!-- # What Standardization Does -->
+
+<!-- ### Interpreting by Standardizing the Input -->
+
+
+
+<!-- ## Standardizing By One Standard Deviation -->
+<!-- ### Standardization -->
+
+<!-- Standardization follows $z$ transformations, which you should know. -->
+
+<!-- - $z = (\bar{x} - \mu)/\sigma$ -->
+
+<!-- This transforms any variable to have a mean of zero and a standard deviation of one. -->
+
+<!-- ### Observe for Normally Distributed Data -->
+
+<!-- ```{r} -->
+<!-- set.seed(8675309) ### for reproducibility -->
+<!-- x <- rnorm(100, 58, 17.8) -->
+<!-- mean(x) -->
+<!-- sd(x) -->
+<!-- s_x <- (x - mean(x))/(sd(x)) -->
+<!-- round(mean(s_x)) -->
+<!-- sd(s_x) -->
+<!-- ``` -->
+
+
+<!-- ### -->
+
+<!-- ```{r, echo=FALSE, eval=TRUE} -->
+<!-- dat <- data.frame(x, s_x) -->
+<!-- ggplot(dat, aes(x)) + geom_density() + theme_steve() + -->
+<!--   scale_x_continuous(breaks=seq(0,100, by=25), limits=c(0,109)) + -->
+<!--   xlab("Values of x") + ylab("Density") + -->
+<!--   ggtitle("Density Plot of Random Normal Variable x") -->
+
+<!-- ``` -->
+
+<!-- ### -->
+
+<!-- ```{r, echo=FALSE, eval=TRUE} -->
+<!-- dat <- data.frame(x, s_x) -->
+<!-- ggplot(dat, aes(s_x)) + geom_density() + theme_steve() + -->
+<!--   scale_x_continuous(breaks=seq(-3.5,3.5, 1), limits=c(-3.5,3.5)) + -->
+<!--   xlab("Values of x (Standardized)") + ylab("Density") + -->
+<!--   ggtitle("Density Plot of Random Normal Variable x (Standardized)") -->
+
+<!-- ``` -->
+
+<!-- ### Works with Non-Normally Distributed Data Too -->
+
+<!-- ```{r} -->
+<!-- set.seed(8675309) # for reproducibility -->
+<!-- x <- rpois(100, 2) # Poisson "count" data -->
+<!-- mean(x) -->
+<!-- sd(x) -->
+<!-- s_x <- (x - mean(x))/(sd(x)) -->
+<!-- round(mean(s_x)) -->
+<!-- sd(s_x) -->
+<!-- ``` -->
+
+
+<!-- ### -->
+
+<!-- ```{r, echo=FALSE, eval=TRUE, warnings=F, message=F} -->
+<!-- dat <- data.frame(x, s_x) -->
+<!-- ggplot(dat, aes(x)) + geom_histogram() + theme_steve() + -->
+<!--   xlab("Values of x") + ylab("Density") + -->
+<!--   ggtitle("Histogram of Random Poisson Variable x") -->
+
+<!-- ``` -->
+
+<!-- ###  -->
+
+<!-- ```{r, echo=FALSE, eval=TRUE, message=F, warnings=F} -->
+<!-- dat <- data.frame(x, s_x) -->
+<!-- dat$xdist <- unique(s_x)[1]-unique(s_x)[2] -->
+<!-- ggplot(dat, aes(s_x)) + geom_histogram() + theme_steve() + -->
+<!--   xlab("Values of x (Standadized)") + ylab("Density") + -->
+<!--   scale_x_continuous(breaks=unique(s_x)) + -->
+<!--   ggtitle("Histogram of Random Poisson Variable x (Standardized)") -->
+
+<!-- ``` -->
+
+
+<!-- ### Don't Let the Scale Fool You -->
+
+<!-- \scriptsize -->
+
+<!-- ```{r} -->
+<!-- unique(x)  -->
+<!-- unique(s_x) -->
+<!-- ``` -->
+
+<!-- ### What Standardization Does to Regression Coefficients -->
+
+<!-- Recall what standardization does when overlaying standardized *x*-axis with normal *x*-axis. -->
+
+<!-- - Distance between 0 and 1 = 34% of data. -->
+
+<!-- Thus, a regression coefficient for standardized variable estimates the effect of *x* on *y* for a one-standard deviation change from the mean. -->
+
+<!-- - i.e. effect of a change across 34% of the data of *x*. -->
+
+<!-- ### Benefits/Limitations of Standardization -->
+
+<!-- Standardizing by one standard deviation is helpful for a couple reasons. -->
+
+<!-- - It creates a meaningful zero (i.e. the mean) for the *y*-intercept. -->
+<!-- - Regression coefficient captures a magnitude change. -->
+
+<!-- However, it won't help us make preliminary comparisons with dummy variables. -->
+
+<!-- ## Standardizing By Two Standard Deviations -->
+<!-- ### The Problem of Dummy Variables -->
+
+<!-- Dummy variables are special class of nominal variables. -->
+
+<!-- - An indicator is either "there" or "not there". -->
+
+<!-- In regression, this has an important effect. -->
+
+<!-- - Coefficient goes up, all else equal. -->
+<!--     - So does standard error. -->
+
+<!-- It may be misleading to think that binary variables have the largest effect on an outcome, but a regression coefficient may suggest this. -->
+
+<!-- ### Scaling by Two Standard Deviations -->
+
+<!-- Take a continuous (non-binary) input variable and divide it by two standard deviations instead of one. -->
+
+<!-- - This will transform the data to have a mean of zero and standard deviation of .5. -->
+<!-- - Regression coefficient would communicate estimated change in $y$ for change across 47.7% of data in *x*. -->
+<!-- - Sometimes this is what you want. -->
+
+<!-- Think of our state education-turnout example: -->
+
+<!-- - Do you care about effect going from 30% to 31%, or: -->
+<!-- - Do you care about effect of going from a state like KY to a state like MN (i.e. a magnitude effect)? -->
+
+<!-- ### Observe with Normally Distributed Data -->
+
+<!-- ```{r} -->
+<!-- set.seed(8675309) ### for reproducibility -->
+<!-- x <- rnorm(100, 58, 17.8) -->
+<!-- mean(x) # same as before... -->
+<!-- sd(x) -->
+<!-- s_x <- (x - mean(x))/(2*sd(x)) # two SDs instead of one -->
+<!-- round(mean(s_x)) -->
+<!-- sd(s_x) -->
+<!-- ``` -->
+
+
+<!-- ### Same Thing with Non-Normally Distributed Data -->
+
+<!-- ```{r} -->
+<!-- set.seed(8675309) # for reproducibility -->
+<!-- x <- rpois(100, 2) # Poisson "count" data -->
+<!-- mean(x) # same as before... -->
+<!-- sd(x) -->
+<!-- s_x <- (x - mean(x))/(2*sd(x)) -->
+<!-- round(mean(s_x)) -->
+<!-- sd(s_x) -->
+<!-- ``` -->
+
+
+<!-- ### Comparison with Binary Independent Variables -->
+
+<!-- Why do this? Consider a dummy IV with 50/50 split between 0s and 1s. -->
+
+<!-- - $p(dummy = 1) = .5$ -->
+<!-- - Then, standard deviation equals .5 ($\sqrt{.5*.5} = \sqrt{.25} = .5$) -->
+<!-- - We can directly compare this dummy variable with our new standardized input variable! -->
+
+<!-- This works well in most cases, except when $p(dummy = 1)$ is really small. -->
+
+<!-- - e.g. $p(dummy = 1) = .25$, then $\sqrt{.25*.75} = .4330127$ -->
+
+<!-- # An Application of State Education-Turnout -->
+<!-- ### An Application with State Education-Turnout -->
+
+<!-- Let's revisit our state education-turnout data from before. -->
+
+<!-- - *DV*: state-level voter turnout for highest office (2016 general election) -->
+
+<!-- *IVs*:  -->
+
+<!-- - $x_1$: % of citizens in state having a college diploma. -->
+<!-- - $x_2$: states in the South. -->
+<!-- - $x_3$: state is a swing state. -->
+
+<!-- ### A Simple Regression -->
+
+<!-- ```{r m4, echo=F, eval=T, results="asis"} -->
+<!-- M4 <- lm(turnoutho ~ percoled + south + ss, data=Data) -->
+<!-- library(broom) -->
+<!-- M4df <- tidy(M4) -->
+
+<!-- stargazer(M4, style="ajps", -->
+<!--           omit.stat=c("F","rsq","ser"), header=FALSE, -->
+<!--           dep.var.labels.include = FALSE, -->
+<!--           covariate.labels=c("\\% College Diploma", "South", "Swing State"), -->
+<!--           title="A Simple Model of Voter Turnout, 2016") -->
+<!-- ``` -->
+
+<!-- ### Interpreting the Results... Again -->
+
+<!-- - Estimated turnout for 1) a state not in the South that's 2) not a swing state and in which 3) no one graduated from college: r paste0(round(M4df$estimate[1], 2), "%")` -->
+<!--     - This seems reasonable, but recall the minimum on this variable is WV (19.2%). -->
+<!--     - This parameter is effectively useless. -->
+<!-- - The partial regression coefficient for \% college diploma: r round(M4df$estimate[2], 2)` (*t* = r round(M4df$statistic[2], 2)`). -->
+<!-- - The partial regression coefficient for the South is insignificant. -->
+<!-- - The estimated effect of being a "swing state" is to increase voter turnout by an estimated r paste0(round(M4df$estimate[4], 2), "%")` (*t* = r round(M4df$statistic[4], 2)`) -->
+
+<!-- ### Reading and Misreading the Regression Table -->
+
+<!-- You might be tempted to say the "swing state" effect is the largest. -->
+
+<!-- - It certainly has the largest regression coefficient. -->
+<!-- - However, you wouldn't know its effect was "largest" yet. -->
+
+<!-- However, "swing state" is binary. -->
+
+<!-- - This drives up the estimated coefficient, all else equal. -->
+<!-- - It also drives up the standard error. -->
+
+<!-- None of the variables approximate a common scale. -->
+
+<!-- - You can discern precision and discernibility from zero. -->
+<!-- - You *cannot* say one is necessarily bigger than the other. -->
+
+
+<!-- ### Scaling The Education Variable -->
+
+<!-- Let's scale the college education variable by two standard deviations to put that interval variable on roughly the same scale as the binary variables. -->
+
+
+<!-- ### A More Readable Regression -->
+
+<!-- ```{r m5, echo=F, eval=T, results="asis"} -->
+<!-- M5 <- lm(turnoutho ~ z_percoled + south + ss, data=Data) -->
+<!-- library(broom) -->
+<!-- M5df <- tidy(M5) -->
+
+<!-- stargazer(M4, M5, style="ajps", -->
+<!--           omit.stat=c("F","rsq","ser"), header=FALSE, -->
+<!--           dep.var.labels.include = FALSE, -->
+<!--           covariate.labels=c("\\% College Diploma", "\\% College Diploma (Standardized)", -->
+<!--                              "South", "Swing State"), -->
+<!--           title="A Simple Model of Voter Turnout, 2016") -->
+<!-- ``` -->
+
+
+<!-- ### Interpretation -->
+
+<!-- Notice what *didn't* change. -->
+
+<!-- - Scaling the other variables doesn't change the binary IVs. -->
+<!-- - Notice the *t*-statistic doesn't change either even as coefficient and standard errors change. -->
+
+<!-- However, this regression table is much more readable. -->
+
+<!-- - $y$-intercept is much more meaningful. -->
+<!-- - It does indicate to us that the "swing state" effect is probably larger. -->
