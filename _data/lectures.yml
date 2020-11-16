@@ -106,4 +106,4 @@
 - title: 'The Basics of Bayesian Inference'
   filename: bayesian-inference
   dirname: bayesian-inference
-  tldr: "Conditional probability is uncontroversial, but inference by way of it perhaps is. Let's discuss it first, emphasizing benefits and limitations."
+  tldr: "Conditional probability is uncontroversial, but inference by way of it is. Let's discuss it first, emphasizing benefits and limitations."
