@@ -52,16 +52,6 @@ library(kableExtra) # for prettying up tables
 library(ggrepel) # for graph
 # source("1-replicate-westernjackman1994bicr.R")
 con <- DBI::dbConnect(RSQLite::SQLite(), "westernjackman1994bicr.db")
-
-skable <- function(data, caption, aligns,  colnames) {
-  require(knitr)
-  require(kableExtra)
-  knitr::kable(data, caption = caption, col.names = if(missing(colnames)) { names(data)} else { colnames }, format = "latex", booktabs = TRUE, longtable =T, linesep = "", align = if(missing(aligns)) {} else { aligns }) %>%
-    kable_styling(full_width = F, 
-                  latex_options = c("repeat_header", "hold_position")) %>%
-    row_spec(0, bold= TRUE)
-}
-
 ```
 
 # Introduction
@@ -320,7 +310,7 @@ bind_rows(tidyM1, tidyB0, tidyWJM1) %>%
         col.names = c("Model", "Parameter","Coef.", "SD|SE", "Lower Bound", "Upper Bound"),
         align=c("l","l","c","c","c","c"),
         booktabs = T, longtable=T, linesep="") %>%
-  kable_styling(font_size = 8) %>%
+  kable_styling(font_size = 7) %>%
   row_spec(0, bold= TRUE) %>%
   row_spec(c(3,6,9), hline_after = TRUE)
 
@@ -469,3 +459,8 @@ Bayesians highlight how many liberties we can take with our research design if w
 Importantly, why start agnostic of the population parameter if we do not have to do this?
 
 - If you have prior information or plausible effects, use it.
+
+```{r, echo=F}
+DBI::dbDisconnect(con)
+rm(con)
+```
