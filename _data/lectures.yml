@@ -107,3 +107,8 @@
   filename: bayesian-inference
   dirname: bayesian-inference
   tldr: "Conditional probability is uncontroversial, but inference by way of it is. Let's discuss it first, emphasizing benefits and limitations."
+  
+- title: 'What Explains Union Density? A Replication with Updated Bayesian Approaches'
+  filename: westernjackman1994bicr
+  dirname: westernjackman1994bicr
+  tldr: "Western and Jackman's (1994) article is an accessible applied introduction to Bayesian inference for students."
