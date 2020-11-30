@@ -19,7 +19,7 @@ This homework assignment will refer to the `1-wvs-usa-abortion.R` script I wrote
 2. Run Model 1 `(M1)`. What is statistically associated with attitudes toward the justifiability of abortion and in what direction? Your answer should be five to seven complete sentences.
 3. Look at the intercept for Model 1. What is the baseline? Why might this baseline be misleading?
 4. Run Model 2 `(M2)`. Notice the statistical significance of the coefficients didn't change but the interpretability of the coefficients did. What does the intercept communicate in Model 2 in substantive terms? What appears to have the largest effect (in magnitude) on the justifiability of abortion in the United States?
-5. Run Model 3 `(M3)` and plot the interactive relationship of religion and age on attitudes toward abortion. What do you see?
+5. Run Model 3 `(M3)` and plot the interactive relationship of age on attitudes toward abortion. What do you see?
 
 ## Extra Credit
 
