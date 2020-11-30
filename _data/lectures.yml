@@ -112,3 +112,8 @@
   filename: westernjackman1994bicr
   dirname: westernjackman1994bicr
   tldr: "Western and Jackman's (1994) article is an accessible applied introduction to Bayesian inference for students."
+  
+- title: 'Ethics in Social/Political Science Research'
+  filename: ethics
+  dirname: ethics
+  tldr: "A discussion of emerging ethical issues in social science research and the importance of replication."
