@@ -13,7 +13,7 @@ header-includes:
 This homework assignment will refer to the `1-wvs-usa-abortion.R` script I wrote and made available on the course's Github repository.[^footnote] This is a sample from six waves of World Values Survey isolating just the responses in the United States. I offer a codebook for this data set on my Github, which I encourage the student to read.[^codebook] Answer the following questions in two to three sentences each, unless otherwise noted.
 
 [^footnote]:  https://github.com/svmiller/posc3410/blob/master/homeworks/hw5/1-wvs-usa-abortion.R
-[^codebook]: https://github.com/svmiller/wvs-usa-abortion-attitudes
+[^codebook]: https://github.com/svmiller/wvs-usa-abortion-attitudes/blob/master/README.md
 
 1. Get a histogram of the dependent variable `(aj)`. How would you describe the distribution of this variable? Would you treat this as an interval-level measurement? Why or why not?
 2. Run Model 1 `(M1)`. What is statistically associated with attitudes toward the justifiability of abortion and in what direction? Your answer should be five to seven complete sentences.
