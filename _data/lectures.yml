@@ -117,3 +117,8 @@
   filename: ethics
   dirname: ethics
   tldr: "A discussion of emerging ethical issues in social science research and the importance of replication."
+
+- title: "Growth in a Time of Debt (or: a Workflow Gone Bad)"
+  filename: reinhart-rogoff
+  dirname: reinhart-rogoff
+  tldr: "Does debt decrease GDP growth? If you have a bad research design and institutional prestige to burn, it does."
