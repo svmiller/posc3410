@@ -251,7 +251,7 @@ Page 11 of the working paper is the closest they come to acknowledging this.
 
 ###  Why the Post-WWII Case Exclusions Matter
 
-Here, for context, are all the 1946-1950 observations.
+Here, for context, are all the 1946-1949 observations.
 
 ```r
 RR %>% filter(year < 1950) %>% group_by(country) %>%
@@ -298,6 +298,8 @@ Notice a pattern in those countries? They're the first five alphabetically.
 
 ###
 
+\scriptsize
+
 ```{r, eval=F}
 RR %>%
   # filter the five countries
@@ -311,6 +313,8 @@ RR %>%
   select(-n) %>%
   spread(dgcat, meanrgdp)
 ```
+
+\normalsize
 
 ###
 
