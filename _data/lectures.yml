@@ -1,124 +1,124 @@
-- title: "Syllabus Day (i.e. Welcome)"
-  filename: welcome
-  dirname: welcome
-  tldr:  "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
-
-- title: "Scientific Study of Politics"
-  filename: scientific-study-of-politics
-  dirname: scientific-study-of-politics
-  tldr:  "This is a gentle lecture on how to think about the study of politics scientifically."
-
-- title: "EITM and Science as Simplification"
-  filename: eitm
-  dirname: eitm
-  tldr:  "Another gentle lecture, this one on hypothetico-deductivism and the EITM framework."
-
-- title: "How to Do a Literature Review"
-  filename: literature-review
-  dirname: literature-review
-  tldr:  "Cribbed from a blog post and 2014 presentation, here's how I recommend students approach a literature review."
-
-- title: "On Theory-Writing"
-  filename: theory-writing
-  dirname: theory-writing
-  tldr:  "A discussion of some techniques to theory-writing, the hardest part of the research process (I think)."
-
-- title: "Defining Concepts"
-  filename: defining-concepts
-  dirname: defining-concepts
-  tldr:  "A discussion of politics is ultimately conceptual. Political *science* entails operationalizing those concepts."
-
-- title: "Reliability and Validity"
-  filename: reliable-valid
-  dirname: reliable-valid
-  tldr:  "Ideally our measures are supposed to--consistently--capture the true concept without measuring anything else."
-
-- title: "Defining and Measuring Variables"
-  filename: defining-measuring-variables
-  dirname: defining-measuring-variables
-  tldr:  "Measurement is the heart of science. Let's talk about how we can categorize measurement."
-
-- title: "Central Tendency and Dispersion"
-  filename: central-tendency-dispersion
-  dirname: central-tendency-dispersion
-  tldr:  'We can describe variables by reference to what is typical and how typical is "typical."'
-  
-- title: "Framing Hypotheses"
-  filename: framing-hypotheses
-  dirname: framing-hypotheses
-  tldr: "A quick primer on hypotheses, how to do them, and how not to do them."
-  
-- title: "Making Comparisons"
-  filename: making-comparisons
-  dirname: making-comparisons
-  tldr: "A discussions of types of relationships between variables and how to make comparisons between them."
-  
-- title: "Probability and Counting for Political Science"
-  filename: probability-1
-  dirname: probability-1
-  tldr: "A gentle introduction to some rules for probability and counting, with political science applications."
-  
-- title: "Probability Distributions and Functions"
-  filename: probability-2
-  dirname: probability-2
-  tldr: "A discussion of two types of distributions you'll see in political science applications."
-  
-- title: "Controlled Comparisons and Controlled Relationships"
-  filename: controlled-comparison-1
-  dirname: controlled-comparison-1
-  tldr: "A discussion of controlled comparisons and how to make them with or without experiments."
-  
-- title: "Applied Controlled Comparisons"
-  filename: controlled-comparison-2
-  dirname: controlled-comparison-2
-  tldr: "A primer on making controlled comparisons and estimating partial effects in simple cases."
-  
-- title: "Random Sampling and Variation"
-  filename: random-sampling-variation
-  dirname: random-sampling-variation
-  tldr: "A pivot into the world of inference, starting with a discussion of random sampling."
-
-- title: "Central Limit Theorem, Normal Distribution, and Inference"
-  filename: clt-nd-inference
-  dirname: clt-nd-inference
-  tldr: "Inferring from sample to population is the core of what we do in applied statistics. Here's what the process resembles."
-  
-- title: "Correlation and Linear Regression"
-  filename: correlation-linear-regression
-  dirname: correlation-linear-regression
-  tldr: "A gentle introduction to correlation and linear regression as a means to describe a relationship between two interval-level variables."
-  
-- title: "Extending OLS: Fixed Effects, Controls, and Interactions"
-  filename: ols-fixed-effects-controls
-  dirname: ols-fixed-effects-controls
-  tldr: "Once you understand OLS in a simple bivariate context, its extensions are akin to adding more ingredients."
-  
-- title: "Logistic Regression"
-  filename: logistic-regression
-  dirname: logistic-regression
-  tldr: "If your DV is a dummy variable, you're going to want a logistic regression instead of OLS. It's really not daunting."
-  
-- title: 'Making the Most of Regression ("Divide By 4", Scaling)'
-  filename: making-most-regression
-  dirname: making-most-regression
-  tldr: "You, the regression modeler, are also a storyteller. Here are two parlor tricks to help you tell your story."
-  
-- title: 'The Basics of Bayesian Inference'
-  filename: bayesian-inference
-  dirname: bayesian-inference
-  tldr: "Conditional probability is uncontroversial, but inference by way of it is. Let's discuss it first, emphasizing benefits and limitations."
-  
-- title: 'What Explains Union Density? A Replication with Updated Bayesian Approaches'
-  filename: westernjackman1994bicr
-  dirname: westernjackman1994bicr
-  tldr: "Western and Jackman's (1994) article is an accessible applied introduction to Bayesian inference for students."
-  
-- title: 'Ethics in Social/Political Science Research'
-  filename: ethics
-  dirname: ethics
-  tldr: "A discussion of emerging ethical issues in social science research and the importance of replication."
-
-- title: "Growth in a Time of Debt (or: a Workflow Gone Bad)"
-  filename: reinhart-rogoff
-  dirname: reinhart-rogoff
-  tldr: "Does debt decrease GDP growth? If you have a bad research design and institutional prestige to burn, it does."
+# - title: "Syllabus Day (i.e. Welcome)"
+#   filename: welcome
+#   dirname: welcome
+#   tldr:  "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
+# 
+# - title: "Scientific Study of Politics"
+#   filename: scientific-study-of-politics
+#   dirname: scientific-study-of-politics
+#   tldr:  "This is a gentle lecture on how to think about the study of politics scientifically."
+# 
+# - title: "EITM and Science as Simplification"
+#   filename: eitm
+#   dirname: eitm
+#   tldr:  "Another gentle lecture, this one on hypothetico-deductivism and the EITM framework."
+# 
+# - title: "How to Do a Literature Review"
+#   filename: literature-review
+#   dirname: literature-review
+#   tldr:  "Cribbed from a blog post and 2014 presentation, here's how I recommend students approach a literature review."
+# 
+# - title: "On Theory-Writing"
+#   filename: theory-writing
+#   dirname: theory-writing
+#   tldr:  "A discussion of some techniques to theory-writing, the hardest part of the research process (I think)."
+# 
+# - title: "Defining Concepts"
+#   filename: defining-concepts
+#   dirname: defining-concepts
+#   tldr:  "A discussion of politics is ultimately conceptual. Political *science* entails operationalizing those concepts."
+# 
+# - title: "Reliability and Validity"
+#   filename: reliable-valid
+#   dirname: reliable-valid
+#   tldr:  "Ideally our measures are supposed to--consistently--capture the true concept without measuring anything else."
+# 
+# - title: "Defining and Measuring Variables"
+#   filename: defining-measuring-variables
+#   dirname: defining-measuring-variables
+#   tldr:  "Measurement is the heart of science. Let's talk about how we can categorize measurement."
+# 
+# - title: "Central Tendency and Dispersion"
+#   filename: central-tendency-dispersion
+#   dirname: central-tendency-dispersion
+#   tldr:  'We can describe variables by reference to what is typical and how typical is "typical."'
+#   
+# - title: "Framing Hypotheses"
+#   filename: framing-hypotheses
+#   dirname: framing-hypotheses
+#   tldr: "A quick primer on hypotheses, how to do them, and how not to do them."
+#   
+# - title: "Making Comparisons"
+#   filename: making-comparisons
+#   dirname: making-comparisons
+#   tldr: "A discussions of types of relationships between variables and how to make comparisons between them."
+#   
+# - title: "Probability and Counting for Political Science"
+#   filename: probability-1
+#   dirname: probability-1
+#   tldr: "A gentle introduction to some rules for probability and counting, with political science applications."
+#   
+# - title: "Probability Distributions and Functions"
+#   filename: probability-2
+#   dirname: probability-2
+#   tldr: "A discussion of two types of distributions you'll see in political science applications."
+#   
+# - title: "Controlled Comparisons and Controlled Relationships"
+#   filename: controlled-comparison-1
+#   dirname: controlled-comparison-1
+#   tldr: "A discussion of controlled comparisons and how to make them with or without experiments."
+#   
+# - title: "Applied Controlled Comparisons"
+#   filename: controlled-comparison-2
+#   dirname: controlled-comparison-2
+#   tldr: "A primer on making controlled comparisons and estimating partial effects in simple cases."
+#   
+# - title: "Random Sampling and Variation"
+#   filename: random-sampling-variation
+#   dirname: random-sampling-variation
+#   tldr: "A pivot into the world of inference, starting with a discussion of random sampling."
+# 
+# - title: "Central Limit Theorem, Normal Distribution, and Inference"
+#   filename: clt-nd-inference
+#   dirname: clt-nd-inference
+#   tldr: "Inferring from sample to population is the core of what we do in applied statistics. Here's what the process resembles."
+#   
+# - title: "Correlation and Linear Regression"
+#   filename: correlation-linear-regression
+#   dirname: correlation-linear-regression
+#   tldr: "A gentle introduction to correlation and linear regression as a means to describe a relationship between two interval-level variables."
+#   
+# - title: "Extending OLS: Fixed Effects, Controls, and Interactions"
+#   filename: ols-fixed-effects-controls
+#   dirname: ols-fixed-effects-controls
+#   tldr: "Once you understand OLS in a simple bivariate context, its extensions are akin to adding more ingredients."
+#   
+# - title: "Logistic Regression"
+#   filename: logistic-regression
+#   dirname: logistic-regression
+#   tldr: "If your DV is a dummy variable, you're going to want a logistic regression instead of OLS. It's really not daunting."
+#   
+# - title: 'Making the Most of Regression ("Divide By 4", Scaling)'
+#   filename: making-most-regression
+#   dirname: making-most-regression
+#   tldr: "You, the regression modeler, are also a storyteller. Here are two parlor tricks to help you tell your story."
+#   
+# - title: 'The Basics of Bayesian Inference'
+#   filename: bayesian-inference
+#   dirname: bayesian-inference
+#   tldr: "Conditional probability is uncontroversial, but inference by way of it is. Let's discuss it first, emphasizing benefits and limitations."
+#   
+# - title: 'What Explains Union Density? A Replication with Updated Bayesian Approaches'
+#   filename: westernjackman1994bicr
+#   dirname: westernjackman1994bicr
+#   tldr: "Western and Jackman's (1994) article is an accessible applied introduction to Bayesian inference for students."
+#   
+# - title: 'Ethics in Social/Political Science Research'
+#   filename: ethics
+#   dirname: ethics
+#   tldr: "A discussion of emerging ethical issues in social science research and the importance of replication."
+# 
+# - title: "Growth in a Time of Debt (or: a Workflow Gone Bad)"
+#   filename: reinhart-rogoff
+#   dirname: reinhart-rogoff
+#   tldr: "Does debt decrease GDP growth? If you have a bad research design and institutional prestige to burn, it does."
