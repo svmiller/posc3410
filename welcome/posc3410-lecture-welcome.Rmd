@@ -1,17 +1,14 @@
 ---
+output: 
+  stevetemplates::beamer:
+    latex_engine: xelatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
 title: "Syllabus Day (i.e. Welcome)"
 subtitle: POSC 3410  -- Quantitative Methods in Political Science
 author: Steven V. Miller
 institute: Department of Political Science
-titlegraphic: /Dropbox/teaching/clemson-academic.png
-date: 
-output:
- beamer_presentation:
-    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
-    latex_engine: xelatex
-    dev: cairo_pdf
-    fig_caption: true
-    slide_level: 3
+titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
 make149: true
 mainfont: "Open Sans"
 titlefont: "Titillium Web"
@@ -33,11 +30,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r loadstuff, include=FALSE}
-
-mon <- as.Date("2020-01-06")
-lastday <- as.Date("2020-04-24")
-finalexam <- as.Date("2020-04-30") # 8 am
-# fri <- as.Date("2016-01-08")
 
 advdate <- function(obj, adv) {
  tmon <- obj + 7*(adv-1)
@@ -69,9 +61,106 @@ library(stevemisc)
 bib <- ReadBib("~/Dropbox/master.bib")
 myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
 
-library(fredr)
-# My fred API key is set globally.
-library(tidyverse)
+mon <- ymd(20220110)
+
+# What are some dates you won't be here? In this example, I had a conference on 7 January 2021.
+# Spring Break was 15 March 2021 to 19 March 2021.
+not_here_dates <- c(
+  # MLK Day
+  ymd(20220117),
+  # Spring Break
+  seq(ymd(20220321),ymd(20220325), by=1))
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# My intro class was fairly simple: just exams.
+exam_dates <- c(ymd(20220224), ymd(20220505))
+
+hw_dates <- c(ymd(20220210), 
+              ymd(20220217), 
+              ymd(20220303),
+              ymd(20220317), 
+              ymd(20220421), 
+              ymd(20220426))
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+# In this case: 6 January to 23 April
+semester_dates <- seq(ymd(20220112), ymd(20220429), by=1)
+
+# paper date
+paper_dates <- c(ymd(20220423))
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+# wom <- function(date) {
+#     first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+#     return((mday(date)+(first-2)) %/% 7+1)
+#   }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20220101), ymd(20220531), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         exams = ifelse(date %in% exam_dates, 1, 0), # is it an exam?
+         hw = ifelse(date %in% hw_dates, 1, 0),
+         paper = ifelse(date %in% paper_dates, 1, 0),
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a category variable, for filling.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(category = NA,
+         category = ifelse(semester == 1, "Semester", category),
+         category = ifelse(semester == 1 & wkdy %in% c("Tue", "Thu"), "Class Day", category),
+         category = ifelse(exams == 1, "Exams", category),
+         category = ifelse(hw == 1, "Homework Due", category),
+         category = ifelse(paper == 1, "Paper Due", category),
+         category = ifelse(is.na(category) | (semester == 1 & not_here == 1), "NA", category)) -> Cal 
+
+
+# Cal %>%
+#   mutate(category = case_when(
+#     semester == 1 & across(exams:not_here) == 0 ~ "Semester"
+#   ))
+
+# Cal %>%
+#   mutate(category = case_when(
+#     date %in% semester_dates & !(wkdy %in% c("Tue", "Thu")) ~ "Semester",
+#     date %in% semester_dates & (wkdy %in% c("Tue", "Thu")) & date %nin% c(exam_dates, hw_dates, not_here_dates) ~ "Class Day",
+#     date %in% exam_dates ~ "Exams",
+#     date %in% hw_dates ~ "Homework Due",
+#     date %in% paper_dates ~ "Paper Due",
+#     date %in% not_here_dates & semester == 1 ~ "NA"
+#   )) -> Cal
+
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  theme_steve_web() + 
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day),family="Crimson Text") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Exams"="indianred4",
+                             "Homework Due" = "lightpink2",
+                             "NA" = "white", # I like these whited out...
+                             "Paper Due" = "chocolate3"),
+                    breaks=c("Class Day","Exams","Homework Due", "Paper Due"))  + 
+  labs(fill = "", x="", y="",
+       caption = "Notable dates: MLK Day (17 January), Spring Break (21-25 March)")  -> class_cal
 
 ```
 
@@ -105,7 +194,7 @@ Familiarize students with the topic of the course and the instructor's expectati
 
 7. Learn the `R` programming language, which should be a major addition to a résumé.
 
-### Books
+### (Recommended) Books
 
 ```{r textbook, echo = FALSE, results="asis"} 
 bib["kellstedtwhitten2013fpsr", "pollockiii2016epa"]
@@ -118,10 +207,11 @@ bib["kellstedtwhitten2013fpsr", "pollockiii2016epa"]
 
 | **Assignment** | **(Due) Date** | **Percent of Grade** |
 |:---------------|:--------------:|:--------------------:|
-| Homework | Periodically | 30% |
-| Midterm | *before* Oct 1. 10:45 a.m. | 20% |
-| Research Paper | *before* Nov. 28, 10:00 a.m. | 20% |
-| Final Exam | *before* Dec. 9, 10:30 a.m. | 30% |
+| Participation |  N/A | 15% |
+| Homework | Periodically | 25% |
+| Midterm | *before* Feb. 24, 3:15 p.m. | 20% |
+| Research Paper | *before* April 23, 10 a.m. | 15% |
+| Final Exam | *before* May 5, 10:30 a.m. | 25% |
 
 
 Check syllabus for more information about the homework and paper requirements.
@@ -157,15 +247,16 @@ M2df <- tidy(M2)
 # library(ggplot2)
 ```
 
-I'd otherwise go on a big spiel here about the importance of attending class, but... lol...
+I'd otherwise go on a big spiel about the importance of attending class, but...  \shrug
 
 \bigskip
 
 For this semester:
 
 - Attendance is assumed not required.
-- Please make it a point to attend (online) lectures.
-
+- Please make it a point to attend lectures.
+- Please make it a point to be active on Canvas (for record-keeping).
+- Please make it a point to participate to the best of your abilities.
 
 
 <!-- Effectively mandatory: I deduct all participation points after five unexcused absences. -->
@@ -221,74 +312,7 @@ Attend %>%
 ###
 
 ```{r calendar, eval=T, echo=F, fig.height=8.5, fig.width = 14}
-# library(ggplot2)
-# Calendar dates of importance ----
-mon <- as.Date("2020-08-17")
-
-not_here_dates <- c(ymd(20201103),
-              ymd(20201123):ymd(20201127))
-
-exam_dates <- c(ymd(20201001),  ymd(20201209))
-hw_dates <- c(ymd(20200917), 
-              ymd(20200924), 
-              ymd(20201008),
-              ymd(20201022), 
-              ymd(20201119), 
-              ymd(20201201))
-paper_dates <- c(ymd(20201128))
-semester_dates <- seq(ymd(20200819),ymd(20201204), by=1)
-
-
-wom <- function(date) {
-    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
-    return((mday(date)+(first-2)) %/% 7+1)
-  }
-
-
-tibble(date = seq(ymd(20200801), ymd(20201231), by=1))  %>%
-  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
-         wkdy = weekdays(date, abbreviate=T), # get weekday label
-         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
-         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
-         exams = ifelse(date %in% exam_dates, 1, 0), # is it an exam?
-         hw = ifelse(date %in% hw_dates, 1, 0),
-         paper = ifelse(date %in% paper_dates, 1, 0),
-         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
-         day = lubridate::mday(date), # get day of month to add later as a label
-         # Below: our custom wom() function
-         week = wom(date)) -> Cal
-
-Cal %>%
-  mutate(category = NA,
-         category = ifelse(semester == 1, "Semester", category),
-         category = ifelse(semester == 1 & wkdy %in% c("Tue", "Thu"), "Class Day", category),
-         category = ifelse(exams == 1, "Exams", category),
-         category = ifelse(hw == 1, "Homework Due", category),
-         category = ifelse(paper == 1, "Paper Due", category),
-         category = ifelse(is.na(category) | (semester == 1 & not_here == 1), "NA", category)) -> Cal 
-
-Cal %>% 
-  ggplot(.,aes(wkdy, week)) +
-  # custom theme stuff below
-  theme_steve_web() + 
-  theme(panel.grid.major.x = element_blank()) +
-  # geom_tile and facet_wrap will do all the heavy lifting
-  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
-  facet_wrap(~mon, scales="free", ncol=3) +
-  # fill in tiles to make it look more "calendary" (sic)
-  geom_text(aes(label=day),family="Open Sans") +
-  # put your y-axis down, flip it, and reverse it
-  scale_y_reverse(breaks=NULL) +
-  # manually fill scale colors to something you like...
-  scale_fill_manual(values=c("Class Day"="steelblue", 
-                             "Semester"="lightsteelblue",
-                             "Exams"="indianred4",
-                             "Homework Due" = "lightpink2",
-                             "NA" = "white", # I like these whited out...
-                             "Paper Due" = "chocolate3"),
-                    breaks=c("Class Day","Exams","Homework Due", "Paper Due"))  +
-  labs(fill = "", x="", y="",
-       caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27)") 
+class_cal
 
 ```
 
@@ -301,20 +325,53 @@ Cal %>%
 <!-- - You're on Facebook or playing Pokemon Go anyway. Don't pretend you're not. -->
 
 
-### Email Policy
+### Contact Policy
 
-I'm usually quick to respond to student e-mails. However, I may not if:
+Email me: svmille@clemson.edu.
 
-1. You could answer your question by reading the syllabus.
-2. You missed a class for which there was no exam.
-3. You want to know what you missed for the class you skipped.
-4. You're protesting a grade without specific objections.
-	- Read the syllabus about protesting a grade.
-5. You want to know how many classes you missed.
-6. You're requesting an extension on an assignment.
-7. You're protesting that a late assignment is not actually "late".
-8. You're grade-grubbing.
-9. You want an extra credit opportunity.
+- Please *don't* email me at svmille@g.clemson.edu, or through Canvas.
+- tl;dr: I'll still get it, but it's more hoops in order to respond.
+- Simple email to svmille@clemson.edu works best.
+
+That said, I will use Canvas for classwide emails.
+
+### Office Hours
+
+Email me: svmille@clemson.edu. We'll set something up.
+
+- All "office visits" will be done via Zoom.
+
+### Late Work/Make-up Policy
+
+I'm otherwise a hard-ass about make-ups and the like, but... \shrug
+
+- Please make it a point to complete tasks on time.
+- Please get tested if you do not feel well.
+- Please make-up assignments you miss because of extenuating circumstances, as promptly as you can.
+
+Just please put in an honest effort, and try your best.
+
+## Required Materials/Skills
+
+- Ownership of (or access to) a computer/word processing program.
+- The R programming language (read syllabus for more)
+- Knowledge of getting journal articles from university library service.
+
+
+
+
+<!-- I'm usually quick to respond to student e-mails. However, I may not if: -->
+
+<!-- 1. You could answer your question by reading the syllabus. -->
+<!-- 2. You missed a class for which there was no exam. -->
+<!-- 3. You want to know what you missed for the class you skipped. -->
+<!-- 4. You're protesting a grade without specific objections. -->
+<!-- 	- Read the syllabus about protesting a grade. -->
+<!-- 5. You want to know how many classes you missed. -->
+<!-- 6. You're requesting an extension on an assignment. -->
+<!-- 7. You're protesting that a late assignment is not actually "late". -->
+<!-- 8. You're grade-grubbing. -->
+<!-- 9. You want an extra credit opportunity. -->
 
 <!-- ### Make-up Exams -->
 
@@ -341,8 +398,6 @@ I'm more than happy to accommodate, but:
 
 - *Name*: Steve Miller (as in the band)
 - *E-mail*: \textcolor{clemsonorange}{svmille@clemson.edu}
-- *Office Hours*: \shrug
-- *Office*: \shrug
 - *Website*: \textcolor{clemsonorange}{posc3410.svmiller.com}
 
 ### Additional Course Materials
