@@ -23,7 +23,9 @@ I assign these books because I believe they are useful. You should look into the
 
 ## Homeworks
 
-These are the homework sets I ask you to complete during the course of the semester. Of note: the "prompt" contains the questions and the "script" contains the R code to execute various commands that will help you answer the question. Not all home works have R scripts. The "repository" link is the Github repo for everything. The first homework set also includes answer templates for your consideration. I offer these to students interested in learning R Markdown. Students should check the syllabus to see when each is due.
+These are the homework sets I ask you to complete during the course of the semester. Of note: the "prompt" contains the questions and the "script" contains the R code to execute various commands that will help you answer the question. Not all homeworks have R scripts. The "repository" link is the Github repo for everything. The first homework set also includes answer templates for your consideration. I offer these to students interested in learning R Markdown. Students should check the syllabus to see when each is due.
+
+Students who are unable to download R, either because they are on tablets or because of any other issues with their personal computers, should click the link titled "CONSOLE OUTPUT". This points to a ["spun"](https://www.rdocumentation.org/packages/knitr/versions/1.33/topics/spin) report that runs the script and effectively does the homework for the student. The student's task here is to parse the console output as it pertains to the questions I ask. This should be straightforward.
 
 <!-- Answer Template [[PDF](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.pdf), [MS Word](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.docx), [R Markdown](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.Rmd)] -->
 
