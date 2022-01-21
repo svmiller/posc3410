@@ -25,12 +25,17 @@ I assign these books because I believe they are useful. You should look into the
 
 These are the homework sets I ask you to complete during the course of the semester. Of note: the "prompt" contains the questions and the "script" contains the R code to execute various commands that will help you answer the question. Not all home works have R scripts. The "repository" link is the Github repo for everything. The first homework set also includes answer templates for your consideration. I offer these to students interested in learning R Markdown. Students should check the syllabus to see when each is due.
 
-- Homework #1 ([Prompt](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw1/1-sc-primary-2016.R), Answer Template [[PDF](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.pdf), [MS Word](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.docx), [R Markdown](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.Rmd)]
-, [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw1))
+<!-- Answer Template [[PDF](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.pdf), [MS Word](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.docx), [R Markdown](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.Rmd)] -->
+
+- Homework #1 ([Prompt](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw1/1-sc-primary-2016.R),
+, [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw1), [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw1/1-sc-primary-2016.html))
 - Homework #2 ([Prompt](http://posc3410.svmiller.com/homeworks/hw2/posc3410-hw2.pdf), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw2))
-- Homework #3 ([Prompt](http://posc3410.svmiller.com/homeworks/hw3/posc3410-hw3.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw3/1-simulate-population.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw3))
-- Homework #4 ([Prompt](http://posc3410.svmiller.com/homeworks/hw4/posc3410-hw4.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw4/1-wvs-trumpism.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw4))
-- Homework #5 ([Prompt](http://posc3410.svmiller.com/homeworks/hw5/posc3410-hw5.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw5/1-wvs-usa-abortion.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw5))
+- Homework #3 ([Prompt](http://posc3410.svmiller.com/homeworks/hw3/posc3410-hw3.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw3/1-simulate-population.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw3),
+ [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw3/1-simulate-population.html))
+- Homework #4 ([Prompt](http://posc3410.svmiller.com/homeworks/hw4/posc3410-hw4.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw4/1-wvs-trumpism.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw4),
+ [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw4/1-wvs-trumpism.html))
+- Homework #5 ([Prompt](http://posc3410.svmiller.com/homeworks/hw5/posc3410-hw5.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw5/1-wvs-usa-abortion.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw5),
+ [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw5/1-wvs-usa-abortion.html))
 
 ## Additional Course Materials
 
