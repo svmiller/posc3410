@@ -321,7 +321,7 @@ Compare/contrast the nighttime photos of North and South Korea.
 
 ### Top Ten Energy-Consuming States in my 2008 Sample
 
-```{r, echo=F}
+```{r, echo=F, message=F, warning=F}
 library(kableExtra)
 
 KWHPC %>% filter(year == 2008) %>%
@@ -332,6 +332,7 @@ KWHPC %>% filter(year == 2008) %>%
   select(rank, country, kwhpc) %>%
   mutate_if(is.numeric, ~round(.,2)) %>%
   kable(.,
+        longtable = TRUE, booktabs = TRUE, linesep='',
         col.names = c("Rank", "Country", "Kilowatt Hours per Capita"),
         align = c("c", "l","c"))
 
