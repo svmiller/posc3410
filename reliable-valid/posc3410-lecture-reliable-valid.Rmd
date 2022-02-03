@@ -1,20 +1,29 @@
 ---
+output: 
+  stevetemplates::beamer:
+    latex_engine: xelatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
 title: "Reliability and Validity"
 subtitle: POSC 3410  -- Quantitative Methods in Political Science
 author: Steven V. Miller
 institute: Department of Political Science
-titlegraphic: /Dropbox/teaching/clemson-academic.png
-date: 
-output:
- beamer_presentation:
-    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
-    latex_engine: xelatex
-    dev: cairo_pdf
-    fig_caption: true
-    slide_level: 3
+titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
 make149: true
 mainfont: "Open Sans"
 titlefont: "Titillium Web"
+header-includes:
+- \usepackage{dcolumn}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
 ---
 
 ```{r setup, include=FALSE, message=F, warning=F, cache=FALSE}
@@ -153,11 +162,16 @@ This was a big problem in the literature on political tolerance.
 
 	- Individuals that allow this are conceived to be "politically tolerant".
 	
-### What Was the Problem?
+### Were Americans Becoming More Tolerant?
 
 By the early 1980s, Americans looked to be much more tolerant than they were in the 1950s. Why?
 
-- *Answer*: they weren't. Our measure of "political tolerance" was flawed.
+	
+### What Was the Problem?
+
+
+*Answer*: they weren't. Our measure of "political tolerance" was flawed.
+
 - By inserting "least-liked groups", we biased our measure off what we wanted.
 - We were measuring ideology, religious values, or variable fear of the USSR in the Cold War, not just "political tolerance".
 
@@ -178,9 +192,9 @@ Examples in political science.
 ## Random Measurement Error
 ### Random Measurement Error
 
-Suppose I gave an undergrad a list of 500 MIDs to code.
+Suppose I gave an undergrad a list of 500 militarized interstate confrontations to code.
 
-- The task: code 1 if the MID is a war. Code 0 if it is not.
+- The task: code 1 if the confrontation is a war. Code 0 if it is not.
 - Suppose the undergrad was sloppy and did half the cases while drinking beer and watching football.
 
 	- A few 0s were coded as 1s and vice-versa.
@@ -308,6 +322,7 @@ Compare/contrast the nighttime photos of North and South Korea.
 ### Top Ten Energy-Consuming States in my 2008 Sample
 
 ```{r, echo=F}
+library(kableExtra)
 
 KWHPC %>% filter(year == 2008) %>%
   filter(country %in% c("Iceland", "Norway","Canada","United Arab Emirates","Finland", 
@@ -365,7 +380,7 @@ Is this variable empirically related with other variables to which it should be 
 
 ```{r kilowatt-hours-and-gdp-per-capita, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 KWHPC %>%
-  filter(year >= 2009) %>%
+  filter(year >= 2009 & year <= 2014) %>%
   na.omit %>%
   group_by(year) %>%
   nest() %>%
@@ -376,8 +391,8 @@ KWHPC %>%
           c(2009:2014),
           ~mutate(.x, year =.y)) %>%
   filter(term == "kwhpc") %>%
-  mutate(lwr = estimate - z95*std.error,
-         upr = estimate + z95*std.error) %>%
+  mutate(lwr = estimate - p_z(.05)*std.error,
+         upr = estimate + p_z(.05)*std.error) %>%
   ggplot(.,aes(as.factor(year), estimate, ymin=lwr, ymax=upr)) +
   geom_hline(yintercept = 0, linetype="dashed") + theme_steve_web() +
     geom_pointrange() + coord_flip() +
