@@ -38,11 +38,11 @@
   dirname: defining-measuring-variables
   tldr:  "Measurement is the heart of science. Let's talk about how we can categorize measurement."
 
-# - title: "Central Tendency and Dispersion"
-#   filename: central-tendency-dispersion
-#   dirname: central-tendency-dispersion
-#   tldr:  'We can describe variables by reference to what is typical and how typical is "typical."'
-#   
+- title: "Central Tendency and Dispersion"
+  filename: central-tendency-dispersion
+  dirname: central-tendency-dispersion
+  tldr:  'We can describe variables by reference to what is typical and how typical is "typical."'
+
 # - title: "Framing Hypotheses"
 #   filename: framing-hypotheses
 #   dirname: framing-hypotheses
