@@ -29,8 +29,7 @@ Students who are unable to download R, either because they are on tablets or bec
 
 <!-- Answer Template [[PDF](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.pdf), [MS Word](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.docx), [R Markdown](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1-answer-template.Rmd)] -->
 
-- Homework #1 ([Prompt](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw1/1-sc-primary-2016.R),
-, [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw1), [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw1/1-sc-primary-2016.html))
+- Homework #1 ([Prompt](http://posc3410.svmiller.com/homeworks/hw1/posc3410-hw1.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw1/1-sc-primary-2016.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw1), [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw1/1-sc-primary-2016.html), [Answers](http://posc3410.svmiller.com/homeworks/hw1/answers/posc3410-hw1-answers.pdf))
 - Homework #2 ([Prompt](http://posc3410.svmiller.com/homeworks/hw2/posc3410-hw2.pdf), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw2))
 - Homework #3 ([Prompt](http://posc3410.svmiller.com/homeworks/hw3/posc3410-hw3.pdf), [Script](https://github.com/svmiller/posc3410/blob/master/homeworks/hw3/1-simulate-population.R), [Repository](https://github.com/svmiller/posc3410/tree/master/homeworks/hw3),
  [CONSOLE OUTPUT](http://posc3410.svmiller.com/homeworks/hw3/1-simulate-population.html))
