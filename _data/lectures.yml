@@ -48,11 +48,11 @@
   dirname: framing-hypotheses
   tldr: "A quick primer on hypotheses, how to do them, and how not to do them."
 
-# - title: "Making Comparisons"
-#   filename: making-comparisons
-#   dirname: making-comparisons
-#   tldr: "A discussions of types of relationships between variables and how to make comparisons between them."
-#   
+- title: "Making Comparisons"
+  filename: making-comparisons
+  dirname: making-comparisons
+  tldr: "A discussions of types of relationships between variables and how to make comparisons between them."
+
 # - title: "Probability and Counting for Political Science"
 #   filename: probability-1
 #   dirname: probability-1
