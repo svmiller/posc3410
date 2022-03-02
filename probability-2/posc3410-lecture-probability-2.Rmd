@@ -1,37 +1,30 @@
 ---
+output: 
+  stevetemplates::beamer:
+    latex_engine: xelatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
 title: "Probability Distributions and Functions"
 subtitle: POSC 3410  -- Quantitative Methods in Political Science
 author: Steven V. Miller
 institute: Department of Political Science
-titlegraphic: /Dropbox/teaching/clemson-academic.png
-date: 
-output:
- beamer_presentation:
-    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
-    latex_engine: xelatex
-    dev: cairo_pdf
-    fig_caption: true
-    slide_level: 3
+titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
 make149: true
 mainfont: "Open Sans"
 titlefont: "Titillium Web"
-header-includes:
-- \usepackage{booktabs}
-- \usepackage{longtable}
-- \usepackage{array}
-- \usepackage{multirow}
-- \usepackage{wrapfig}
-- \usepackage{float}
-- \usepackage{colortbl}
-- \usepackage{pdflscape}
-- \usepackage{tabu}
-- \usepackage{threeparttable}
 ---
 
+
+
+
 ```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
-knitr::opts_chunk$set(cache=TRUE, message=F, warning=FALSE)
-knitr::opts_chunk$set(fig.path='figs/')
-knitr::opts_chunk$set(cache.path='cache/')
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F,
+                      fig.width = 14, fig.height = 8.5,
+                      echo=F)
 
 knitr::opts_chunk$set(
                   fig.process = function(x) {
@@ -40,6 +33,7 @@ knitr::opts_chunk$set(
                       }
                   )
 ```
+
 
 ```{r loadpackages, include=FALSE, cache=FALSE}
 library(tidyverse)
@@ -196,37 +190,92 @@ p(x = 5 \thinspace | \thinspace n = 10, p = .5) &=& {10 \choose 5 } (.5)^5(1-.5)
 
 In R:
 
-```{r}
+```{r, echo=T}
 dbinom (5,10,.5)
 ```
 
-### An Application: A Gridlocked Congress
+### An Application: The Decline of War?
 
-Congress is doing nothing at a historic rate. This much we know.
+![](decline-of-war.png)
 
-- About 5\% of bills that receive "some action" are ultimately passed.
-    - Recall: many bills introduced die a quick death from inactivity.
-    - This estimate says nothing about substantive importance of the bill.
-  
+### The Decline of War?
 
-Assume *p* = .05. What's the probability that Congress passes three (*x*) of the next 20 (*n*) bills it gets?
+Pinker (2011) argues the absence of world wars since WW2 shows a decline of violence. But:
 
-### An Application: A Gridlocked Congress
+- This kind of war is fantastically rare.
+- Gibler and Miller (Forthcoming) code 1,958 confrontations from 1816 to 2014.
+- Of those: 84 are wars (*p* = .042)
+- Of the wars, only 24 are wars we could think of as "really big" (*p* = .012)
 
-
-
-\begin{eqnarray}
-p(x = 3 \thinspace | \thinspace n = 20, p = .05) &=& {20 \choose 3 } (.05)^3(1-.05)^{20-3} \nonumber \\
-&=& (1140)*(.000125)*(0.4181203) \nonumber \\
- &=& 0.05958215
-\end{eqnarray}
+### The Decline of War?
 
 
-In R:
+The year is 2022. We haven't observed a World War II in, basically, 75 years. What is the probability of us *not* observing this where:
+
+- *p* = .042, the overall base rate of war vs. not-war?
+- *p* = .012, the overall base rate of a "really big war"?
+
+
+###
+
+```{r, eval = FALSE, echo=TRUE}
+tibble(num_wars = seq(0:7)-1,
+       base = dbinom(num_wars, 75, .042),
+       rbw = dbinom(num_wars, 75, .012)) 
+
+tibble(num_wars = rep(c(0, 1, 2), 100)) %>%
+  arrange(num_wars) %>%
+  mutate(period = rep(seq(1:100), 3),
+         p = dbinom(num_wars, period, 0.012)) 
+```
+
+###
 
 ```{r}
-dbinom(3,20,.05)
+tibble(num_wars = seq(0:7)-1,
+       base = dbinom(num_wars, 75, .042),
+       rbw = dbinom(num_wars, 75, .012)) %>%
+  gather(var, val, -num_wars) %>%
+  mutate(var = ifelse(var == "base", "Base Rate of War", "Base Rate of 'Really Big Wars'")) %>%
+  mutate(lab = round(val, 3)) %>%
+  ggplot(.,aes(as.factor(num_wars), val, fill=var)) +
+  geom_bar(stat = "identity", position = "dodge", color="black") +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5, family="Open Sans") +
+  theme_steve_web() +
+  labs(title = "The Probability of the Number of (Observed) Wars in 75 Years, Given Assumed Rates of War",
+       subtitle = "Knowing how rare 'really big wars' are, it's highly probable (p = .404) that we haven't observed one 75 years after WW2.",
+       fill = "",
+       x = "Number of Observed Wars", y = "Probability of This Number of War in a 75-year Period")
+
 ```
+
+###
+
+
+```{r}
+
+tibble(num_wars = rep(c(0, 1, 2), 100)) %>%
+  arrange(num_wars) %>%
+  mutate(period = rep(seq(1:100), 3),
+         p = dbinom(num_wars, period, 0.012)) %>%
+  mutate(cat = case_when(
+    num_wars == 0 ~ "Zero Wars",
+    num_wars == 1 ~ "One War",
+    num_wars == 2 ~ "Two Wars"
+  ),
+  cat = fct_relevel(cat, "Zero Wars", "One War", "Two Wars")) %>%
+  ggplot(.,aes(period, p, color=cat, linetype=cat)) +
+  geom_line(size=1.1) +
+  theme_steve_web() +
+  labs(y = "Probability of Observing This Many Wars Over 100 Years",
+       x = "",
+       title = "The Probability of Observing a Set Amount of 'Really Big Wars' Over a 100-Year Period",
+       color = "", linetype = "",
+       subtitle = "After 75 years, it's still more probable that we haven't observed a 'really big war' than having observed just one.")
+
+```
+
 
 
 # Normal Functions
@@ -376,7 +425,7 @@ With that in mind, it should be clear that $\frac{1}{\sqrt{2\pi\sigma^2}}$ (reca
 
 Observe: 
 
-```{r sqrt}
+```{r sqrt, echo=T}
 1/sqrt(2*pi)
 
 dnorm(0,mean=0,sd=1)
@@ -399,7 +448,7 @@ That said, the area *under* the curve is the full domain and equals 1.
 
 Observe:
 
-```{r area}
+```{r area, echo=T}
 pnorm(0, mean=0, sd=1)
 
 ```
@@ -439,7 +488,7 @@ ggplot(data.frame(x = c(-4, 4)), aes(x)) +
 
 ### 68-90-95-99
 
-```{r thenodes}
+```{r thenodes, echo=T}
 pnorm(1,mean=0,sd=1)-pnorm(-1,mean=0,sd=1)
 pnorm(1.645,mean=0,sd=1)-pnorm(-1.645,mean=0,sd=1)
 pnorm(1.96,mean=0,sd=1)-pnorm(-1.96,mean=0,sd=1)
