@@ -210,11 +210,11 @@ This is why most surveys have a "sweet spot" between 1,000 and 3,000.
 
 As the variation component increases, random sampling error increases.
 
-- Recall our discussion of variation in Chapter 2.
+<!-- - Recall our discussion of variation in Chapter 2. -->
 
-We have a statistic for this variation: the **standard deviation**.
+- We have a statistic for this variation: the **standard deviation**.
 
-- Used for interval-level variables
+<!-- - Used for interval-level variables -->
 <!-- - It measures the extent to which cases in an interval-level distribution differ from the mean. -->
 
 Compare the following two histograms
