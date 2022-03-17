@@ -78,11 +78,11 @@
   dirname: random-sampling-variation
   tldr: "A pivot into the world of inference, starting with a discussion of random sampling."
 
-# - title: "Central Limit Theorem, Normal Distribution, and Inference"
-#   filename: clt-nd-inference
-#   dirname: clt-nd-inference
-#   tldr: "Inferring from sample to population is the core of what we do in applied statistics. Here's what the process resembles."
-#   
+- title: "Central Limit Theorem, Normal Distribution, and Inference"
+  filename: clt-nd-inference
+  dirname: clt-nd-inference
+  tldr: "Inferring from sample to population is the core of what we do in applied statistics. Here's what the process resembles."
+
 # - title: "Correlation and Linear Regression"
 #   filename: correlation-linear-regression
 #   dirname: correlation-linear-regression
