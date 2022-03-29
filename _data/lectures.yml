@@ -83,11 +83,11 @@
   dirname: clt-nd-inference
   tldr: "Inferring from sample to population is the core of what we do in applied statistics. Here's what the process resembles."
 
-# - title: "Correlation and Linear Regression"
-#   filename: correlation-linear-regression
-#   dirname: correlation-linear-regression
-#   tldr: "A gentle introduction to correlation and linear regression as a means to describe a relationship between two interval-level variables."
-#   
+- title: "Correlation and Linear Regression"
+  filename: correlation-linear-regression
+  dirname: correlation-linear-regression
+  tldr: "A gentle introduction to correlation and linear regression as a means to describe a relationship between two interval-level variables."
+
 # - title: "Extending OLS: Fixed Effects, Controls, and Interactions"
 #   filename: ols-fixed-effects-controls
 #   dirname: ols-fixed-effects-controls
