@@ -93,11 +93,11 @@
   dirname: ols-fixed-effects-controls
   tldr: "Once you understand OLS in a simple bivariate context, its extensions are akin to adding more ingredients."
 
-# - title: "Logistic Regression"
-#   filename: logistic-regression
-#   dirname: logistic-regression
-#   tldr: "If your DV is a dummy variable, you're going to want a logistic regression instead of OLS. It's really not daunting."
-#   
+- title: "Logistic Regression"
+  filename: logistic-regression
+  dirname: logistic-regression
+  tldr: "If your DV is a dummy variable, you're going to want a logistic regression instead of OLS. It's really not daunting."
+
 # - title: 'Making the Most of Regression ("Divide By 4", Scaling)'
 #   filename: making-most-regression
 #   dirname: making-most-regression
