@@ -40,6 +40,8 @@ knitr::opts_chunk$set(
                       if (file.rename(x, x2)) x2 else x
                       }
                   )
+
+options("modelsummary_format_numeric_latex" = "plain")
 ```
 
 ```{r loaddata, echo=F, eval=T, message=F, warning=F}
@@ -96,7 +98,7 @@ However, it's easy (and tempting) to provide misleading quantities of interest.
 
 ```r
 library(tidyverse) # for most things
-library(stevemisc) # for formatting and r2sd()
+library(stevemisc) # for formatting and r2sd_at()
 library(stevedata) # for ?TV16
 library(modelsummary) # for tables
 library(kableExtra) # for prettying up tables
@@ -345,11 +347,7 @@ Why so?
 
 ```{r, echo=T}
 Penn %>%
-    mutate_at(vars("age", "famincr","pid7na","ideo"),
-              # r2sd() is in stevemisc
-              list(z = ~r2sd(.))) %>%
-    rename_at(vars(contains("_z")),
-              ~paste("z", gsub("_z", "", .), sep = "_") ) -> Penn
+  r2sd_at(c("age", "famincr","pid7na","ideo")) -> Penn
 
 M3 <- glm(votetrump ~ z_age + female + collegeed + z_famincr + 
             z_ideo + z_pid7na + bornagain, data=Penn,
@@ -364,18 +362,24 @@ tidyM3 <- broom::tidy(M3)
 \scriptsize
 
 ```{r, echo=F}
-modelsummary(list("Did White PA Respondent Vote for Trump? (Standardized)" = M3), output="latex",
+modelsummary(list("Unstandardized Coefficients" = M2, 
+                  "Standardized Coefficients" = M3),
+             #output="latex",
              title = "Predicting the White Trump Vote in 2016 (CCES, 2016)",
              stars = TRUE, gof_omit = "IC|F|Log.|R2$",
              coef_map = c("z_age" = "Age", 
+                          "age" = "Age",
                           "female" = "Female", 
                           "collegeed" = "College Educated",
                           "z_famincr" = "Household Income", 
+                          "famincr" = "Household Income", 
                           "z_ideo" = "Ideology (L-C)", 
+                          "ideo" = "Ideology (L-C)", 
                           "z_pid7na" = "Partisanship (D-R)", 
+                          "pid7na" = "Partisanship (D-R)", 
                           "bornagain" = "Born Again Christian", 
                           "(Intercept)" = "Intercept"),
-             align = "lc")
+             align = "lcc")
 
 ```
 
