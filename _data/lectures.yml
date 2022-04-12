@@ -98,11 +98,11 @@
   dirname: logistic-regression
   tldr: "If your DV is a dummy variable, you're going to want a logistic regression instead of OLS. It's really not daunting."
 
-# - title: 'Making the Most of Regression ("Divide By 4", Scaling)'
-#   filename: making-most-regression
-#   dirname: making-most-regression
-#   tldr: "You, the regression modeler, are also a storyteller. Here are two parlor tricks to help you tell your story."
-#   
+- title: 'Making the Most of Regression ("Divide By 4", Scaling)'
+  filename: making-most-regression
+  dirname: making-most-regression
+  tldr: "You, the regression modeler, are also a storyteller. Here are two parlor tricks to help you tell your story."
+
 # - title: 'The Basics of Bayesian Inference'
 #   filename: bayesian-inference
 #   dirname: bayesian-inference
