@@ -474,11 +474,28 @@ do.call("rbind", Sims) %>%
   summarize(mean = mean(y),
             lwr = quantile(y, .025),
             upr = quantile(y, .975)) %>%
+  mutate_if(is.numeric, ~round(., 3)) %>%
+  mutate(lbl = paste0(mean,"\n[",lwr,", ", upr,"]")) -> annotate_me
+
+do.call("rbind", Sims) %>%
+  mutate(y = plogis(y),
+         xlab = case_when(prejudice == 0 ~ "White Social Prejudice:\n0",
+                          prejudice == 25 ~ "White Social Prejudice:\n25",
+                          prejudice == 50 ~ "White Social Prejudice:\n50",
+                          prejudice == 100 ~ "White Social Prejudice:\n100")) %>%
+  mutate(xlab = fct_inorder(xlab)) %>%
+  group_by(cat, xlab) %>%
+  summarize(mean = mean(y),
+            lwr = quantile(y, .025),
+            upr = quantile(y, .975)) %>%
   ggplot(.,aes(xlab, y=mean, ymin=lwr, ymax=upr)) +
   facet_wrap(~cat) +
   geom_pointrange() +
   coord_flip() +
   theme_steve_web() +
+  scale_y_continuous(limits = c(0, 1)) +
+  geom_text(data=annotate_me, aes(x=xlab, y=.9, label=lbl), 
+            colour="black", inherit.aes=FALSE, parse=FALSE, size=3, family="Open Sans") +
   theme(axis.text = element_text(size = 11))  +
   labs(x = "", y = "Simulated Probability (with 95% Intervals)",
        title = "The Effect of White Social Prejudice on Attitudes about Democracy, Nov. 2019",
