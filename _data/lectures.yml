@@ -103,6 +103,12 @@
   dirname: making-most-regression
   tldr: "You, the regression modeler, are also a storyteller. Here are two parlor tricks to help you tell your story."
 
+- title: 'Post-estimation Simulation'
+  filename: post-estimation-simulation
+  dirname: post-estimation-simulation
+  tldr: "Simulated estimated quantities of interest from a multivariate normal distribution using the regression model's parameters."
+
+
 # - title: 'The Basics of Bayesian Inference'
 #   filename: bayesian-inference
 #   dirname: bayesian-inference
