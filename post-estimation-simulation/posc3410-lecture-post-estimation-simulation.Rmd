@@ -315,7 +315,9 @@ Do this *m* times (typically *m* = 1000) to estimate full distribution of $Y_c$.
 # An Application with Prejudice and Support for Democracy (2019)
 ### Does Prejudice Decrease Support for (American) Democracy?
 
-![](charlottesville-white-pride-rally.jpg)
+```{r, eval=TRUE, echo=FALSE, out.width="100%"}
+knitr::include_graphics("charlottesville-white-pride-rally.jpg")
+```
 
 
 ### Prejudice and Support for Democracy
@@ -437,6 +439,12 @@ newdat_prejudice %>%
 ```
 
 \normalsize 
+
+###
+
+```{r, eval=TRUE, echo=FALSE, out.width="95%"}
+knitr::include_graphics("get_sims.png")
+```
 
 ###
 
